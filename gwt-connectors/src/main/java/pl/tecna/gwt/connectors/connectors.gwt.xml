@@ -1,5 +1,7 @@
 <module>
-	
 	<!-- Inherit gwt-dnd support                   -->
     <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
+    
+    <source path="client"/>
+	<source path="shared"/>
 </module>

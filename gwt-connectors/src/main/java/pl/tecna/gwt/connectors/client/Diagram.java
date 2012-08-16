@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.listeners.DiagramListener;
 import pl.tecna.gwt.connectors.client.listeners.DiagramModeListener;
@@ -15,8 +17,6 @@ import pl.tecna.gwt.connectors.client.listeners.change.DiagramEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ShapeMoveEvent;
 import pl.tecna.gwt.connectors.client.util.CustomPickupDragController;
-import pl.tecna.gwt.connectors.client.util.Log;
-import pl.tecna.gwt.connectors.client.util.Logger;
 import pl.tecna.gwt.connectors.client.util.Position;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Diagram {
 
-  private final Logger LOG = new Logger("Diagram");
+  private final Logger LOG = Logger.getLogger("Diagram");
 
   /**
    * Defines weather keyboard events should be fired
@@ -82,6 +82,7 @@ public class Diagram {
   
   public Diagram(AbsolutePanel boundaryPanel) {
     super();
+    
     this.listeners = new ArrayList<DiagramListener>();
 
     this.boundaryPanel = boundaryPanel;
@@ -162,7 +163,6 @@ public class Diagram {
       }
 
       public void onKeyUp(int key, Event e) {
-
         if (keyboardEnabled) {
           if (e.getKeyCode() == KeyCodes.KEY_DELETE && e.getCtrlKey()) {
             // Delete selected elements
@@ -289,16 +289,7 @@ public class Diagram {
                         - startY - Diagram.this.boundaryPanel.getAbsoluteTop());
                   } else {
                     // one element selected
-
-                    Section lastSection = null;
-                    Point beforeLastPoint = null;
-                    if (ep.connector.prevSectionForPoint(ep) != null) {
-                      lastSection = ep.connector.prevSectionForPoint(ep);
-                      beforeLastPoint = lastSection.startPoint;
-                    } else {
-                      lastSection = ep.connector.nextSectionForPoint(ep);
-                      beforeLastPoint = lastSection.endPoint;
-                    }
+                    
                     // if (!shape.isOnThisShape(lastSection)) {
                     // LOG.d("Section is not on shape");
                     boolean vertical = false;
@@ -320,9 +311,9 @@ public class Diagram {
             }
           }
         }
+        
         super.dragMove();
       }
-
     };
 
     shapeDragController.setBehaviorDragStartSensitivity(2);
@@ -478,7 +469,6 @@ public class Diagram {
 
       @Override
       public void onDragEnd(DragEndEvent event) {
-
         Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, 
             new ElementDragEvent(event.getSource(), ElementDragEvent.DRAG_END));
         
@@ -486,6 +476,7 @@ public class Diagram {
         EndPoint endPoint = (EndPoint) event.getSource();
         endPoint.connector.fixEndSectionDirection(endPoint);
         endPoint.connector.drawSections(endPoint.connector.getCorners());
+        
         try {
           endPoint.connector.cornerPoints =
               (ArrayList<CornerPoint>) endPoint.connector.fixLineSections(endPoint.connector
@@ -493,22 +484,22 @@ public class Diagram {
           endPoint.connector.drawSections();
           endPoint.connector.fixSections();
         } catch (Exception e) {
-          LOG.e("", e);
+          LOG.log(Level.SEVERE, "Unexpected exception", e);
         }
 
         Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, new ShapeMoveEvent(new Position(),
             new Position(endPoint.getLeft(), endPoint.getTop()), endPoint));
       }
     });
-
   }
 
   private void fixLineSections(Shape shape) {
-    LOG.d("Fix line sections");
+    LOG.fine("Fix line sections");
+    
     for (Connector conn : Diagram.this.connectors) {
       List<Section> overlapSections = shape.overlapSections(conn);
       if (overlapSections.size() != 0) {
-        LOG.d("Overlap sections size : " + overlapSections.size());
+        LOG.fine("Overlap sections size : " + overlapSections.size());
         List<CornerPoint> corners = conn.getCorners();
         conn.evadeShape(shape, overlapSections, corners);
         conn.fixLineSections(corners);
@@ -523,17 +514,17 @@ public class Diagram {
     // Save Shapes
 
     // Save Connectors
+    //TODO Change to StringBuilder
     for (int i = 0; i < connectors.size(); i++) {
-      xmlString =
-          xmlString + "(" + connectors.get(i).startEndPoint.getLeft() + ","
+      xmlString += "(" + connectors.get(i).startEndPoint.getLeft() + ","
               + connectors.get(i).startEndPoint.getTop() + ")";
+      
       for (int k = 0; k < connectors.get(k).cornerPoints.size(); k++) {
-        xmlString =
-            xmlString + "(" + connectors.get(i).cornerPoints.get(k).getLeft() + ","
+        xmlString += "(" + connectors.get(i).cornerPoints.get(k).getLeft() + ","
                 + connectors.get(i).cornerPoints.get(k).getTop() + ")";
       }
-      xmlString =
-          xmlString + "(" + connectors.get(i).endEndPoint.getLeft() + ","
+      
+      xmlString += "(" + connectors.get(i).endEndPoint.getLeft() + ","
               + connectors.get(i).endEndPoint.getTop() + ")\n";
     }
 
@@ -544,7 +535,7 @@ public class Diagram {
     try {
       return (Shape) connector.startEndPoint.gluedConnectionPoint.getParent().getParent();
     } catch (Exception e) {
-      LOG.e("Connector don't have start point connected");
+      LOG.log(Level.SEVERE, "Connector don't have start point connected", e);
       return null;
     }
   }
@@ -553,7 +544,7 @@ public class Diagram {
     try {
       return (Shape) connector.endEndPoint.gluedConnectionPoint.getParent().getParent();
     } catch (Exception e) {
-      LOG.e("Connector don't have end point connected");
+      LOG.log(Level.SEVERE, "Connector don't have end point connected", e);
       return null;
     }
   }
@@ -576,7 +567,6 @@ public class Diagram {
         Diagram.this.boundaryPanel.remove(m.asWidget());
         // markers.remove(m);
       }
-
     }
   }
 
@@ -599,7 +589,6 @@ public class Diagram {
   }
 
   public void onDiagramChanged(DiagramChangeEvent type, DiagramEvent event) {
-
     for (DiagramListener listener : listeners) {
       listener.onDiagramChanged(type, event);
     }
@@ -610,8 +599,8 @@ public class Diagram {
   }
 
   private void deleteSelectedElements() {
-
-    Log.fine("deleteSelectedElements");
+    LOG.fine("deleteSelectedElements");
+    
     for (Widget widget : shapeDragController.getSelectedWidgets()) {
       if (widget instanceof Shape) {
         ((Shape) widget).removeFromDiagram(this);
@@ -619,6 +608,7 @@ public class Diagram {
         shapeDragController.makeNotDraggable(widget);
         boundaryPanel.remove(widget);
       }
+      
       onElementRemove(widget);
     }
 
@@ -634,19 +624,15 @@ public class Diagram {
     }
 
     shapeDragController.clearSelection();
-
   }
 
   private void onElementRemove(Widget widget) {
-
     for (DiagramListener listener : listeners) {
       listener.onDiagramChanged(DiagramChangeEvent.REMOVE, new DiagramEvent(widget));
     }
   }
 
-  @SuppressWarnings("unused")
   private void onElementRemove(Connector connector) {
-
     for (DiagramListener listener : listeners) {
       listener.onDiagramChanged(DiagramChangeEvent.REMOVE, new DiagramEvent(connector));
     }
@@ -667,7 +653,7 @@ public class Diagram {
     // vertical sections map
     Map<Integer, Section> vertSectionsMap = new HashMap<Integer, Section>();
     if (shape.getParent() == null) {
-      LOG.w("Shape parent is null");
+      LOG.severe("Shape parent is null");
       return;
     }
 
@@ -739,7 +725,6 @@ public class Diagram {
           .getRelativeShapeTop());
       lastHorizontalSection.connector.drawSections(lastHorizontalSection.connector
           .fixLineSections(lastHorizontalSection.connector.getCorners()));
-
     }
 
     // fix section position vertically
@@ -748,10 +733,9 @@ public class Diagram {
           - minVertical);
       lastVerticalSection.connector.drawSections(lastVerticalSection.connector
           .fixLineSections(lastVerticalSection.connector.getCorners()));
-
     }
+    
     shape.updateConnectors();
-
   }
 
   /**
@@ -789,7 +773,6 @@ public class Diagram {
    * @return
    */
   private boolean isOnWidget(Point point, Widget widget) {
-
     int widgetLeft = boundaryPanel.getWidgetLeft(widget);
     int widgetRight = widgetLeft + widget.getOffsetWidth();
     int widgetTop = boundaryPanel.getWidgetTop(widget);
@@ -804,7 +787,6 @@ public class Diagram {
   }
 
   public void deselectAllSections() {
-
     for (Connector conn : connectors) {
       conn.deselect();
     }
@@ -817,9 +799,10 @@ public class Diagram {
 
   public void setSelectionMode(boolean mode){
     this.selectionMode = mode;
-    if(boundarySelectionHandler!=null){
+    if (boundarySelectionHandler!=null){
       boundarySelectionHandler.removeHandler();
     }
+    
     boundarySelectionHandler = this.boundaryPanel.addDomHandler(new MouseDownHandler() {
 
       public void onMouseDown(MouseDownEvent event) {
@@ -898,13 +881,13 @@ public class Diagram {
     }
   }
   
-  private native static void disableTextSelectInternal(Element e, boolean disable)/*-{ 
-                                                                                  if (disable) { 
-                                                                                  e.ondrag = function () { return false; }; 
-                                                                                  e.onselectstart = function () { return false; }; 
-                                                                                  } else { 
-                                                                                  e.ondrag = null; 
-                                                                                  e.onselectstart = null; 
-                                                                                  } 
-                                                                                  }-*/;
+  private native static void disableTextSelectInternal(Element e, boolean disable) /*-{ 
+    if (disable) { 
+      e.ondrag = function () { return false; }; 
+      e.onselectstart = function () { return false; }; 
+    } else { 
+      e.ondrag = null; 
+      e.onselectstart = null; 
+    } 
+  }-*/;
 }

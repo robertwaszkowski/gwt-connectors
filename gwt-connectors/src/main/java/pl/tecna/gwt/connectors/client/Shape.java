@@ -2,10 +2,10 @@ package pl.tecna.gwt.connectors.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.drop.DiagramWidgetDropController;
-import pl.tecna.gwt.connectors.client.util.Log;
-import pl.tecna.gwt.connectors.client.util.Logger;
 
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -19,6 +19,8 @@ public class Shape extends FocusPanel{
    * @author Kamil Kurek
    *
    */
+  
+  private Logger LOG = Logger.getLogger("Shape");
 
   public enum CPShapeType {
     OVAL,
@@ -26,8 +28,6 @@ public class Shape extends FocusPanel{
     RECTANGLE,
     USER_DEFINED
   }
-
-  private final Logger LOG = new Logger("Shape");
 
   public CPShapeType cpShapeType;
 
@@ -224,8 +224,7 @@ public class Shape extends FocusPanel{
    * @return the Shape removed from specified Diagram and from its boundaryPanel
    */
   public void removeFromDiagram(Diagram diagram) {
-
-    try{
+    try {
       // Remove Shape from Diagram
       diagram.endPointDragController.unregisterDropController(shapeDropController);
       diagram.shapeDragController.unregisterDropController(shapeDropController);
@@ -244,12 +243,11 @@ public class Shape extends FocusPanel{
       // TODO Remove Shape from Diagram's boundaryPanel
 
     } catch (Exception e) {
-      Log.severe("Remove from diagram exception", e);
+      LOG.log(Level.SEVERE, "Remove from diagram exception", e);
     }
   }
 
   public ConnectionPoint findNearestConnectionPoint(int absLeft, int absTop) {
-
     ConnectionPoint retCP = null;
     int distance = Integer.MAX_VALUE;
     for (ConnectionPoint cp : connectionPoints) {
@@ -264,9 +262,9 @@ public class Shape extends FocusPanel{
   }
 
   public ConnectionPoint findNearestFreeConnectionPoint(int absLeft, int absTop) {
-
     ConnectionPoint retCP = null;	
     int distance = Integer.MAX_VALUE;
+    
     for (ConnectionPoint cp : connectionPoints) {
       int tempDist = Math.abs(absLeft - (cp.getAbsoluteLeft() + cp.getOffsetWidth() / 2)) + Math.abs(absTop - (cp.getAbsoluteTop() + cp.getOffsetHeight() / 2));
       if (tempDist < distance && cp.gluedEndPoints.size() == 0) {
@@ -278,7 +276,6 @@ public class Shape extends FocusPanel{
   }
 
   private List<ConnectionPoint> createRectangleShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
-
     List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 
     ConnectionPoint cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 0, connectedWidget);
@@ -330,7 +327,6 @@ public class Shape extends FocusPanel{
   }
 
   private List<ConnectionPoint> createOvalShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
-
     List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 
     ConnectionPoint cp = new ConnectionPoint(ConnectionPoint.DIRECTION_LEFT, 0, connectedWidget);
@@ -371,7 +367,6 @@ public class Shape extends FocusPanel{
   }
 
   private List<ConnectionPoint> createDiamondShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
-
     List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 
     ConnectionPoint cp = new ConnectionPoint(ConnectionPoint.DIRECTION_LEFT, 0, connectedWidget);
@@ -415,6 +410,7 @@ public class Shape extends FocusPanel{
   private List<ConnectionPoint> createUserDefinedShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
     return null;
   }
+  
   private void refreshUserDefinedCPPositions(AbsolutePanel connectionPointsPanel, Diagram diagram) {
   }
 
@@ -431,7 +427,6 @@ public class Shape extends FocusPanel{
   }
 
   public ConnectionPoint getCPForPosition(int cpPos) {
-
     for (ConnectionPoint cp : connectionPoints) {
       if (cp.position == cpPos) {
         return cp;
@@ -445,11 +440,10 @@ public class Shape extends FocusPanel{
    * @return widget left position on parent panel {@link AbsolutePanel}
    */
   public int getRelativeShapeLeft() {
-
     if (this.diagram != null) {
       return this.getAbsoluteLeft() - this.diagram.boundaryPanel.getAbsoluteLeft();
     } else {
-      LOG.e("getRelativeShapeLeft -> -1");
+      LOG.severe("getRelativeShapeLeft -> -1");
       return -1;
     }
   }
@@ -459,19 +453,18 @@ public class Shape extends FocusPanel{
    * @return widget top position on parent panel {@link AbsolutePanel}
    */
   public int getRelativeShapeTop() {
-
     if (this.diagram != null) {
       return this.getAbsoluteTop() - this.diagram.boundaryPanel.getAbsoluteTop();
     } else {
-      LOG.e("getRelativeShapeLeft -> -1");
+      LOG.severe("getRelativeShapeLeft -> -1");
       return -1;
     }
   }
 
 
   public Point getCPPosition(ConnectionPoint cp) {
-
     Point point = null;
+    
     if (connectionPoints.contains(cp)) {
       if (this.getParent() != null) {
         int left = cp.getAbsoluteLeft() - this.diagram.boundaryPanel.getAbsoluteLeft();
@@ -484,8 +477,8 @@ public class Shape extends FocusPanel{
   }
 
   public List<Connector> getConnectedConnectors() {
-
     List<Connector> connectors = new ArrayList<Connector>();
+    
     for (ConnectionPoint cp : connectionPoints) {
       for (EndPoint endPoint : cp.gluedEndPoints) {
         connectors.add(endPoint.connector);
@@ -525,8 +518,8 @@ public class Shape extends FocusPanel{
    * @return list of overlap sections
    */
   public List<Section> overlapSections(Connector connector) {
-
     List<Section> sections = new ArrayList<Section>();
+    
     for (int i = 0 ; i < connector.sections.size() ; i++) {
       if (
           (connector.sections.get(i).connector.endEndPoint.isGluedToConnectionPoint() &&
@@ -544,7 +537,7 @@ public class Shape extends FocusPanel{
 
   public boolean goesThroughThisShape(Section sect) {
     boolean ret = true;
-    LOG.i("Assuming, that section goes through this shape");
+    LOG.info("Assuming, that section goes through this shape");
     return ret;
   }
 
@@ -556,7 +549,6 @@ public class Shape extends FocusPanel{
    * @return
    */
   public boolean isOnThisShape(Section section) {
-
     Point startPoint = section.startPoint;
     Point endPoint = section.endPoint;
 
@@ -575,7 +567,7 @@ public class Shape extends FocusPanel{
     } else if (section.isVertical()) {
       direction = Section.VERTICAL;
     } else {
-      LOG.e("isOnThisShape -> direction = -1");
+      LOG.severe("isOnThisShape -> direction = -1");
       direction = -1;
     }
 
@@ -634,7 +626,6 @@ public class Shape extends FocusPanel{
   }
 
   public int getConnectedWidgetLeft() {
-
     if (this.isAttached()) {
       AbsolutePanel boundary = (AbsolutePanel) this.getParent();
       return connectedWidget.getAbsoluteLeft() - boundary.getAbsoluteLeft();
@@ -644,7 +635,6 @@ public class Shape extends FocusPanel{
   }
 
   public int getConnectedWidgetTop() {
-
     if (this.isAttached()) {
       AbsolutePanel boundary = (AbsolutePanel) this.getParent();
       return connectedWidget.getAbsoluteTop() - boundary.getAbsoluteTop();
@@ -665,21 +655,25 @@ public class Shape extends FocusPanel{
     yBetween = isNumberBetween(startSelectionPoint.getTop(), endSelectionPoint.getTop(), getRelativeShapeTop()+getOffsetHeight()/2);
     return (xBetween && yBetween);
   }
+  
   private boolean isNumberBetween(int bound1, int bound2, int q){
     int min = 0;
     int max = 0;
-    if(bound1 <= bound2){
+    
+    if (bound1 <= bound2) {
       min = bound1;
       max = bound2;
-    }
-    else {
+    } else {
       min = bound2;
       max = bound1;
     }
-    if(q > min && q < max) return true;
+    
+    if (q > min && q < max) {
+      return true;
+    }
+    
     //Log.info(q+" is not between "+min+"-"+max);
     return false;
-
   }
 
   public int getTranslationX() {
@@ -712,7 +706,7 @@ public class Shape extends FocusPanel{
         diagram.endPointDragController.unregisterDropController(shapeDropController);
         diagram.shapeDragController.unregisterDropController(shapeDropController);
       } catch (Exception e) {
-        Log.severe("error while disable connectors for shape", e);
+        LOG.log(Level.SEVERE, "error while disable connectors for shape", e);
       }
     } else {
       diagram.endPointDragController.registerDropController(shapeDropController);

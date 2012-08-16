@@ -3,7 +3,6 @@ package pl.tecna.gwt.connectors.client;
 import java.util.ArrayList;
 
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
-import pl.tecna.gwt.connectors.client.util.Logger;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -15,9 +14,6 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 public class ConnectionPoint extends FocusPanel {
-	
-	@SuppressWarnings("unused")
-	private final Logger LOG = new Logger("ConnectionPoint");
 
 	public ArrayList<EndPoint> gluedEndPoints;
 	public int connectionDirection;

@@ -1,18 +1,16 @@
 package pl.tecna.gwt.connectors.example.client;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Connector;
 import pl.tecna.gwt.connectors.client.CornerPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.SectionDecoration;
 import pl.tecna.gwt.connectors.client.Shape;
 import pl.tecna.gwt.connectors.client.Shape.CPShapeType;
-import pl.tecna.gwt.connectors.client.drop.DiagramWidgetDropController;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
-import pl.tecna.gwt.connectors.client.util.Log;
-import pl.tecna.gwt.connectors.client.util.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -29,30 +27,20 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 
 public class Example implements EntryPoint {
-	
-	private final Logger LOG = new Logger("Example");
+	private Logger LOG = Logger.getLogger("EXAMPLE");
 
 	private Shape shapeForImage;
 //	private DivLogger logger;
 
 	public void onModuleLoad() {
-				
-		LOG.i("Load module ................");
+		LOG.info("Load module ................");
 		
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			
 			public void onUncaughtException(Throwable e) {
-
-				Log.severe("Uncaught error", e);
+				LOG.log(Level.SEVERE, "Uncaught error", e);
 			}
 		});
-		
-//		CSS.addStyleSheet("gxt-base", GWT.getModuleBaseURL() + "../resources/gxt/css/gxt-all.css");
-//		CSS.addStyleSheet("gxt-gray", GWT.getModuleBaseURL() + "../resources/gxt/css/gxt-gray.css");
-//		CSS.addStyleSheet("gwt-connectors", GWT.getModuleBaseURL() + "../resources/css/gwt-connectors.css");
-//		CSS.addStyleSheet("gwt-dnd", GWT.getModuleBaseURL() + "../resources/css/gwt-dnd.css");
-//		CSS.addStyleSheet("aur-mdl-styles", GWT.getModuleBaseURL() + "../resources/css/style.css");
-//		
 		
 		// Create boundary panel
 		AbsolutePanel boundaryPanel = new AbsolutePanel();

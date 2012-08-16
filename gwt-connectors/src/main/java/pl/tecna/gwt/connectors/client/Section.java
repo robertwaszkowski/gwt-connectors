@@ -2,13 +2,14 @@ package pl.tecna.gwt.connectors.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.drop.AxisXYDragController;
 import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ElementAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ShapeMoveEvent;
-import pl.tecna.gwt.connectors.client.util.Logger;
 import pl.tecna.gwt.connectors.client.util.Position;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
@@ -22,8 +23,8 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HTML;
 
 public class Section extends HTML {
-	
-	private final Logger LOG = new Logger("Section");
+  
+  private final Logger LOG = Logger.getLogger("Section");
 	
 	public Point startPoint;
 	public Point endPoint;
@@ -596,7 +597,7 @@ public class Section extends HTML {
 					endPoint.getLeft(), endPoint.getTop());
 		}
 		} catch (Exception e) {
-			LOG.e("Error updating section", e);
+			LOG.log(Level.SEVERE, "Error updating section", e);
 		}
 	}
 	
@@ -611,6 +612,7 @@ public class Section extends HTML {
 		if (startPointDecoration != null) {
 			this.startPointDecoration.select();
 		}
+		
 		if (endPointDecoration != null) {
 			this.endPointDecoration.select();
 		}

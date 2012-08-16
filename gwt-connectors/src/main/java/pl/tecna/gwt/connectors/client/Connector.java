@@ -2,11 +2,12 @@ package pl.tecna.gwt.connectors.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ElementAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ConnectorRemoveEvent;
-import pl.tecna.gwt.connectors.client.util.Logger;
 import pl.tecna.gwt.connectors.client.util.Position;
 import pl.tecna.gwt.connectors.client.util.SectionData;
 
@@ -14,10 +15,9 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
 public class Connector {
-
 	public static final int OVERLAP_MARGIN = 5;
 	
-	private final Logger LOG = new Logger("Connector");
+	private final Logger LOG = Logger.getLogger("Connector");
 	
 	public ArrayList<Section> sections;
 	public ArrayList<CornerPoint> cornerPoints;
@@ -378,11 +378,12 @@ public class Connector {
 			endEndPoint.unglueFromConnectionPoint();
 			endEndPoint = new EndPoint(left, top, this);
 			endEndPoint.showOnDiagram(diagram);
+			
 			try{
 				Section endSection = sections.get(sections.size() - 1);
 				endSection.setEndPoint(endEndPoint);
 			} catch (IndexOutOfBoundsException e) {
-				LOG.e("Connector - error disconnecting end point : no end section");
+				LOG.log(Level.SEVERE, "Error disconnecting end point : no end section", e);
 			}
 		}
 	}
@@ -397,11 +398,12 @@ public class Connector {
 			startEndPoint.unglueFromConnectionPoint();
 			startEndPoint = new EndPoint(left, top, this);
 			startEndPoint.showOnDiagram(diagram);
+			
 			try {
 				Section startSection = sections.get(0);
 				startSection.setStartPoint(startEndPoint);
 			} catch (IndexOutOfBoundsException e) {
-				LOG.e("Connector - error disconnecting start point : no start section");
+				LOG.log(Level.SEVERE, "Error disconnecting start point : no start section", e);
 			}
 		}
 	}
@@ -414,11 +416,10 @@ public class Connector {
 	 * @param endPoint 
 	 */
 	public boolean fixEndSectionDirection(EndPoint endPoint) {
-
 		//LOG.i("fixEndSectionDirection");
 		//end point must be connected
 		if (!endPoint.isGluedToConnectionPoint()) {
-			LOG.e("End point is not glued to the connection point");
+			LOG.severe("End point is not glued to the connection point");
 			return false;
 		}
 		
@@ -439,101 +440,99 @@ public class Connector {
 		}
 		
 		try {
-		List<CornerPoint> cornerPoints = getCorners(sections);
-		ConnectionPoint connectionPoint = endPoint.gluedConnectionPoint;
-	
-		//Connect element to the center of connection point
-		if (last) {
-			endEndPoint.setLeft(connectionPoint.getCenterLeft());
-			endEndPoint.setTop(connectionPoint.getCenterTop());
-			if (!sectionHorizontal) {
-				cornerPoints.get(cornerPoints.size() - 1).setLeft(endEndPoint.getLeft());
-			} else {
-				cornerPoints.get(cornerPoints.size() - 1).setTop(endEndPoint.getTop());
-			}
-		} else {
-			startEndPoint.setLeft(connectionPoint.getCenterLeft());
-			startEndPoint.setTop(connectionPoint.getCenterTop());
-			if (!sectionHorizontal) {
-				cornerPoints.get(0).setLeft(startEndPoint.getLeft());
-			} else {
-				cornerPoints.get(0).setTop(startEndPoint.getTop());
-			}
-		}
-
-		if ( ( (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM ||
-				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_TOP) ) &&
-				!sectionHorizontal) {
-			drawSections(cornerPoints);
-			return false;
-		} else if ( ( (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_LEFT ||
-				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) ) &&
-				sectionHorizontal) {
-			drawSections(cornerPoints);
-			return false;
-		}
-
-		//Last or first cornerPont, depends on endPoint place (start or end of Connector)
-		CornerPoint extremeCorner = null;
-		
-		//New cornerPoint which is added to make last section perpendicular to shape
-		CornerPoint newCornerPoint = null;
-		
-		//Creating new CornerPoint
-		if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_LEFT ||
-				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) {
-			//Horizontal
-			if (last) {
-				extremeCorner = cornerPoints.get(cornerPoints.size() - 1);
-			} else {
-				extremeCorner = cornerPoints.get(0);
-			}
-
-			if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) {
-				extremeCorner.setLeft(extremeCorner.getLeft() + sectionMargin);
-			} else {
-				extremeCorner.setLeft(extremeCorner.getLeft() - sectionMargin);
-			}
-
-			if (last) {
-				newCornerPoint = new CornerPoint(extremeCorner.getLeft(), endEndPoint.getTop());
-			} else {
-				newCornerPoint = new CornerPoint(extremeCorner.getLeft(), startEndPoint.getTop());	
-			}
-		} else if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM ||
-				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_TOP) {
-			//Vertical
-			if (last) {
-				extremeCorner = cornerPoints.get(cornerPoints.size() - 1);
-			} else {
-				extremeCorner = cornerPoints.get(0);
-			}
-			if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM) {
-				extremeCorner.setTop(extremeCorner.getTop() + sectionMargin);
-			} else {
-				extremeCorner.setTop(extremeCorner.getTop() - sectionMargin);
-			}
-			if (last) {
-				newCornerPoint = new CornerPoint(endEndPoint.getLeft(), extremeCorner.getTop());
-			} else {
-				newCornerPoint = new CornerPoint(startEndPoint.getLeft(), extremeCorner.getTop());	
-			}
-		} else {
-			
-		}
-				
-		if (newCornerPoint != null) {
-			if (last) {
-				cornerPoints.add(newCornerPoint);
-			} else {
-				cornerPoints.add(0, newCornerPoint);	
-			}	
-		}		
-		
-		drawSections(cornerPoints);
-		return true;
+  		List<CornerPoint> cornerPoints = getCorners(sections);
+  		ConnectionPoint connectionPoint = endPoint.gluedConnectionPoint;
+  	
+  		//Connect element to the center of connection point
+  		if (last) {
+  			endEndPoint.setLeft(connectionPoint.getCenterLeft());
+  			endEndPoint.setTop(connectionPoint.getCenterTop());
+  			if (!sectionHorizontal) {
+  				cornerPoints.get(cornerPoints.size() - 1).setLeft(endEndPoint.getLeft());
+  			} else {
+  				cornerPoints.get(cornerPoints.size() - 1).setTop(endEndPoint.getTop());
+  			}
+  		} else {
+  			startEndPoint.setLeft(connectionPoint.getCenterLeft());
+  			startEndPoint.setTop(connectionPoint.getCenterTop());
+  			if (!sectionHorizontal) {
+  				cornerPoints.get(0).setLeft(startEndPoint.getLeft());
+  			} else {
+  				cornerPoints.get(0).setTop(startEndPoint.getTop());
+  			}
+  		}
+  
+  		if ( ( (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM ||
+  				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_TOP) ) &&
+  				!sectionHorizontal) {
+  			drawSections(cornerPoints);
+  			return false;
+  		} else if ( ( (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_LEFT ||
+  				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) ) &&
+  				sectionHorizontal) {
+  			drawSections(cornerPoints);
+  			return false;
+  		}
+  
+  		//Last or first cornerPont, depends on endPoint place (start or end of Connector)
+  		CornerPoint extremeCorner = null;
+  		
+  		//New cornerPoint which is added to make last section perpendicular to shape
+  		CornerPoint newCornerPoint = null;
+  		
+  		//Creating new CornerPoint
+  		if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_LEFT ||
+  				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) {
+  			//Horizontal
+  			if (last) {
+  				extremeCorner = cornerPoints.get(cornerPoints.size() - 1);
+  			} else {
+  				extremeCorner = cornerPoints.get(0);
+  			}
+  
+  			if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) {
+  				extremeCorner.setLeft(extremeCorner.getLeft() + sectionMargin);
+  			} else {
+  				extremeCorner.setLeft(extremeCorner.getLeft() - sectionMargin);
+  			}
+  
+  			if (last) {
+  				newCornerPoint = new CornerPoint(extremeCorner.getLeft(), endEndPoint.getTop());
+  			} else {
+  				newCornerPoint = new CornerPoint(extremeCorner.getLeft(), startEndPoint.getTop());	
+  			}
+  		} else if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM ||
+  				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_TOP) {
+  			//Vertical
+  			if (last) {
+  				extremeCorner = cornerPoints.get(cornerPoints.size() - 1);
+  			} else {
+  				extremeCorner = cornerPoints.get(0);
+  			}
+  			if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM) {
+  				extremeCorner.setTop(extremeCorner.getTop() + sectionMargin);
+  			} else {
+  				extremeCorner.setTop(extremeCorner.getTop() - sectionMargin);
+  			}
+  			if (last) {
+  				newCornerPoint = new CornerPoint(endEndPoint.getLeft(), extremeCorner.getTop());
+  			} else {
+  				newCornerPoint = new CornerPoint(startEndPoint.getLeft(), extremeCorner.getTop());	
+  			}
+  		}
+  				
+  		if (newCornerPoint != null) {
+  			if (last) {
+  				cornerPoints.add(newCornerPoint);
+  			} else {
+  				cornerPoints.add(0, newCornerPoint);	
+  			}	
+  		}		
+  		
+  		drawSections(cornerPoints);
+  		return true;
 		} catch (Exception e) {
-			LOG.e("", e);
+			LOG.log(Level.SEVERE, "Unexpected exception", e);
 			return false;
 		}
 	}
@@ -544,11 +543,11 @@ public class Connector {
 	 * @return
 	 */
 	public List<CornerPoint> getCorners(List<Section> sectionList) {
-		
 		List<CornerPoint> retList = new ArrayList<CornerPoint>();
 		for (int i = 0 ; i < sectionList.size() - 1 ; i++) {
 			retList.add(new CornerPoint(sectionList.get(i).endPoint.getLeft(), sectionList.get(i).endPoint.getTop()));
 		}
+		
 		return retList;
 	}
 	
@@ -557,24 +556,21 @@ public class Connector {
 	 * @return
 	 */
 	public List<CornerPoint> getCorners() {
-		
 		return getCorners(sections);
 	}
 	
 	public void drawSections(List<CornerPoint> cp, EndPoint startEndPoint, EndPoint endEndPoint) {
-		
 		this.startEndPoint = startEndPoint;
 		this.endEndPoint = endEndPoint;
+		
 		drawSections(cp);
 	}
 	
 	public void drawSections() {
-		
 		drawSections(cornerPoints);
 	}
 	
 	public void drawSections(List<CornerPoint> cp) {
-		
 		drawSections(cp, false);
 	}
 	
@@ -584,7 +580,6 @@ public class Connector {
 	 * @param cp list of {@link CornerPoint} containing {@link Connector} shape
 	 */
 	public void drawSections(List<CornerPoint> cp, boolean isSelected) {
-		
 		this.cornerPoints = (ArrayList<CornerPoint>) cp;
 		//logCornerPointsData();
 	
@@ -593,36 +588,41 @@ public class Connector {
 			  //LOG.i(section.toDebugString());
 				section.removeFromDiagram();
 			}
+			
 			sections.clear();
 			//LOG.i(cp.size()+" - size");
-  			Section startSection = new Section(startEndPoint, cp.get(0), this);
-  			if (this.startPointDecoration != null) {
-  				startSection.startPointDecoration = startPointDecoration;
-  			}
-  			sections.add(startSection);
-  			for (int i = 0; i < cp.size()-1; i++) {
-  				sections.add(new Section(cp.get(i), cp.get(i+1), this));
-  			}
-  			Section endSection = new Section(cp.get(cp.size()-1), endEndPoint, this);
-  			if (this.endPointDecoration != null) {
-  				endSection.endPointDecoration = this.endPointDecoration;
-  			}
-  			sections.add(endSection);
+      Section startSection = new Section(startEndPoint, cp.get(0), this);
+      if (this.startPointDecoration != null) {
+        startSection.startPointDecoration = startPointDecoration;
+      }
+      sections.add(startSection);
+      
+      for (int i = 0; i < cp.size() - 1; i++) {
+        sections.add(new Section(cp.get(i), cp.get(i + 1), this));
+      }
+      
+      Section endSection = new Section(cp.get(cp.size() - 1), endEndPoint, this);
+      if (this.endPointDecoration != null) {
+        endSection.endPointDecoration = this.endPointDecoration;
+      }
+      sections.add(endSection);
+      
 			for (Section section : sections) {
 				section.showOnDiagram(diagram, isSelected);
 			}
+			
 			refreshCursorStyles();
 		} catch (IllegalArgumentException e) {
 			this.calculateStandardPointsPositions();
-			LOG.i("Section must be horizontal or vertical, calculating standard connection points");
+			LOG.log(Level.SEVERE, "Section must be horizontal or vertical, calculating standard connection points", e);
 			//TODO Do this more gentle
 			drawSections(cornerPoints);
 		}
 	}
 	
-
 	public void select() {
 		this.isSelected = true;
+		
 		for (Section section : sections) {
 			section.select();
 		}
@@ -630,6 +630,7 @@ public class Connector {
 	
 	public void deselect() {
 		this.isSelected = false;
+		
 		for (Section section : sections) {
 			section.deselect();
 		}
@@ -644,36 +645,40 @@ public class Connector {
 	 * @return
 	 */
 	public boolean mergeTwoLastSections(Section endSection, List<CornerPoint> cornerPoints) {
-
 		int connDirection = this.endEndPoint.gluedConnectionPoint.connectionDirection;
+		
 		if (!this.endEndPoint.isGluedToConnectionPoint() || endSection.getLength() > lastSectionTolerance || this.sections.size() < 2 || cornerPoints.size() < 2) {
 			return false;
 		}
 		
 		CornerPoint beforeLast = cornerPoints.get(cornerPoints.size() - 2);
-		
 		CornerPoint newCorner = null;
+		
 		switch (connDirection) {
 		case 1:
 			if (endSection.isHorizontal()) {
 				newCorner = new CornerPoint(endSection.endPoint.getLeft(), beforeLast.getTop());
 			}
 			break;
+			
 		case 2:
 			if (endSection.isVertical()) {
 				newCorner = new CornerPoint(beforeLast.getLeft(), endSection.endPoint.getTop());
 			}
 			break;
+			
 		case 3:
 			if (endSection.isHorizontal()) {
 				newCorner = new CornerPoint(endSection.endPoint.getLeft(), beforeLast.getTop());
 			}
 			break;
+			
 		case 4:
 			if (endSection.isVertical()) {
 				newCorner = new CornerPoint(beforeLast.getLeft(), endSection.endPoint.getTop());
 			}
 			break;
+			
 		}	
 		if (newCorner != null) {
 			cornerPoints.remove(cornerPoints.size() - 1);
@@ -682,8 +687,9 @@ public class Connector {
 			drawSections(cornerPoints);
 			return true;
 		} else {
-			LOG.d("New corner is null");
+			LOG.severe("New corner is null");
 		}
+		
 		return false;
 	}
 		
@@ -696,8 +702,8 @@ public class Connector {
 	 * @return
 	 */
 	public boolean mergeTwoFirstSections(Section startSection, List<CornerPoint> cornerPoints) {
-		
 		int connDirection = this.startEndPoint.gluedConnectionPoint.connectionDirection;
+		
 		if (!this.startEndPoint.isGluedToConnectionPoint() || startSection.getLength() > lastSectionTolerance || this.sections.size() < 2 || cornerPoints.size() < 2) {
 			return false;
 		}
@@ -711,22 +717,26 @@ public class Connector {
 				newCorner = new CornerPoint(startSection.startPoint.getLeft(), second.getTop());
 			}
 			break;
+			
 		case 2:
 			if (startSection.isVertical()) {
 				newCorner = new CornerPoint(second.getLeft(), startSection.startPoint.getTop());
 			}
 			break;
+			
 		case 3:
 			if (startSection.isHorizontal()) {
 				newCorner = new CornerPoint(startSection.startPoint.getLeft(), second.getTop());
 			}
 			break;
+			
 		case 4:
 			if (startSection.isVertical()) {
 				newCorner = new CornerPoint(second.getLeft(), startSection.startPoint.getTop());
 			}
 			break;
-		}	
+		}
+		
 		if (newCorner != null) {
 			cornerPoints.remove(0);
 			cornerPoints.remove(0);
@@ -734,6 +744,7 @@ public class Connector {
 			drawSections(cornerPoints);
 			return true;
 		}
+		
 		return false;
 	}
 	
@@ -742,48 +753,52 @@ public class Connector {
 	 * @return true, if some sections were merged
 	 */
 	public boolean fixSections() {
-		
 		try {
 			if (!fixOverlapSections()) {
 				fixLineSections(cornerPoints);
 				drawSections(cornerPoints);
 			}
-
 		} catch (Exception e) {
-			LOG.e("fixSections error :", e);
+			LOG.log(Level.SEVERE, "fixSections error :", e);
 		}
+		
 		return true;
 	}
 	
 	public void logCornerPointsData() {
-		LOG.d("Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
+		LOG.info("Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
+		
 		if (cornerPoints != null && cornerPoints.size() != 0) {
 			for (CornerPoint cp : cornerPoints) {
-				LOG.d("CornerPoint top:" + cp.getTop() + " left:" + cp.getLeft());
+				LOG.info("CornerPoint top:" + cp.getTop() + " left:" + cp.getLeft());
 			}
 		}
-		LOG.d("End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
+		
+		LOG.info("End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
 	}
 	
 	public void logCornerPointsData(List<CornerPoint> corners) {
-		LOG.d("Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
+		LOG.info("Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
+		
 		if (corners != null && corners.size() != 0) {
 			for (CornerPoint cp : corners) {
-				LOG.d("CornerPoint top:" + cp.getTop() + " left:" + cp.getLeft());
+				LOG.info("CornerPoint top:" + cp.getTop() + " left:" + cp.getLeft());
 			}
 		}
-		LOG.d("End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
+		
+		LOG.info("End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
 	}
 	
 	public void logSectionData() {
+		LOG.info("Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
 		
-		LOG.d("Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
 		if (sections != null && sections.size() != 0) {
 			for (int i = 0 ; i < sections.size() - 1 ; i++) {
-				LOG.d("Section top:" + sections.get(i).endPoint.getTop() + " left:" + sections.get(i).endPoint.getLeft());
+				LOG.info("Section top:" + sections.get(i).endPoint.getTop() + " left:" + sections.get(i).endPoint.getLeft());
 			}
 		}
-		LOG.d("End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
+		
+		LOG.info("End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
 	}
 	
 	/**
@@ -804,7 +819,6 @@ public class Connector {
 		List<CornerPoint> toRemove = new ArrayList<CornerPoint>();
 		//fix corners that are in one exact line 
 		for (int i = 1 ; i < corners.size() - 1 ; i++) {
-
 			if (corners.get(i).getLeft().intValue() == corners.get(i + 1).getLeft() && 
 					corners.get(i).getLeft().intValue() == corners.get(i - 1).getLeft()) {
 				toRemove.add(corners.get(i));
@@ -819,6 +833,7 @@ public class Connector {
 		}
 		
 		boolean allCornersChecked = false;
+		
 		while (!allCornersChecked && corners.size() > 4) {
 			toRemove = new ArrayList<CornerPoint>();
 			boolean findShortSection = true;
@@ -837,7 +852,7 @@ public class Connector {
 						toChange = corners.get(i - 2);
 						nextToChanged = corners.get(i + 1);
 					} else {
-						LOG.w("No condition was meet");
+						LOG.severe("No condition was meet");
 						doProceed = false;
 					}
 
@@ -859,7 +874,7 @@ public class Connector {
 				i++;
 			}
 			for (CornerPoint removed : toRemove) {
-				LOG.i("Remove corner point number :" + corners.indexOf(removed) + " with data : " + removed.toDebugString());
+				LOG.info("Remove corner point number :" + corners.indexOf(removed) + " with data : " + removed.toDebugString());
 				corners.remove(removed);
 			}
 			
@@ -902,8 +917,10 @@ public class Connector {
 	 * @return 
 	 */
 	public boolean fixOverlapSections(List<CornerPoint> corners) {
-		LOG.i("------------fixOverlapSections----------------");
+		LOG.info("------------fixOverlapSections----------------");
+		
 		boolean result = false;
+		
 		for (Shape shape : diagram.shapes) {
 		  List<Section> overlapSections = shape.overlapSections(this);
 		  if (overlapSections.size() != 0) {
@@ -911,7 +928,8 @@ public class Connector {
 		    evadeShape(shape, overlapSections, corners);
 		  }
 		}
-		LOG.i("------------fixOverlapSections  -  end ----------------");
+		
+		LOG.info("------------fixOverlapSections  -  end ----------------");
 		return result;
 	}
 	
@@ -921,7 +939,6 @@ public class Connector {
 	 * @param overlapSections {@link Section}s which overlap given {@link Section}s
 	 */
 	void evadeShape(Shape shape, List<Section> overlapSections, List<CornerPoint> corners) {
-		
 	  if (shape.isEnableOverlap()) {
 	    return;
 	  }
@@ -978,6 +995,7 @@ public class Connector {
 				shapeLeaveDirection = 3;
 			}
 		}
+		
 		/*
 		 * define which way from start section to the end section is shorter : clockwise or not
 		 * 0 - clockwise
@@ -1094,8 +1112,8 @@ public class Connector {
 		proceed = true;
 		CornerPoint tempCorner = null;
 		List<CornerPoint> middleCorners = new ArrayList<CornerPoint>();
+		
 		while (i != shapeLeaveDirection) {
-
 			if (direction == 0) {
 				i++;
 				if (i == 4) {
@@ -1106,46 +1124,48 @@ public class Connector {
 				if (i == -1) {
 					i = 3;
 				}
-			}		
+			}
+			
 			switch (i) {
-			case 0 : 
-				if (direction == 0) {
-					tempCorner = new CornerPoint(shapeLeft, shapeBottom);
-				} else {
-					tempCorner = new CornerPoint(shapeLeft, shapeTop);
-				}
-				break;
-			case 1 : 
-				if (direction == 0) {
-					tempCorner = new CornerPoint(shapeLeft, shapeTop);
-				} else {
-					tempCorner = new CornerPoint(shapeRight, shapeTop);
-				}
-				break;
-			case 2 :
-				if (direction == 0) {
-					tempCorner = new CornerPoint(shapeRight, shapeTop);
-				} else {
-					tempCorner = new CornerPoint(shapeRight, shapeBottom);
-				}
-				break;
-			case 3 :
-				if (direction == 0) {
-					tempCorner = new CornerPoint(shapeRight, shapeBottom);
-				} else {
-					tempCorner = new CornerPoint(shapeLeft, shapeBottom);
-				}
-				break;
+  			case 0 : 
+  				if (direction == 0) {
+  					tempCorner = new CornerPoint(shapeLeft, shapeBottom);
+  				} else {
+  					tempCorner = new CornerPoint(shapeLeft, shapeTop);
+  				}
+  				break;
+  				
+  			case 1 : 
+  				if (direction == 0) {
+  					tempCorner = new CornerPoint(shapeLeft, shapeTop);
+  				} else {
+  					tempCorner = new CornerPoint(shapeRight, shapeTop);
+  				}
+  				break;
+  				
+  			case 2 :
+  				if (direction == 0) {
+  					tempCorner = new CornerPoint(shapeRight, shapeTop);
+  				} else {
+  					tempCorner = new CornerPoint(shapeRight, shapeBottom);
+  				}
+  				break;
+  				
+  			case 3 :
+  				if (direction == 0) {
+  					tempCorner = new CornerPoint(shapeRight, shapeBottom);
+  				} else {
+  					tempCorner = new CornerPoint(shapeLeft, shapeBottom);
+  				}
+  				break;
 			}
 			middleCorners.add(tempCorner);
 		}
 		
 		//add startEndPoint and endEndPoint to corners, for easier defining 
 		//insert position
-		CornerPoint firstSectionStart = new CornerPoint(
-				first.startPoint.getLeft(), first.startPoint.getTop());
-		CornerPoint lastSectionEnd = new CornerPoint(
-				last.endPoint.getLeft(), last.endPoint.getTop());
+		CornerPoint firstSectionStart = new CornerPoint(first.startPoint.getLeft(), first.startPoint.getTop());
+		CornerPoint lastSectionEnd = new CornerPoint(last.endPoint.getLeft(), last.endPoint.getTop());
 		boolean addToRemove = false;
 		
 		//Index in cornerpoints list after which new corner points will be inserted
@@ -1153,12 +1173,9 @@ public class Connector {
 
 		List<CornerPoint> toRemove = new ArrayList<CornerPoint>();
 		
-		CornerPoint startEndPointCorner = new CornerPoint(
-				this.startEndPoint.getLeft().intValue(), 
-				this.startEndPoint.getTop().intValue());
-		CornerPoint endEndPointCorner = new CornerPoint(
-				this.endEndPoint.getLeft().intValue(), 
-				this.endEndPoint.getTop().intValue());
+		CornerPoint startEndPointCorner = new CornerPoint(this.startEndPoint.getLeft().intValue(), this.startEndPoint.getTop().intValue());
+		CornerPoint endEndPointCorner = new CornerPoint(this.endEndPoint.getLeft().intValue(), this.endEndPoint.getTop().intValue());
+		
 		corners.add(0, startEndPointCorner);
 		corners.add(endEndPointCorner);
 		
@@ -1168,9 +1185,11 @@ public class Connector {
 			if (corners.get(j).compareTo(lastSectionEnd) == 0) {
 				addToRemove = false;
 			}
+			
 			if (addToRemove) {
 				toRemove.add(corners.get(j));
 			}
+			
 			if (corners.get(j).compareTo(firstSectionStart) == 0) {
 				addToRemove = true;
 				insertIndex = j;
@@ -1182,15 +1201,17 @@ public class Connector {
 		}
 		
 		if (insertIndex == corners.size() - 1) {
-			LOG.i("insertIndex == corners.size() - 1");
+			LOG.info("insertIndex == corners.size() - 1");
 			corners.add(startCorner);
+			
 			for (CornerPoint added : middleCorners) {
 				corners.add(added);
 			}
 			corners.add(endCorner);
 		} else {
-			LOG.i("insertIndex != corners.size() - 1");
+			LOG.info("insertIndex != corners.size() - 1");
 			corners.add(insertIndex + 1, endCorner);
+			
 			for (int j = middleCorners.size() - 1 ; j >= 0 ; j--) {
 				corners.add(insertIndex + 1, middleCorners.get(j));
 			}
@@ -1200,12 +1221,11 @@ public class Connector {
 		//remove startEndPoint and endEndPoint from corner points list
 		corners.remove(startEndPointCorner);
 		corners.remove(endEndPointCorner);
-		
 	}
 	
 	public void rememberSectionsPositions() {
-		
 		savedSectionsData = new ArrayList<SectionData>();
+		
 		for (Section section : sections) {
 			savedSectionsData.add(new SectionData(
 					section.startPoint.getLeft().intValue(), 
@@ -1222,7 +1242,6 @@ public class Connector {
 	 * @param yOffset
 	 */
 	public void moveOffsetFromStartPos(int xOffset, int yOffset) {
-		
 		xOffset = xOffset - diagram.boundaryPanel.getAbsoluteLeft();
 		yOffset = yOffset - diagram.boundaryPanel.getAbsoluteTop();
 		
@@ -1257,13 +1276,11 @@ public class Connector {
 						sections.get(i).endPoint.getLeft(), sections.get(i).endPoint.getTop());
 			}
 		}
-		
 	}
 	
 	public boolean isOnThisConnector(Point point) {
-		
 		for (Section section : sections) {
-			if (	( (point.getLeft() >= section.startPoint.getLeft() && point.getLeft() <= section.endPoint.getLeft()) ||
+			if (( (point.getLeft() >= section.startPoint.getLeft() && point.getLeft() <= section.endPoint.getLeft()) ||
 					  (point.getLeft() <= section.startPoint.getLeft() && point.getLeft() >= section.endPoint.getLeft())
 					) &&
 					( (point.getTop() >= section.startPoint.getTop() && point.getTop() <= section.endPoint.getTop()) ||
@@ -1273,6 +1290,7 @@ public class Connector {
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	

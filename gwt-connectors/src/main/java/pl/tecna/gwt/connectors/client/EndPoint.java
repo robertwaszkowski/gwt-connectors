@@ -3,8 +3,6 @@ package pl.tecna.gwt.connectors.client;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.EndPointConnectEvent;
-import pl.tecna.gwt.connectors.client.util.Log;
-import pl.tecna.gwt.connectors.client.util.Logger;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -12,9 +10,6 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class EndPoint extends Point {
 
-	@SuppressWarnings("unused")
-	private final Logger LOG = new Logger("EndPoint");
-	
 	public ConnectionPoint gluedConnectionPoint;
 	public Connector connector;
 	boolean gluedToConnectionPoint;

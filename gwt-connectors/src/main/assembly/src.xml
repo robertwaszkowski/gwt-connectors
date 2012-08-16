@@ -1,0 +1,15 @@
+<assembly>
+	<id>sources</id>
+	<formats>
+		<format>dir</format>
+	</formats>
+	<moduleSets>
+	</moduleSets>
+
+	<fileSets>
+		<fileSet>
+			<directory>${basedir}/src/main/java</directory>
+			<outputDirectory>/source</outputDirectory>
+		</fileSet>			
+	</fileSets>
+</assembly>

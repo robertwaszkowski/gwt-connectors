@@ -22,6 +22,14 @@
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/client/**</include>
+					<include>**/shared/**</include>
+					<include>**/*.gwt.xml</include>
+				</includes>
+			</resource>
 		</resources>
 		
 		<plugins>
@@ -33,20 +41,6 @@
 					<target>1.5</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

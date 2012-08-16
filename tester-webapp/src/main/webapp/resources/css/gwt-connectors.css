@@ -1,0 +1,59 @@
+.gwt-connectors-line {
+  font-size: 1px;
+  line-height:1px;
+  background-color: gray
+}
+
+.gwt-connectors-line-vertical {
+  width:2px
+}
+
+.gwt-connectors-line-horizontal {
+  height:2px
+}
+
+.gwt-connectors-line-selected {
+  font-size: 1px;
+  line-height:1px;
+  background-color: DodgerBlue
+}
+
+.dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {
+	/* filter: alpha(opacity =     30); */
+	/* opacity: 0.3; */
+}
+
+.dragdrop-positioner {
+	border: none;
+	margin: 0px !important;
+}
+
+.gwt-connectors-widget-padding-selected {
+	padding: 10px !important;
+}
+
+.gwt-connectors-widget-padding-unselected {
+	padding: 13px !important;
+}
+
+.gwt-connectors-shape-selected {
+	border-radius: 10px;
+	border: 3px solid #00BFFF;
+	border: 3px solid rgba(0,191,255, 0.3);
+}
+
+.gwt-connectors-shape-unselected {
+	padding: 3px;
+}
+
+.gwt-connectors-selection-panel {
+	border: 3px solid #DCDCDC;
+	border: 3px solid rgba(220,220,220, 0.3);
+}
+.x-unselectable{
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: ignore;
+	user-select:none;
+}
+	

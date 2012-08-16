@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<module>
+
+	<!-- Specify the app entry point class.                   -->
+	<entry-point class='pl.tecna.gwt.connectors.example.client.Example'/>
+
+  	<script src="js/lang_detect_ext.js"/>
+  	<script src="js/options.js"/>
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+	<inherits name="com.google.gwt.user.User"/>
+	<inherits name='com.google.gwt.core.Core'/>
+	<inherits name="com.google.gwt.http.HTTP"/>
+	<inherits name="com.google.gwt.jsonp.Jsonp"/>
+	<!-- Inherit the GWT RPC subsystem.                       -->
+	<inherits name="com.google.gwt.rpc.RPC"/>
+	
+	
+	<!-- Inherit the gwt-connectors library configuration.	  -->
+   	<inherits name="pl.tecna.gwt.connectors.connectors"/>
+	
+	<!-- Inherit the Aurea Common library configuration.	  
+   	<inherits name="com.tecna.aurea.common.aurea-common"/> -->
+   	
+   	<!-- Inherit the Aurea Toolkit library configuration.	  
+   	<inherits name="com.tecna.aurea.toolkit.aurea-toolkit"/> -->
+	
+
+	<!-- Inherit the logging system -->
+	<inherits name='com.google.gwt.logging.Logging' />
+	<set-property name='gwt.logging.logLevel' value='ALL' /> 
+	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
+	
+	<!-- Inherit the logging system 
+	<set-property name="gwt.logging.popupHandler" value="DISABLED"/>
+	-->
+	
+	<!-- Inherit gwt-dnd library for drag'n'drop support -->
+	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
+    
+
+	<!-- image resource -->
+	<inherits name="com.google.gwt.resources.Resources" />
+</module>

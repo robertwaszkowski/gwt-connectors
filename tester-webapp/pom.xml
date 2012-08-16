@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>pl.tecna</groupId>
+	<artifactId>gwt-connectors-tester</artifactId>
+	<packaging>war</packaging>
+	<version>1.0-SNAPSHOT</version>
+	
+	<name>GWT Connectors</name>
+
+	<properties>
+		<gwt.version>2.4.0</gwt.version>
+		
+		<plugin.gwt.version>2.4.0</plugin.gwt.version>
+		
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>${plugin.gwt.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<extraJvmArgs>-Xmx1024M -Xms512M -Xss4M</extraJvmArgs>
+					<logLevel>WARN</logLevel>
+					<runTarget>/</runTarget>
+					<module>pl.tecna.gwt.connectors.example.Example</module>
+					<hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>copy-resources-war</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/webapp/</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- DEPENDENCIES SECTION -->
+	<dependencies>
+		<dependency>
+			<groupId>pl.tecna.gwt</groupId>
+			<artifactId>gwt-connectors</artifactId>
+			<version>2.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>pl.tecna.gwt</groupId>
+			<artifactId>gwt-connectors</artifactId>
+			<version>2.2</version>
+			<classifier>sources</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<!-- REPOSITORIES SECTION -->
+	<repositories>
+	</repositories>
+
+</project>

@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>pl.tecna</groupId>
+	<groupId>pl.tecna.gwt</groupId>
 	<artifactId>gwt-connectors</artifactId>
 	<packaging>jar</packaging>
 	<version>2.2</version>
@@ -13,100 +13,8 @@
 	<properties>
 		<gwt.version>2.4.0</gwt.version>
 		
-		<plugin.gwt.version>2.4.0</plugin.gwt.version>
-		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<profiles>
-		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-				<property>
-					<name>con</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<version>${plugin.gwt.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>compile</goal>
-									<goal>test</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<extraJvmArgs>-Xmx1024M -Xms512M -Xss4M</extraJvmArgs>
-							<logLevel>WARN</logLevel>
-							<runTarget>Connectors.html</runTarget>
-							<module>pl.tecna.gwt.connectors.example.Example</module>
-							<hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
-							<style>${gwt.outputstyle}</style>
-							<disableCastChecking>${gwt.xdisable}</disableCastChecking>
-							<disableClassMetadata>${gwt.xdisable}</disableClassMetadata>
-						</configuration>
-					</plugin>
-
-					<plugin>
-						<artifactId>maven-resources-plugin</artifactId>
-						<configuration>
-							<encoding>UTF-8</encoding>
-						</configuration>
-						<version>2.4</version>
-						<executions>
-							<execution>
-								<id>copy-resources-war</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/main/webapp/</directory>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<version>2.0.2</version>
-						<configuration>
-							<warSourceExcludes>WEB-INF/lib/servlet-api*.jar </warSourceExcludes>
-							<webXml>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</webXml>
-							<useDefaultManifestFile>true</useDefaultManifestFile>
-							<archive>
-								<manifestEntries>
-									<Build-Time>${buildNumber}</Build-Time>
-									<Version>${project.version}</Version>
-								</manifestEntries>
-							</archive>
-						</configuration>
-					</plugin>
-
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>prod</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-	</profiles>
 
 	<build>
 		<resources>

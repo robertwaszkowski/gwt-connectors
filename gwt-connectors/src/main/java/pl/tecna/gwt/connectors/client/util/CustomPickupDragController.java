@@ -29,7 +29,7 @@ public class CustomPickupDragController extends PickupDragController {
 	public void makeDraggable(Widget draggable, Widget dragHandle) {
 
 		if (!(draggable instanceof Shape)) {
-			draggable.addStyleName("gwt-connectors-widget-padding-unselected");
+		  draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
 		}
 		dragableWidgets.add(draggable);
 		super.makeDraggable(draggable, dragHandle);

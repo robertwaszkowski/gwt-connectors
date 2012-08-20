@@ -16,6 +16,7 @@ import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.DiagramEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ShapeMoveEvent;
+import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import pl.tecna.gwt.connectors.client.util.CustomPickupDragController;
 import pl.tecna.gwt.connectors.client.util.Position;
 
@@ -190,11 +191,12 @@ public class Diagram {
         deselectAllSections();
         for (Iterator<Widget> iterator = context.selectedWidgets.iterator(); iterator.hasNext();) {
           Widget widget = iterator.next();
-          widget.addStyleName("gwt-connectors-shape-unselected");
-          widget.removeStyleName("gwt-connectors-shape-selected");
+          
+          widget.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
+          widget.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
           if (!(widget instanceof Shape)) {
-            widget.addStyleName("gwt-connectors-widget-padding-unselected");
-            widget.removeStyleName("gwt-connectors-widget-padding-selected");
+            widget.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
+            widget.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
           }
           iterator.remove();
         }
@@ -208,19 +210,19 @@ public class Diagram {
         }
         assert draggable != null;
         if (context.selectedWidgets.remove(draggable)) {
-          draggable.addStyleName("gwt-connectors-shape-unselected");
-          draggable.removeStyleName("gwt-connectors-shape-selected");
+          draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
+          draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
           if (!(draggable instanceof Shape)) {
-            draggable.addStyleName("gwt-connectors-widget-padding-unselected");
-            draggable.removeStyleName("gwt-connectors-widget-padding-selected");
+            draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
+            draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
           }
         } else {
           context.selectedWidgets.add(draggable);
-          draggable.removeStyleName("gwt-connectors-shape-unselected");
-          draggable.addStyleName("gwt-connectors-shape-selected");
+          draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
+          draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
           if (!(draggable instanceof Shape)) {
-            draggable.removeStyleName("gwt-connectors-widget-padding-unselected");
-            draggable.addStyleName("gwt-connectors-widget-padding-selected");
+            draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
+            draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
           }
         }
 
@@ -535,7 +537,6 @@ public class Diagram {
     try {
       return (Shape) connector.startEndPoint.gluedConnectionPoint.getParent().getParent();
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, "Connector don't have start point connected", e);
       return null;
     }
   }
@@ -544,7 +545,6 @@ public class Diagram {
     try {
       return (Shape) connector.endEndPoint.gluedConnectionPoint.getParent().getParent();
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, "Connector don't have end point connected", e);
       return null;
     }
   }

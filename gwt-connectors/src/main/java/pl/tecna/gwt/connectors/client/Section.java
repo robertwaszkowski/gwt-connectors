@@ -10,6 +10,7 @@ import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ElementAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.listeners.change.ShapeMoveEvent;
+import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import pl.tecna.gwt.connectors.client.util.Position;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
@@ -48,7 +49,7 @@ public class Section extends HTML {
 	public int savedOrientation;
 
 	private AxisXYDragController sectionDragController;
-
+	
 	/**
 	 * Section represents vertical or horizontal part of {@link Connector}. 
 	 *
@@ -516,23 +517,27 @@ public class Section extends HTML {
 	}
 
 	private String verticalLine(int height) {
-		return "<div class=\"gwt-connectors-line gwt-connectors-line-vertical\"" +
-		" style=\"height:" + (height) + "px\">&nbsp;</div>";
+	  return "<div class=\"" + ConnectorsClientBundle.INSTANCE.css().line() + " " +
+	  ConnectorsClientBundle.INSTANCE.css().lineVertical() +"\"" +
+	      " style=\"height:" + (height) + "px\">&nbsp;</div>";
 	}
 
 	private String horizontalLine(int width) {
-		return	"<div class=\"gwt-connectors-line gwt-connectors-line-horizontal\"" + 
-		        " style=\"width:" + (width) + "px\">&nbsp;</div>";
+		return	"<div class=\"" + ConnectorsClientBundle.INSTANCE.css().line() + " " +
+		ConnectorsClientBundle.INSTANCE.css().lineHorizontal() + "\"" + 
+		    " style=\"width:" + (width) + "px\">&nbsp;</div>";
 	}
 	
 	private String selectedVerticalLine(int height) {
-		return "<div class=\"gwt-connectors-line-selected gwt-connectors-line-vertical\"" +
-		" style=\"height:" + (height) + "px\">&nbsp;</div>";
+		return "<div class=\"" + ConnectorsClientBundle.INSTANCE.css().lineSelected() + " " +
+		ConnectorsClientBundle.INSTANCE.css().lineVertical() + "\"" +
+		    " style=\"height:" + (height) + "px\">&nbsp;</div>";
 	}
 	
 	private String selectedHorizontalLine(int width) {
-		return	"<div class=\"gwt-connectors-line-selected gwt-connectors-line-horizontal\"" + 
-		        " style=\"width:" + (width) + "px\">&nbsp;</div>";
+		return	"<div class=\"" + ConnectorsClientBundle.INSTANCE.css().lineSelected() + " " +
+		ConnectorsClientBundle.INSTANCE.css().lineHorizontal() + "\"" + 
+		    " style=\"width:" + (width) + "px\">&nbsp;</div>";
 	}
 	
 

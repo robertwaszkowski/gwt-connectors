@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.drop.DiagramWidgetDropController;
+import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -76,7 +77,7 @@ public class Shape extends FocusPanel{
   public Shape(Widget w, CPShapeType cpShapeType) {
     this.connectedWidget = w;
     this.cpShapeType = cpShapeType;
-    this.setStylePrimaryName("gwt-connectors-shape-unselected");
+    this.setStylePrimaryName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
   }
 
   public void showOnDiagram(final Diagram diagram) {

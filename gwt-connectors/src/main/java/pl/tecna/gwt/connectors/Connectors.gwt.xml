@@ -1,0 +1,9 @@
+<module>
+	<!-- Inherit gwt-dnd support                   -->
+    <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
+    
+    <entry-point class="pl.tecna.gwt.connectors.client.util.ConnectorsEntryPoint" />
+    
+    <source path="client"/>
+	<source path="shared"/>
+</module>

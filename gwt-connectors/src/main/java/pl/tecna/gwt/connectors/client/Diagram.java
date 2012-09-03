@@ -53,6 +53,7 @@ public class Diagram {
 
   private List<DiagramListener> listeners;
   private DiagramModeListener modeListener;
+  private boolean enableEvents;
 
   public CustomPickupDragController shapeDragController;
   public PickupDragController endPointDragController;
@@ -170,7 +171,7 @@ public class Diagram {
             deleteSelectedElements();
           }
 
-        }
+        }   
         isCtrlPressed = e.getCtrlKey();
       }
     });
@@ -583,14 +584,18 @@ public class Diagram {
   }
 
   public void onConnectorClick(Connector connectorClicked) {
-    for (DiagramListener listener : listeners) {
-      listener.onConnectorClick(connectorClicked);
+    if (isEnableEvents()) {
+      for (DiagramListener listener : listeners) {
+        listener.onConnectorClick(connectorClicked);
+      }
     }
   }
 
   public void onDiagramChanged(DiagramChangeEvent type, DiagramEvent event) {
-    for (DiagramListener listener : listeners) {
-      listener.onDiagramChanged(type, event);
+    if (isEnableEvents()) {
+      for (DiagramListener listener : listeners) {
+        listener.onDiagramChanged(type, event);
+      }
     }
   }
   
@@ -627,14 +632,18 @@ public class Diagram {
   }
 
   private void onElementRemove(Widget widget) {
-    for (DiagramListener listener : listeners) {
-      listener.onDiagramChanged(DiagramChangeEvent.REMOVE, new DiagramEvent(widget));
+    if (isEnableEvents()) {
+      for (DiagramListener listener : listeners) {
+        listener.onDiagramChanged(DiagramChangeEvent.REMOVE, new DiagramEvent(widget));
+      }
     }
   }
 
   private void onElementRemove(Connector connector) {
-    for (DiagramListener listener : listeners) {
-      listener.onDiagramChanged(DiagramChangeEvent.REMOVE, new DiagramEvent(connector));
+    if (isEnableEvents()) {
+      for (DiagramListener listener : listeners) {
+        listener.onDiagramChanged(DiagramChangeEvent.REMOVE, new DiagramEvent(connector));
+      }
     }
   }
 
@@ -890,4 +899,14 @@ public class Diagram {
       e.onselectstart = null; 
     } 
   }-*/;
+  
+
+  public boolean isEnableEvents() {
+    return enableEvents;
+  }
+
+  public void setEnableEvents(boolean enableEvents) {
+    this.enableEvents = enableEvents;
+  }
+  
 }

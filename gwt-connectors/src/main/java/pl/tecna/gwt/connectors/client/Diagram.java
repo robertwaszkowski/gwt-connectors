@@ -66,7 +66,7 @@ public class Diagram {
   private Point startSelectionPoint;
   private HTML selection = null;
   private boolean endPointDragging = false;
-  private HandlerRegistration boundarySelectionHandler = null;
+  public HandlerRegistration boundarySelectionHandler = null;
   private boolean selectionMode;
   private boolean dragModeOnClick;
 

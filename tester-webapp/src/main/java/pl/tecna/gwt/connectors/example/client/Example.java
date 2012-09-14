@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import pl.tecna.gwt.connectors.client.Connector;
 import pl.tecna.gwt.connectors.client.CornerPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
-import pl.tecna.gwt.connectors.client.SectionDecoration;
-import pl.tecna.gwt.connectors.client.Shape;
-import pl.tecna.gwt.connectors.client.Shape.CPShapeType;
+import pl.tecna.gwt.connectors.client.elements.Connector;
+import pl.tecna.gwt.connectors.client.elements.SectionDecoration;
+import pl.tecna.gwt.connectors.client.elements.Shape;
+import pl.tecna.gwt.connectors.client.elements.Shape.CPShapeType;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 
 import com.google.gwt.core.client.EntryPoint;

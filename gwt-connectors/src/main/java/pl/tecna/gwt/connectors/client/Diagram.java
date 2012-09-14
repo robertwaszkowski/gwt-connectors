@@ -616,7 +616,6 @@ public class Diagram {
 
   public void onConnectorClick(ConnectorClickEvent event) {
     if (isEnableEvents()) {
-      LOG.info("Diagram - onConnectorClickEvent............................................");
       for (DiagramListener listener : listeners) {
         listener.onConnectorClick(event);
       }
@@ -625,7 +624,6 @@ public class Diagram {
   
   public void onDiagramAdd(DiagramAddEvent event) {
     if (isEnableEvents()) {
-      LOG.info("Diagram - onDiagramAddEvent............................................");
       for (DiagramListener listener : listeners) {
         listener.onDiagramAdd(event);
       }
@@ -634,7 +632,6 @@ public class Diagram {
   
   public void onDiagramRemove(DiagramRemoveEvent event) {
     if (isEnableEvents()) {
-      LOG.info("Diagram - onDiagramRemoveEvent............................................");
       for (DiagramListener listener : listeners) {
         listener.onDiagramRemove(event);
       }
@@ -643,7 +640,6 @@ public class Diagram {
 
   public void onElementConnect(ElementConnectEvent event) {
     if (isEnableEvents()) {
-      LOG.info("Diagram - onElementConnectEvent............................................");
       for (DiagramListener listener : listeners) {
         listener.onElementConnect(event);
       }
@@ -652,7 +648,6 @@ public class Diagram {
   
   public void onElementDrag(pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent event) {
     if (isEnableEvents()) {
-      LOG.info("Diagram - onElementDragEvent type:" + event.getMoveEventType() + " ............................................");
       for (DiagramListener listener : listeners) {
         listener.onElementDrag(event);
       }

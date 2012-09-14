@@ -1,4 +1,4 @@
-package pl.tecna.gwt.connectors.client.listeners.change;
+package pl.tecna.gwt.connectors.client.listeners.event;
 
 public class DiagramEvent {
 

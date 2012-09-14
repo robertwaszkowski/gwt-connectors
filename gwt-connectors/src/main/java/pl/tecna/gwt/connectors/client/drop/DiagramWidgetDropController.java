@@ -1,8 +1,8 @@
 package pl.tecna.gwt.connectors.client.drop;
 
-import pl.tecna.gwt.connectors.client.Connector;
-import pl.tecna.gwt.connectors.client.EndPoint;
-import pl.tecna.gwt.connectors.client.Shape;
+import pl.tecna.gwt.connectors.client.elements.Connector;
+import pl.tecna.gwt.connectors.client.elements.EndPoint;
+import pl.tecna.gwt.connectors.client.elements.Shape;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;

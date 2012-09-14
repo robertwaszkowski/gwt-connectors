@@ -1,8 +1,12 @@
-package pl.tecna.gwt.connectors.client;
+package pl.tecna.gwt.connectors.client.elements;
 
+import java.util.logging.Logger;
+
+import pl.tecna.gwt.connectors.client.ConnectionPoint;
+import pl.tecna.gwt.connectors.client.Diagram;
+import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
-import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.EndPointConnectEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -10,6 +14,8 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class EndPoint extends Point {
 
+
+  private final Logger LOG = Logger.getLogger(getClass().getName());
 	public ConnectionPoint gluedConnectionPoint;
 	public Connector connector;
 	boolean gluedToConnectionPoint;
@@ -46,13 +52,7 @@ public class EndPoint extends Point {
 		this.setGluedToConnectionPoint(true);
 		this.clear();
 		
-		EndPointConnectEvent event = new EndPointConnectEvent(
-				EndPoint.this, 
-				connectionPoint);
-		
-		if (connector != null && connector.diagram != null) {
-			connector.diagram.onDiagramChanged(DiagramChangeEvent.CONNECT, event);
-		}
+		connector.diagram.onElementConnect(new ElementConnectEvent(connectionPoint.parentWidget, connector, this));
 	}
 	
 	/**

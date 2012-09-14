@@ -1,20 +1,23 @@
-package pl.tecna.gwt.connectors.client;
+package pl.tecna.gwt.connectors.client.elements;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.ElementAddEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.ConnectorRemoveEvent;
-import pl.tecna.gwt.connectors.client.util.Position;
+import pl.tecna.gwt.connectors.client.ConnectionPoint;
+import pl.tecna.gwt.connectors.client.CornerPoint;
+import pl.tecna.gwt.connectors.client.Diagram;
+import pl.tecna.gwt.connectors.client.Point;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.SectionData;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
-public class Connector {
+public class Connector implements Element {
 	public static final int OVERLAP_MARGIN = 5;
 	
 	private final Logger LOG = Logger.getLogger("Connector");
@@ -46,7 +49,6 @@ public class Connector {
 	 * @param  endTop    a top position of the point where the Connector ends
 	 */
 	public Connector(int startLeft, int startTop, int endLeft, int endTop) {
-		
 		super();
 		init(startLeft, startTop, endLeft, endTop, null, null, new ArrayList<CornerPoint>());
 	}
@@ -190,9 +192,13 @@ public class Connector {
 		startEndPoint.showOnDiagram(diagram);
 		endEndPoint.showOnDiagram(diagram);		
 		
-		diagram.onDiagramChanged(DiagramChangeEvent.ADD, new ElementAddEvent(
-				new Position(startEndPoint.getLeft(), startEndPoint.getTop()),
-				this));
+		int connectorX =
+        diagram.boundaryPanel.getWidgetLeft(startEndPoint)
+            - diagram.boundaryPanel.getAbsoluteLeft();
+    int connectorY =
+        diagram.boundaryPanel.getWidgetTop(startEndPoint)
+            - diagram.boundaryPanel.getAbsoluteTop();
+		diagram.onDiagramAdd(new DiagramAddEvent(this, connectorX, connectorY));
 	}
 	
 	/**
@@ -232,7 +238,7 @@ public class Connector {
 		startEndPoint.clear();
 		endEndPoint.clear();
 			
-		diagram.onDiagramChanged(DiagramChangeEvent.REMOVE, new ConnectorRemoveEvent(this));
+    diagram.onDiagramRemove(new DiagramRemoveEvent(this, null, null));
 	}
 	
 	/**
@@ -917,8 +923,6 @@ public class Connector {
 	 * @return 
 	 */
 	public boolean fixOverlapSections(List<CornerPoint> corners) {
-		LOG.info("------------fixOverlapSections----------------");
-		
 		boolean result = false;
 		
 		for (Shape shape : diagram.shapes) {
@@ -929,7 +933,6 @@ public class Connector {
 		  }
 		}
 		
-		LOG.info("------------fixOverlapSections  -  end ----------------");
 		return result;
 	}
 	
@@ -938,7 +941,7 @@ public class Connector {
 	 * @param shape {@link Shape} to omit
 	 * @param overlapSections {@link Section}s which overlap given {@link Section}s
 	 */
-	void evadeShape(Shape shape, List<Section> overlapSections, List<CornerPoint> corners) {
+	public void evadeShape(Shape shape, List<Section> overlapSections, List<CornerPoint> corners) {
 	  if (shape.isEnableOverlap()) {
 	    return;
 	  }

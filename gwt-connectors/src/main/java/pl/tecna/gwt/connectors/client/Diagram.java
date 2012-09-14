@@ -8,17 +8,22 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import pl.tecna.gwt.connectors.client.elements.Connector;
+import pl.tecna.gwt.connectors.client.elements.EndPoint;
+import pl.tecna.gwt.connectors.client.elements.Section;
+import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.listeners.DiagramListener;
 import pl.tecna.gwt.connectors.client.listeners.DiagramModeListener;
 import pl.tecna.gwt.connectors.client.listeners.Keyboard;
 import pl.tecna.gwt.connectors.client.listeners.KeyboardListener;
-import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.DiagramEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.ElementDragEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.ShapeMoveEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import pl.tecna.gwt.connectors.client.util.CustomPickupDragController;
-import pl.tecna.gwt.connectors.client.util.Position;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
@@ -53,7 +58,7 @@ public class Diagram {
 
   private List<DiagramListener> listeners;
   private DiagramModeListener modeListener;
-  private boolean enableEvents;
+  private boolean enableEvents = true;
 
   public CustomPickupDragController shapeDragController;
   public PickupDragController endPointDragController;
@@ -231,8 +236,12 @@ public class Diagram {
 
       public void previewDragStart() throws VetoDragException {
 
-        Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, 
-            new ElementDragEvent(context.draggable, ElementDragEvent.DRAG_START));
+        startX =
+            Diagram.this.boundaryPanel.getWidgetLeft(context.draggable)
+                - Diagram.this.boundaryPanel.getAbsoluteLeft();
+        startY =
+            Diagram.this.boundaryPanel.getWidgetTop(context.draggable)
+                - Diagram.this.boundaryPanel.getAbsoluteTop();
         
         for (Widget widget : Diagram.this.shapeDragController.getSelectedWidgets()) {
           if (widget instanceof Shape) {
@@ -244,13 +253,6 @@ public class Diagram {
             }
           }
         }
-
-        startX =
-            Diagram.this.boundaryPanel.getWidgetLeft(context.draggable)
-                - Diagram.this.boundaryPanel.getAbsoluteLeft();
-        startY =
-            Diagram.this.boundaryPanel.getWidgetTop(context.draggable)
-                - Diagram.this.boundaryPanel.getAbsoluteTop();
 
         super.previewDragStart();
       };
@@ -317,6 +319,7 @@ public class Diagram {
         
         super.dragMove();
       }
+      
     };
 
     shapeDragController.setBehaviorDragStartSensitivity(2);
@@ -326,10 +329,19 @@ public class Diagram {
     shapeDragController.addDragHandler(new DragHandlerAdapter() {
 
       @Override
+      public void onDragStart(DragStartEvent event) {
+        int startX =
+            Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
+                - Diagram.this.boundaryPanel.getAbsoluteLeft();
+        int startY =
+            Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
+                - Diagram.this.boundaryPanel.getAbsoluteTop();
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, startX, 
+            startY, ElementDragEvent.DragEventType.DRAG_START));
+      }
+      
+      @Override
       public void onDragEnd(DragEndEvent event) {
-        
-        Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, 
-            new ElementDragEvent(event.getSource(), ElementDragEvent.DRAG_END));
         
         Widget widget = event.getContext().draggable;
         if (event.getContext().vetoException != null) {
@@ -384,9 +396,17 @@ public class Diagram {
           }
         }
 
-        Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, new ShapeMoveEvent(new Position(),
-            new Position(widget.getAbsoluteLeft() - Diagram.this.boundaryPanel.getAbsoluteLeft(),
-                widget.getAbsoluteTop() - Diagram.this.boundaryPanel.getAbsoluteTop()), widget));
+//        Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, new ShapeMoveEvent(new Position(),
+//            new Position(widget.getAbsoluteLeft() - Diagram.this.boundaryPanel.getAbsoluteLeft(),
+//                widget.getAbsoluteTop() - Diagram.this.boundaryPanel.getAbsoluteTop()), widget));
+        int endX =
+            Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
+                - Diagram.this.boundaryPanel.getAbsoluteLeft();
+        int endY =
+            Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
+                - Diagram.this.boundaryPanel.getAbsoluteTop();
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, 
+            endY, ElementDragEvent.DragEventType.DRAG_END));
       }
 
     });
@@ -396,13 +416,6 @@ public class Diagram {
       final int VERTICAL = 0;
       final int HORIZONTAL = 1;
       int sectionOrientation; // 0 - vertical; 1 - horizontal
-
-      public void previewDragStart() throws VetoDragException {
-        
-        Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, 
-            new ElementDragEvent(context.draggable, ElementDragEvent.DRAG_START));
-        
-      };
       
       @Override
       public void dragStart() {
@@ -468,12 +481,19 @@ public class Diagram {
         EndPoint ep = (EndPoint) event.getSource();
         ep.connector.select();
         }
+        
+        int startX =
+            Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
+                - Diagram.this.boundaryPanel.getAbsoluteLeft();
+        int startY =
+            Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
+                - Diagram.this.boundaryPanel.getAbsoluteTop();
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, startX, 
+            startY, ElementDragEvent.DragEventType.DRAG_START));
       }
 
       @Override
       public void onDragEnd(DragEndEvent event) {
-        Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, 
-            new ElementDragEvent(event.getSource(), ElementDragEvent.DRAG_END));
         
         endPointDragging = false;
         EndPoint endPoint = (EndPoint) event.getSource();
@@ -490,8 +510,19 @@ public class Diagram {
           LOG.log(Level.SEVERE, "Unexpected exception", e);
         }
 
-        Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, new ShapeMoveEvent(new Position(),
-            new Position(endPoint.getLeft(), endPoint.getTop()), endPoint));
+        Integer endX = null;
+        Integer endY = null;
+        if (event.getContext().draggable.getParent() != null && 
+            Diagram.this.boundaryPanel.equals(event.getContext().draggable.getParent())) {
+          endX =
+              Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
+              - Diagram.this.boundaryPanel.getAbsoluteLeft();
+          endY =
+              Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
+              - Diagram.this.boundaryPanel.getAbsoluteTop();
+        }
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, 
+            endY, ElementDragEvent.DragEventType.DRAG_END));
       }
     });
   }
@@ -583,18 +614,47 @@ public class Diagram {
     listeners.clear();
   }
 
-  public void onConnectorClick(Connector connectorClicked) {
+  public void onConnectorClick(ConnectorClickEvent event) {
     if (isEnableEvents()) {
+      LOG.info("Diagram - onConnectorClickEvent............................................");
       for (DiagramListener listener : listeners) {
-        listener.onConnectorClick(connectorClicked);
+        listener.onConnectorClick(event);
+      }
+    }
+  }
+  
+  public void onDiagramAdd(DiagramAddEvent event) {
+    if (isEnableEvents()) {
+      LOG.info("Diagram - onDiagramAddEvent............................................");
+      for (DiagramListener listener : listeners) {
+        listener.onDiagramAdd(event);
+      }
+    }
+  }
+  
+  public void onDiagramRemove(DiagramRemoveEvent event) {
+    if (isEnableEvents()) {
+      LOG.info("Diagram - onDiagramRemoveEvent............................................");
+      for (DiagramListener listener : listeners) {
+        listener.onDiagramRemove(event);
       }
     }
   }
 
-  public void onDiagramChanged(DiagramChangeEvent type, DiagramEvent event) {
+  public void onElementConnect(ElementConnectEvent event) {
     if (isEnableEvents()) {
+      LOG.info("Diagram - onElementConnectEvent............................................");
       for (DiagramListener listener : listeners) {
-        listener.onDiagramChanged(type, event);
+        listener.onElementConnect(event);
+      }
+    }
+  }
+  
+  public void onElementDrag(pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent event) {
+    if (isEnableEvents()) {
+      LOG.info("Diagram - onElementDragEvent type:" + event.getMoveEventType() + " ............................................");
+      for (DiagramListener listener : listeners) {
+        listener.onElementDrag(event);
       }
     }
   }
@@ -613,8 +673,6 @@ public class Diagram {
         shapeDragController.makeNotDraggable(widget);
         boundaryPanel.remove(widget);
       }
-      
-      onElementRemove(widget);
     }
 
     List<Connector> toRemove = new ArrayList<Connector>();
@@ -629,22 +687,6 @@ public class Diagram {
     }
 
     shapeDragController.clearSelection();
-  }
-
-  private void onElementRemove(Widget widget) {
-    if (isEnableEvents()) {
-      for (DiagramListener listener : listeners) {
-        listener.onDiagramChanged(DiagramChangeEvent.REMOVE, new DiagramEvent(widget));
-      }
-    }
-  }
-
-  private void onElementRemove(Connector connector) {
-    if (isEnableEvents()) {
-      for (DiagramListener listener : listeners) {
-        listener.onDiagramChanged(DiagramChangeEvent.REMOVE, new DiagramEvent(connector));
-      }
-    }
   }
 
   /**
@@ -820,7 +862,7 @@ public class Diagram {
         int mouseTop = event.getY();
         if(!selectionMode){
           dragModeOnClick = true;
-          for (pl.tecna.gwt.connectors.client.Shape shape : shapes) {
+          for (pl.tecna.gwt.connectors.client.elements.Shape shape : shapes) {
             if (shape.isOnShape(mouseLeft, mouseTop)) {
               dragModeOnClick = false;
             }
@@ -830,7 +872,7 @@ public class Diagram {
           int endLeft = 0;
           int endTop = 0;
           // set diagram drag mode false if connector EndPoint is dragged
-          for (pl.tecna.gwt.connectors.client.Connector connector : connectors) {
+          for (pl.tecna.gwt.connectors.client.elements.Connector connector : connectors) {
             startLeft =
                 connector.startEndPoint.getAbsoluteLeft() - boundaryPanel.getAbsoluteLeft();
             startTop =

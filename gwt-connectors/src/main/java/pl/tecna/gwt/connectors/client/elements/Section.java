@@ -1,17 +1,17 @@
-package pl.tecna.gwt.connectors.client;
+package pl.tecna.gwt.connectors.client.elements;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import pl.tecna.gwt.connectors.client.CornerPoint;
+import pl.tecna.gwt.connectors.client.Diagram;
+import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.drop.AxisXYDragController;
-import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.ElementAddEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.ElementDragEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.ShapeMoveEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
-import pl.tecna.gwt.connectors.client.util.Position;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
@@ -182,12 +182,6 @@ public class Section extends HTML {
 		// Add drag and drop functionality
 		this.sectionDragController = new AxisXYDragController(panel, true, allowHorizontalDragging, allowVerticalDragging) {
 		  
-		  public void previewDragStart() throws com.allen_sauer.gwt.dnd.client.VetoDragException {
-
-        connector.diagram.onDiagramChanged(DiagramChangeEvent.MOVE, 
-            new ElementDragEvent(context.draggable, ElementDragEvent.DRAG_START));
-		  };
-		  
 			@Override
 			public void dragStart() {
 								
@@ -256,8 +250,8 @@ public class Section extends HTML {
 			@Override
 			public void dragEnd() {
 				
-			  connector.diagram.onDiagramChanged(DiagramChangeEvent.MOVE, 
-            new ElementDragEvent(context.draggable, ElementDragEvent.DRAG_END));
+//			  connector.diagram.onDiagramChanged(DiagramChangeEvent.MOVE, 
+//            new ElementDragEvent(context.draggable, ElementDragEvent.DRAG_END));
 				//TODO Section.this.connector.deselect();
 
 				// If after dragging two or more neighbor Sections are aligned to the line
@@ -311,6 +305,14 @@ public class Section extends HTML {
 			@Override
 			public void onDragStart(DragStartEvent event) {
 
+			  int startX =
+            connector.diagram.boundaryPanel.getWidgetLeft(event.getContext().draggable)
+                - connector.diagram.boundaryPanel.getAbsoluteLeft();
+        int startY =
+            connector.diagram.boundaryPanel.getWidgetTop(event.getContext().draggable)
+                - connector.diagram.boundaryPanel.getAbsoluteTop();
+        connector.diagram.onElementDrag(new pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent(event.getContext().draggable, startX, 
+            startY, pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent.DragEventType.DRAG_START));
 				Section.this.connector.select();
 			}
 			
@@ -342,12 +344,17 @@ public class Section extends HTML {
 				connector.fixLineSections(corners);
 				
 				connector.drawSections(corners, true);
+
+//				int endX =
+//            connector.diagram.boundaryPanel.getWidgetLeft(event.getContext().draggable)
+//                - connector.diagram.boundaryPanel.getAbsoluteLeft();
+//        int endY =
+//            connector.diagram.boundaryPanel.getWidgetTop(event.getContext().draggable)
+//                - connector.diagram.boundaryPanel.getAbsoluteTop();
+        
+        connector.diagram.onElementDrag(new ElementDragEvent(event.getContext().draggable, event.getContext().desiredDraggableX, 
+            event.getContext().desiredDraggableY, ElementDragEvent.DragEventType.DRAG_END));
 				
-				connector.diagram.onDiagramChanged(DiagramChangeEvent.MOVE, new ShapeMoveEvent(
-						new Position(), 
-						new Position(Math.min(Section.this.startPoint.getLeft(), Section.this.endPoint.getLeft()),
-								Math.min(Section.this.startPoint.getTop(), Section.this.endPoint.getTop())), 
-						Section.this));
 			}
 		});
 		
@@ -361,12 +368,7 @@ public class Section extends HTML {
 			this.endPointDecoration.showOnDiagram(panel, 
 					calculateEndPointDecorationDirection(), 
 					endPoint.getLeft(), endPoint.getTop());
-		}
-		
-		diagram.onDiagramChanged(DiagramChangeEvent.ADD, new ElementAddEvent(
-				new Position(Math.min(this.startPoint.getLeft(), this.endPoint.getLeft()), 
-						Math.min(this.startPoint.getTop(), this.endPoint.getTop())),
-				this));
+		}		
 	}
 
 	public int calculateEndPointDecorationDirection() {
@@ -386,7 +388,7 @@ public class Section extends HTML {
 		return 0;
 	}
 
-	int calculateStartPointDecorationDirection() {
+	public int calculateStartPointDecorationDirection() {
 		if (isHorizontal()) {
 			if (this.startPoint.getLeft() < this.endPoint.getLeft()) {
 				return SectionDecoration.HORIZONTAL_LEFT;
@@ -546,7 +548,7 @@ public class Section extends HTML {
 	 * of the Section.
 	 * Also sets the functionality of the horizontal or vertical dragging.
 	 */
-	protected void update() {
+	public void update() {
 		try {
 //		System.out.println("Section.update " +
 //		           "(" + startPoint.getLeft() + "," + startPoint.getTop() + 
@@ -758,7 +760,8 @@ public class Section extends HTML {
 	@Override
 	public void onBrowserEvent(Event event) {
 		if (DOM.eventGetType(event) == Event.ONMOUSEDOWN) {
-			connector.diagram.onConnectorClick(connector);
+			connector.diagram.onConnectorClick(new ConnectorClickEvent(connector, this));
+			connector.select();
 		}
 		super.onBrowserEvent(event);
 	}

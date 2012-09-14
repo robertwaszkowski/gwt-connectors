@@ -1,11 +1,16 @@
-package pl.tecna.gwt.connectors.client;
+package pl.tecna.gwt.connectors.client.elements;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import pl.tecna.gwt.connectors.client.ConnectionPoint;
+import pl.tecna.gwt.connectors.client.Diagram;
+import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.drop.DiagramWidgetDropController;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.google.gwt.user.client.Event;
@@ -13,7 +18,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Shape extends FocusPanel{
+public class Shape extends FocusPanel implements Element{
 
   /**
    * Enum with values defining Shape object connection points positioning type
@@ -146,7 +151,14 @@ public class Shape extends FocusPanel{
     sinkEvents(Event.ONMOUSEUP);
     sinkEvents(Event.ONCLICK);
     sinkEvents(Event.ONMOUSEDOWN);
-
+    
+    int endX =
+        diagram.boundaryPanel.getWidgetLeft(this)
+        - diagram.boundaryPanel.getAbsoluteLeft();
+    int endY =
+        diagram.boundaryPanel.getWidgetTop(this)
+        - diagram.boundaryPanel.getAbsoluteTop();
+    diagram.onDiagramAdd(new DiagramAddEvent(this, endX, endY));
   }
 
   public void repaint(Diagram diagram) {
@@ -226,6 +238,15 @@ public class Shape extends FocusPanel{
    */
   public void removeFromDiagram(Diagram diagram) {
     try {
+      
+      int removedX =
+          diagram.boundaryPanel.getWidgetLeft(this)
+              - diagram.boundaryPanel.getAbsoluteLeft();
+      int removedY =
+          diagram.boundaryPanel.getWidgetTop(this)
+              - diagram.boundaryPanel.getAbsoluteTop();
+      diagram.onDiagramRemove(new DiagramRemoveEvent(this, removedX, removedY));
+      
       // Remove Shape from Diagram
       diagram.endPointDragController.unregisterDropController(shapeDropController);
       diagram.shapeDragController.unregisterDropController(shapeDropController);

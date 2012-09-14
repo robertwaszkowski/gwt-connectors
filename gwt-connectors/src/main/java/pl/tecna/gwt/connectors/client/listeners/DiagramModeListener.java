@@ -1,6 +1,6 @@
 package pl.tecna.gwt.connectors.client.listeners;
 
-import pl.tecna.gwt.connectors.client.listeners.change.DiagramEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramEvent;
 
 public interface DiagramModeListener {
 

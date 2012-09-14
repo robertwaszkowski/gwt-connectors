@@ -1,4 +1,4 @@
-package pl.tecna.gwt.connectors.client;
+package pl.tecna.gwt.connectors.client.elements;
 
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 

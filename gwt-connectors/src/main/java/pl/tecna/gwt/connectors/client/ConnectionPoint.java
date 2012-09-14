@@ -2,6 +2,9 @@ package pl.tecna.gwt.connectors.client;
 
 import java.util.ArrayList;
 
+import pl.tecna.gwt.connectors.client.elements.Connector;
+import pl.tecna.gwt.connectors.client.elements.EndPoint;
+import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;

@@ -3,7 +3,7 @@ package pl.tecna.gwt.connectors.client.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.tecna.gwt.connectors.client.Shape;
+import pl.tecna.gwt.connectors.client.elements.Shape;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.user.client.ui.AbsolutePanel;

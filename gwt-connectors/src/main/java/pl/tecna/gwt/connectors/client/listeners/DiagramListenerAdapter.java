@@ -1,17 +1,32 @@
 package pl.tecna.gwt.connectors.client.listeners;
 
-import pl.tecna.gwt.connectors.client.Connector;
-import pl.tecna.gwt.connectors.client.listeners.change.DiagramChangeEvent;
-import pl.tecna.gwt.connectors.client.listeners.change.DiagramEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
+
 
 public class DiagramListenerAdapter implements DiagramListener{
 
-	public void onConnectorClick(Connector changedConnector) {
-		
-	}
+  public void onConnectorClick(ConnectorClickEvent event) {
+    
+  }
 
-	public void onDiagramChanged(DiagramChangeEvent type, DiagramEvent event) {
-		
-	}
+  public void onDiagramAdd(DiagramAddEvent event) {
+   
+  }
+
+  public void onDiagramRemove(DiagramRemoveEvent event) {
+    
+  }
+
+  public void onElementConnect(ElementConnectEvent event) {
+    
+  }
+
+  public void onElementDrag(ElementDragEvent event) {
+    
+  }
 
 }

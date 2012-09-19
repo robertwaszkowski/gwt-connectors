@@ -182,7 +182,7 @@ public class Connector implements Element {
 		}
 		
 		// Recreate Sections between start, end, and corner points
-		this.drawSections(cornerPoints);
+		this.drawSections(cornerPoints, isSelected);
 
 		// Set start and end Sections decorated
 		sections.get(0).setStartPointDecoration(this.startPointDecoration);
@@ -483,12 +483,12 @@ public class Connector implements Element {
   		if ( ( (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM ||
   				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_TOP) ) &&
   				!sectionHorizontal) {
-  			drawSections(cornerPoints);
+  			drawSections(cornerPoints, isSelected);
   			return false;
   		} else if ( ( (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_LEFT ||
   				connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) ) &&
   				sectionHorizontal) {
-  			drawSections(cornerPoints);
+  			drawSections(cornerPoints, isSelected);
   			return false;
   		}
   
@@ -547,7 +547,7 @@ public class Connector implements Element {
   			}	
   		}		
   		
-  		drawSections(cornerPoints);
+  		drawSections(cornerPoints, isSelected);
   		return true;
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, "Unexpected exception", e);
@@ -581,16 +581,21 @@ public class Connector implements Element {
 		this.startEndPoint = startEndPoint;
 		this.endEndPoint = endEndPoint;
 		
-		drawSections(cp);
+		drawSections(cp, isSelected);
 	}
 	
 	public void drawSections() {
-		drawSections(cornerPoints);
+	  drawSections(cornerPoints, isSelected);
 	}
 	
-	public void drawSections(List<CornerPoint> cp) {
-		drawSections(cp, false);
-	}
+	/**
+   * Removes old connector's sections from diagram, and 
+   * shows new ones on diagram depending on old sections data and given list of {@link CornerPoint}
+   * @param cp list of {@link CornerPoint} containing {@link Connector} shape
+   */
+  public void drawSections(List<CornerPoint> cp) {
+    drawSections(cp, isSelected);
+  }
 	
 	/**
 	 * Removes old connector's sections from diagram, and 
@@ -634,7 +639,7 @@ public class Connector implements Element {
 			this.calculateStandardPointsPositions();
 			LOG.log(Level.SEVERE, "Section must be horizontal or vertical, calculating standard connection points", e);
 			//TODO Do this more gentle
-			drawSections(cornerPoints);
+			drawSections(cornerPoints, isSelected);
 		}
 	}
 	
@@ -702,7 +707,7 @@ public class Connector implements Element {
 			cornerPoints.remove(cornerPoints.size() - 1);
 			cornerPoints.remove(cornerPoints.size() - 1);
 			cornerPoints.add(newCorner);
-			drawSections(cornerPoints);
+			drawSections(cornerPoints, isSelected);
 			return true;
 		} else {
 			LOG.severe("New corner is null");
@@ -759,7 +764,7 @@ public class Connector implements Element {
 			cornerPoints.remove(0);
 			cornerPoints.remove(0);
 			cornerPoints.add(0, newCorner);
-			drawSections(cornerPoints);
+			drawSections(cornerPoints, isSelected);
 			return true;
 		}
 		
@@ -774,7 +779,7 @@ public class Connector implements Element {
 		try {
 			if (!fixOverlapSections()) {
 				fixLineSections(cornerPoints);
-				drawSections(cornerPoints);
+				drawSections(cornerPoints, isSelected);
 			}
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, "fixSections error :", e);
@@ -892,7 +897,6 @@ public class Connector implements Element {
 				i++;
 			}
 			for (CornerPoint removed : toRemove) {
-				LOG.info("Remove corner point number :" + corners.indexOf(removed) + " with data : " + removed.toDebugString());
 				corners.remove(removed);
 			}
 			
@@ -1216,7 +1220,6 @@ public class Connector implements Element {
 		}
 		
 		if (insertIndex == corners.size() - 1) {
-			LOG.info("insertIndex == corners.size() - 1");
 			corners.add(startCorner);
 			
 			for (CornerPoint added : middleCorners) {
@@ -1224,7 +1227,6 @@ public class Connector implements Element {
 			}
 			corners.add(endCorner);
 		} else {
-			LOG.info("insertIndex != corners.size() - 1");
 			corners.add(insertIndex + 1, endCorner);
 			
 			for (int j = middleCorners.size() - 1 ; j >= 0 ; j--) {

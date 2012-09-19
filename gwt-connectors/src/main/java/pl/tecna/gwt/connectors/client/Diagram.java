@@ -526,12 +526,10 @@ public class Diagram {
   }
 
   private void fixLineSections(Shape shape) {
-    LOG.fine("Fix line sections");
     
     for (Connector conn : Diagram.this.connectors) {
       List<Section> overlapSections = shape.overlapSections(conn);
       if (overlapSections.size() != 0) {
-        LOG.fine("Overlap sections size : " + overlapSections.size());
         List<CornerPoint> corners = conn.getCorners();
         conn.evadeShape(shape, overlapSections, corners);
         conn.fixLineSections(corners);
@@ -895,7 +893,6 @@ public class Diagram {
 
         boolean isOnElement = isOnElement(clickPoint, Diagram.this);
 
-        // Log.info("Mouse down at: " + event.getX() + "," + event.getY());
         if (!isCtrlPressed && !isOnElement) {
           shapeDragController.clearSelection();
           for (Connector conn : connectors) {

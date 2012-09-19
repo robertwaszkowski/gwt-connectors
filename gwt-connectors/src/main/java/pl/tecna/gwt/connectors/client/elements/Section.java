@@ -16,8 +16,8 @@ import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -77,24 +77,21 @@ public class Section extends HTML {
 		this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
 		this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());
 		
-		sinkEvents(Event.ONMOUSEUP);
-		
-		addMouseUpHandler(new MouseUpHandler() {
-			
-			public void onMouseUp(MouseUpEvent event) {
-
-				if (!Section.this.connector.diagram.isCtrlPressed) {
-					Section.this.connector.diagram.deselectAllSections();
-					Section.this.connector.diagram.shapeDragController.clearSelection();
-				}
-				
-				if (Section.this.connector.isSelected) {
-					Section.this.connector.deselect();
-				} else {
-					Section.this.connector.select();
-				}
-			}
-		});
+		addMouseDownHandler(new MouseDownHandler() {
+      
+      public void onMouseDown(MouseDownEvent event) {
+        if (!Section.this.connector.diagram.isCtrlPressed) {
+          Section.this.connector.diagram.deselectAllSections();
+          Section.this.connector.diagram.shapeDragController.clearSelection();
+        }
+        
+        if (Section.this.connector.isSelected) {
+          Section.this.connector.deselect();
+        } else {
+          Section.this.connector.select();
+        }
+      }
+    });
 	
 	}
 	
@@ -761,7 +758,6 @@ public class Section extends HTML {
 	public void onBrowserEvent(Event event) {
 		if (DOM.eventGetType(event) == Event.ONMOUSEDOWN) {
 			connector.diagram.onConnectorClick(new ConnectorClickEvent(connector, this));
-			connector.select();
 		}
 		super.onBrowserEvent(event);
 	}

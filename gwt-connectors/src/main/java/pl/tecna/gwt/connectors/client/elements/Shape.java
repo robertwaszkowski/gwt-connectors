@@ -237,15 +237,27 @@ public class Shape extends FocusPanel implements Element{
    * @return the Shape removed from specified Diagram and from its boundaryPanel
    */
   public void removeFromDiagram(Diagram diagram) {
+    removeFromDiagram(diagram, true);
+  }
+  
+  /**
+   * Removes Shape from Diagram
+   * 
+   * @param  diagram  a Diagram the Shape will be removed from
+   * @return the Shape removed from specified Diagram and from its boundaryPanel
+   */
+  public void removeFromDiagram(Diagram diagram, boolean fireEvent) {
     try {
       
-      int removedX =
-          diagram.boundaryPanel.getWidgetLeft(this)
-              - diagram.boundaryPanel.getAbsoluteLeft();
-      int removedY =
-          diagram.boundaryPanel.getWidgetTop(this)
-              - diagram.boundaryPanel.getAbsoluteTop();
-      diagram.onDiagramRemove(new DiagramRemoveEvent(this, removedX, removedY));
+      if (fireEvent) {
+        int removedX =
+            diagram.boundaryPanel.getWidgetLeft(this)
+            - diagram.boundaryPanel.getAbsoluteLeft();
+        int removedY =
+            diagram.boundaryPanel.getWidgetTop(this)
+            - diagram.boundaryPanel.getAbsoluteTop();
+        diagram.onDiagramRemove(new DiagramRemoveEvent(this, removedX, removedY));
+      }
       
       // Remove Shape from Diagram
       diagram.endPointDragController.unregisterDropController(shapeDropController);

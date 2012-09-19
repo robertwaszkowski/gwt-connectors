@@ -5,7 +5,7 @@ import pl.tecna.gwt.connectors.client.elements.EndPoint;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public class ElementConnectEvent {
+public class ElementConnectEvent implements ConnectorsEvent {
 
   private Widget connected;
   private Connector connector;

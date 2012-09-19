@@ -202,12 +202,22 @@ public class Connector implements Element {
 	}
 	
 	/**
+   * Removes Connector from Diagram
+   * 
+   * @param  diagram  a Diagram the Connector will be removed from
+   * @return        the Connector removed from specified Diagram and from its boundaryPanel
+   */
+  public void removeFromDiagram(Diagram diagram) {
+    removeFromDiagram(diagram, true);
+  }
+	
+	/**
 	 * Removes Connector from Diagram
 	 * 
 	 * @param  diagram  a Diagram the Connector will be removed from
 	 * @return        the Connector removed from specified Diagram and from its boundaryPanel
 	 */
-	public void removeFromDiagram(Diagram diagram) {
+	public void removeFromDiagram(Diagram diagram, boolean fireEvent) {
 
 		// Remove Connector from Diagram
 		diagram.connectors.remove(this);
@@ -237,8 +247,10 @@ public class Connector implements Element {
 		// Remove end points
 		startEndPoint.clear();
 		endEndPoint.clear();
-			
-    diagram.onDiagramRemove(new DiagramRemoveEvent(this, null, null));
+		
+		if (fireEvent) {
+		  diagram.onDiagramRemove(new DiagramRemoveEvent(this, null, null));
+		}
 	}
 	
 	/**

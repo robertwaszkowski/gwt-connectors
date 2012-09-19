@@ -396,15 +396,13 @@ public class Diagram {
           }
         }
 
-//        Diagram.this.onDiagramChanged(DiagramChangeEvent.MOVE, new ShapeMoveEvent(new Position(),
-//            new Position(widget.getAbsoluteLeft() - Diagram.this.boundaryPanel.getAbsoluteLeft(),
-//                widget.getAbsoluteTop() - Diagram.this.boundaryPanel.getAbsoluteTop()), widget));
         int endX =
             Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteLeft();
         int endY =
             Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteTop();
+        
         Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, 
             endY, ElementDragEvent.DragEventType.DRAG_END));
       }
@@ -660,14 +658,16 @@ public class Diagram {
 
   private void deleteSelectedElements() {
     LOG.fine("deleteSelectedElements");
+    List<Object> removedElList = new ArrayList<Object>();
     
     for (Widget widget : shapeDragController.getSelectedWidgets()) {
       if (widget instanceof Shape) {
-        ((Shape) widget).removeFromDiagram(this);
+        ((Shape) widget).removeFromDiagram(this, false);
       } else {
         shapeDragController.makeNotDraggable(widget);
         boundaryPanel.remove(widget);
       }
+      removedElList.add(widget);
     }
 
     List<Connector> toRemove = new ArrayList<Connector>();
@@ -678,9 +678,13 @@ public class Diagram {
     }
 
     for (Connector conn : toRemove) {
-      conn.removeFromDiagram(this);
+      conn.removeFromDiagram(this, false);
     }
+    
+    removedElList.addAll(toRemove);
 
+    onDiagramRemove(new DiagramRemoveEvent(removedElList));
+    
     shapeDragController.clearSelection();
   }
 

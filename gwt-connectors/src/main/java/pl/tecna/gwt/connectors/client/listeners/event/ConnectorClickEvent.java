@@ -3,7 +3,7 @@ package pl.tecna.gwt.connectors.client.listeners.event;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.Section;
 
-public class ConnectorClickEvent {
+public class ConnectorClickEvent implements ConnectorsEvent {
 
   private Connector sourceConnector;
   private Section sourceSection;

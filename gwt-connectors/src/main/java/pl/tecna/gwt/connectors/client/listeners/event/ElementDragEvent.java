@@ -1,8 +1,10 @@
 package pl.tecna.gwt.connectors.client.listeners.event;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.Widget;
 
-public class ElementDragEvent {
+public class ElementDragEvent implements ConnectorsEvent {
 
   public enum DragEventType {
     
@@ -10,12 +12,20 @@ public class ElementDragEvent {
   }
   
   private Widget draggedEl;
+  private List<Widget> draggedList;
   private Integer dragLeft;
   private Integer dragTop;
   private DragEventType type;
   
   public ElementDragEvent(Widget draggedEl, Integer dragLeft, Integer dragTop, DragEventType type) {
     this.draggedEl = draggedEl;
+    this.dragLeft = dragLeft;
+    this.dragTop = dragTop;
+    this.type = type;
+  }
+  
+  public ElementDragEvent(List<Widget> draggedList, Integer dragLeft, Integer dragTop, DragEventType type) {
+    this.draggedList = draggedList;
     this.dragLeft = dragLeft;
     this.dragTop = dragTop;
     this.type = type;
@@ -35,6 +45,10 @@ public class ElementDragEvent {
   
   public DragEventType getMoveEventType() {
     return type;
+  }
+  
+  public List<Widget> getDraggedList() {
+    return draggedList;
   }
   
 }

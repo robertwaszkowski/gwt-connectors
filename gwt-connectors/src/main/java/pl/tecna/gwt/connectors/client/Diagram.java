@@ -657,6 +657,20 @@ public class Diagram {
   private void deleteSelectedElements() {
     LOG.fine("deleteSelectedElements");
     List<Object> removedElList = new ArrayList<Object>();
+    for (Widget widget : shapeDragController.getSelectedWidgets()) {
+      removedElList.add(widget);
+    }
+    
+    List<Connector> toRemove = new ArrayList<Connector>();
+    for (Connector conn : connectors) {
+      if (conn.isSelected) {
+        toRemove.add(conn);
+      }
+    }
+    
+    removedElList.addAll(toRemove);
+    
+    onDiagramRemove(new DiagramRemoveEvent(removedElList));
     
     for (Widget widget : shapeDragController.getSelectedWidgets()) {
       if (widget instanceof Shape) {
@@ -665,23 +679,11 @@ public class Diagram {
         shapeDragController.makeNotDraggable(widget);
         boundaryPanel.remove(widget);
       }
-      removedElList.add(widget);
-    }
-
-    List<Connector> toRemove = new ArrayList<Connector>();
-    for (Connector conn : connectors) {
-      if (conn.isSelected) {
-        toRemove.add(conn);
-      }
     }
 
     for (Connector conn : toRemove) {
       conn.removeFromDiagram(this, false);
     }
-    
-    removedElList.addAll(toRemove);
-
-    onDiagramRemove(new DiagramRemoveEvent(removedElList));
     
     shapeDragController.clearSelection();
   }

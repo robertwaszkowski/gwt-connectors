@@ -56,4 +56,10 @@
 	-webkit-user-select: ignore;
 	user-select:none;
 }
+
+.gwt-connectors-shape-connector-start {	
+	opacity:0.4;
+	filter:alpha(opacity=40); /* For IE8 and earlier */
+	cursor: pointer !important;
+}
 	

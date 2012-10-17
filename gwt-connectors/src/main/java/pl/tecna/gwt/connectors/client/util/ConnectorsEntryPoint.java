@@ -8,5 +8,4 @@ public class ConnectorsEntryPoint implements EntryPoint{
   public void onModuleLoad() {
     StyleInjector.injectAtStart(ConnectorsClientBundle.INSTANCE.css().getText());
   }
-
 }

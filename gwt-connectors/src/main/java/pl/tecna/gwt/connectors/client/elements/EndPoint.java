@@ -40,6 +40,12 @@ public class EndPoint extends Point {
 		this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.end_point()).createImage());
 		this.getElement().getStyle().setZIndex(3);
 	}
+	
+	public EndPoint(Integer left, Integer top) {
+	  super(left, top);
+    this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.end_point()).createImage());
+    this.getElement().getStyle().setZIndex(3);
+	}
 
 	/**
 	 * 
@@ -128,15 +134,6 @@ public class EndPoint extends Point {
 			this.connector.update();
 		}
 
-//System.out.println("updateOpositeEndPointOfHorizontalSection() - ( " +
-//			"(" + this.connector.sections.get(0).startPoint.getLeft() + ", " + this.connector.sections.get(0).startPoint.getTop() + "), " +
-//			"(" + this.connector.sections.get(0).endPoint.getLeft() + ", " + this.connector.sections.get(0).endPoint.getTop() + "), " +
-//			"(" + this.connector.sections.get(1).startPoint.getLeft() + ", " + this.connector.sections.get(1).startPoint.getTop() + "), " +
-//			"(" + this.connector.sections.get(1).endPoint.getLeft() + ", " + this.connector.sections.get(1).endPoint.getTop() + "), " +
-//			"(" + this.connector.sections.get(2).startPoint.getLeft() + ", " + this.connector.sections.get(2).startPoint.getTop() + "), " +
-//			"(" + this.connector.sections.get(2).endPoint.getLeft() + ", " + this.connector.sections.get(2).endPoint.getTop() + "), " +
-//			" )");
-		
 	}
 	
 	public boolean isGluedToConnectionPoint() {

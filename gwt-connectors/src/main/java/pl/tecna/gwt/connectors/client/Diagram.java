@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.elements.Connector;
+import pl.tecna.gwt.connectors.client.elements.ShapeConnectorStart;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Section;
 import pl.tecna.gwt.connectors.client.elements.Shape;
@@ -416,6 +417,35 @@ public class Diagram {
       int sectionOrientation; // 0 - vertical; 1 - horizontal
       
       @Override
+      public void previewDragStart() throws VetoDragException {
+        
+        if (context.draggable instanceof ShapeConnectorStart) {
+          ShapeConnectorStart ep = (ShapeConnectorStart) context.draggable;
+          if (ep.connector == null) {
+            ep.shape.endPoints.remove(ep);
+            ep.shape.hideShapeConnectorStartPionts();
+            ep.removeHandlers();
+            ep.removeStyle();
+            if (ep.connector == null) {
+//              ep.connector = createConnector(ep.getLeft(), ep.getTop(), ep.getLeft(), ep.getTop(), ep);
+              ep.setLeft(ep.getOverlapingCP().getCenterLeft());
+              ep.setTop(ep.getOverlapingCP().getCenterTop());
+              ep.connector = createConnector(
+                  ep.getOverlapingCP().getCenterLeft(), 
+                  ep.getOverlapingCP().getCenterTop(), 
+                  ep.getOverlapingCP().getCenterLeft(), 
+                  ep.getOverlapingCP().getCenterTop(), 
+                  ep);
+              ep.connector.endPointDecoration = ep.shape.getEndDecoration();
+              ep.connector.startPointDecoration = ep.shape.getStartDecoration();
+            }
+            ep.connector.startEndPoint.glueToConnectionPoint(ep.getOverlapingCP());
+          }
+        }
+        super.previewDragStart();
+      }
+      
+      @Override
       public void dragStart() {
         // remember Section orientations
 
@@ -447,8 +477,7 @@ public class Diagram {
             - context.boundaryPanel.getAbsoluteLeft());
         ((EndPoint) context.draggable).setTop(context.draggable.getAbsoluteTop() + 6
             - context.boundaryPanel.getAbsoluteTop());
-        if (!isCtrlPressed) {
-
+        if (isCtrlPressed) {
           // Redraw Connector
           if (sectionOrientation == VERTICAL) {
             ((EndPoint) context.draggable).updateOpositeEndPointOfVerticalSection();
@@ -464,11 +493,13 @@ public class Diagram {
       public void fixConnectorPath(EndPoint dragEndPoint) {
         Connector conn = dragEndPoint.connector;
         conn.calculateStandardPointsPositions();
+//        conn.logCornerPointsData();
         conn.drawSections();
       }
 
     };
     endPointDragController.setBehaviorConstrainedToBoundaryPanel(true);
+    endPointDragController.setBehaviorDragStartSensitivity(3);
 
     endPointDragController.addDragHandler(new DragHandlerAdapter() {
 
@@ -949,4 +980,7 @@ public class Diagram {
     this.enableEvents = enableEvents;
   }
   
+  protected Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint) {
+    return new Connector(startLeft, startTop, endLeft, endTop, endEndPoint, Diagram.this);
+  }
 }

@@ -13,7 +13,13 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,9 +31,13 @@ public class Shape extends FocusPanel implements Element{
    * @author Kamil Kurek
    *
    */
+
+  public static final int END_POINTS_VIS_DELAY = 1000;
   
   private Logger LOG = Logger.getLogger("Shape");
 
+  public List<EndPoint> endPoints;
+  
   public enum CPShapeType {
     OVAL,
     DIAMOND,
@@ -68,6 +78,15 @@ public class Shape extends FocusPanel implements Element{
    */
   public int translationX = 0;
   public int translationY = 0;
+  
+  private Timer endPointsShowTimer;
+  private boolean connectable = false;
+  
+  private HandlerRegistration showConnStartMouseHandler;
+  private HandlerRegistration hideConnStartMouseHandler;
+  
+  private SectionDecoration startDecoration;
+  private SectionDecoration endDecoration;
 
   public Shape(Widget w) {
 
@@ -80,6 +99,7 @@ public class Shape extends FocusPanel implements Element{
    * @param cpShapeType defines how connection points will be placed, when set to USER_DEFINED You have to override createUserDefinedShapeCP method
    */
   public Shape(Widget w, CPShapeType cpShapeType) {
+    this.endPoints = new ArrayList<EndPoint>();
     this.connectedWidget = w;
     this.cpShapeType = cpShapeType;
     this.setStylePrimaryName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
@@ -734,18 +754,99 @@ public class Shape extends FocusPanel implements Element{
     return enableOverlap;
   }
 
-  public void disableConnectors(boolean disable) {
-    if (disable) {
+  public void hideShapeConnectorStartPionts() {
+    if (!endPoints.isEmpty()) {
+      for (EndPoint ep : endPoints) {
+        ep.removeFromParent();
+        diagram.endPointDragController.makeNotDraggable(ep);
+      }
+      endPoints.clear();
+    }
+  }
+  
+  /**
+   * Controls showing end points for creating connection
+   * @param enable
+   */
+  public void enableConnectionCreate(boolean enable) {
+    if (enable) {
+      endPointsShowTimer = new Timer() {
+
+        @Override
+        public void run() {
+          hideShapeConnectorStartPionts();
+        }
+      };
+
+      MouseOverHandler showConnStartMouseOver = new MouseOverHandler() {
+
+        public void onMouseOver(MouseOverEvent event) {
+          endPointsShowTimer.cancel();
+          if (endPoints.isEmpty()) {
+            AbsolutePanel boundaryPanel = diagram.boundaryPanel;
+            for (ConnectionPoint cp : connectionPoints) {
+              if (cp.gluedEndPoints.size() == 0) {
+                Point cpPoint = getCPPosition(cp);
+                ShapeConnectorStart ep = new ShapeConnectorStart(cpPoint.getLeft(), cpPoint.getTop(), 
+                    Shape.this, endPointsShowTimer, cp);
+                boundaryPanel.add(ep, cpPoint.getLeft(), cpPoint.getTop());
+                diagram.endPointDragController.makeDraggable(ep);
+                endPoints.add(ep);
+              }
+            }
+          }
+        }
+      };
+
+      MouseOutHandler hideConnStartMouseOut = new MouseOutHandler() {
+
+        public void onMouseOut(MouseOutEvent event) {
+          endPointsShowTimer.schedule(END_POINTS_VIS_DELAY);
+        }
+      };
+
+      showConnStartMouseHandler = this.addMouseOverHandler(showConnStartMouseOver);
+      hideConnStartMouseHandler = this.addMouseOutHandler(hideConnStartMouseOut);
+    } else {
+      if (showConnStartMouseHandler != null) {
+        showConnStartMouseHandler.removeHandler();
+      }
+      if (hideConnStartMouseHandler != null) {
+        hideConnStartMouseHandler.removeHandler();
+      }
+    }
+  }
+  
+  public boolean isConnectable() {
+    return connectable;
+  }
+  
+  public void makeConnectable(boolean enable) {
+    connectable = enable;
+    if (enable) {
+      diagram.endPointDragController.registerDropController(shapeDropController);
+      diagram.shapeDragController.registerDropController(shapeDropController);
+    } else {
       try {
         diagram.endPointDragController.unregisterDropController(shapeDropController);
         diagram.shapeDragController.unregisterDropController(shapeDropController);
       } catch (Exception e) {
         LOG.log(Level.SEVERE, "error while disable connectors for shape", e);
       }
-    } else {
-      diagram.endPointDragController.registerDropController(shapeDropController);
-      diagram.shapeDragController.registerDropController(shapeDropController);
     }
+  }
+  
+  public void setConnectorDecorations(SectionDecoration startDecoration, SectionDecoration endDecoration) {
+    this.startDecoration = startDecoration;
+    this.endDecoration = endDecoration;
+  }
+  
+  public SectionDecoration getStartDecoration() {
+    return startDecoration;
+  }
+  
+  public SectionDecoration getEndDecoration() {
+    return endDecoration;
   }
 
 }

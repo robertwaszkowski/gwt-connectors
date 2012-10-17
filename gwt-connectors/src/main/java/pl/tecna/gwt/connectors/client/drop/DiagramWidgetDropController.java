@@ -39,7 +39,6 @@ public class DiagramWidgetDropController extends SimpleDropController {
 
   @Override
   public void onDrop(DragContext context) {
-    System.out.println(this.getClass().getName() + " metoda onDrop():");
     if (context.draggable instanceof EndPoint) {
       // Glue end point to the nearest connection point
       if (getDropTarget() instanceof Shape) {

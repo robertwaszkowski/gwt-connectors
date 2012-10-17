@@ -5,6 +5,8 @@ import java.util.List;
 
 import pl.tecna.gwt.connectors.client.elements.Shape;
 
+import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
+import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -23,6 +25,17 @@ public class CustomPickupDragController extends PickupDragController {
 		
 		super(boundaryPanel, allowDroppingOnBoundaryPanel);
 		dragableWidgets = new ArrayList<Widget>();
+		
+		addDragHandler(new DragHandlerAdapter() {
+		  
+		  @Override
+		  public void onPreviewDragStart(DragStartEvent event) {
+		    if (event.getContext().draggable instanceof Shape) {
+		      Shape shape = (Shape) event.getContext().draggable;
+		      shape.hideShapeConnectorStartPionts();
+ 		    }
+		  }  
+		});
 	}
 	
 	@Override

@@ -2,19 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>pl.tecna</groupId>
 	<artifactId>gwt-connectors-tester</artifactId>
 	<packaging>war</packaging>
 	<version>1.0</version>
-	
+
 	<name>GWT Connectors</name>
 
 	<properties>
 		<gwt.version>2.4.0</gwt.version>
-		
+
 		<plugin.gwt.version>2.4.0</plugin.gwt.version>
-		
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -25,7 +25,7 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -36,7 +36,7 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -52,12 +52,12 @@
 				<configuration>
 					<extraJvmArgs>-Xmx1024M -Xms512M -Xss4M</extraJvmArgs>
 					<logLevel>WARN</logLevel>
-					<runTarget>/</runTarget>
+					<runTarget>Connectors.html</runTarget>
 					<module>pl.tecna.gwt.connectors.example.Example</module>
 					<hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<configuration>
@@ -87,6 +87,7 @@
 
 	<!-- DEPENDENCIES SECTION -->
 	<dependencies>
+
 		<dependency>
 			<groupId>pl.tecna.gwt</groupId>
 			<artifactId>gwt-connectors</artifactId>

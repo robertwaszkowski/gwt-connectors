@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <module rename-to="example">
 
-	<!-- Specify the app entry point class.                   -->
-	<entry-point class='pl.tecna.gwt.connectors.example.client.Example'/>
+	<!-- Specify the app entry point class. -->
+	<entry-point class='pl.tecna.gwt.connectors.example.client.Example' />
 
-	<!-- Inherit the core Web Toolkit stuff.                  -->
-	<inherits name="com.google.gwt.user.User"/>
-	<inherits name='com.google.gwt.core.Core'/>
+	<!-- Inherit the core Web Toolkit stuff. -->
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name='com.google.gwt.core.Core' />
 	<inherits name="com.google.gwt.resources.Resources" />
-	
-	<!-- Inherit the gwt-connectors library configuration.	  -->
-   	<inherits name="pl.tecna.gwt.connectors.Connectors"/>
-	
+
+	<!-- Inherit the gwt-connectors library configuration. -->
+	<inherits name="pl.tecna.gwt.connectors.Connectors" />
+
 	<!-- Inherit the logging system -->
 	<inherits name='com.google.gwt.logging.Logging' />
-	<set-property name='gwt.logging.logLevel' value='ALL' /> 
+	<set-property name='gwt.logging.logLevel' value='ALL' />
 	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
+	<set-property name="gwt.logging.firebugHandler" value="ENABLED" />
 </module>

@@ -30,8 +30,8 @@ public class Connector implements Element {
 	public EndPoint startEndPoint;
 	public EndPoint endEndPoint;
 	public Diagram diagram;
-	private SectionDecoration startPointDecoration;
-	private SectionDecoration endPointDecoration;
+	public SectionDecoration startPointDecoration;
+	public SectionDecoration endPointDecoration;
 	
 	public List<SectionData> savedSectionsData;
 	
@@ -112,6 +112,46 @@ public class Connector implements Element {
 		init(startLeft, startTop, endLeft, endTop, startDecoration, endDecoration, new ArrayList<CornerPoint>());
 	}
 
+	public Connector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint, Diagram diagram) {
+
+    this.startEndPoint = new EndPoint(startLeft, startTop, this);
+    this.endEndPoint = endEndPoint;
+    endEndPoint.setLeft(endEndPoint.getLeft().intValue() + 5);
+    endEndPoint.setTop(endEndPoint.getTop().intValue() + 5);
+    this.startEndPoint.connector = this;
+    this.endEndPoint.connector = this;
+    
+    this.sections = new ArrayList<Section>();
+    this.cornerPoints = new ArrayList<CornerPoint>();
+    this.diagram = diagram;
+
+ // Add Connector to the Diagram
+    diagram.connectors.add(this);
+    
+    // Calculate standard corner points positions
+    if (cornerPoints.isEmpty()) {
+      calculateStandardPointsPositions();     
+    }
+
+    // Recreate Sections between start, end, and corner points
+    this.drawSections(cornerPoints, isSelected);
+
+    // Set start and end Sections decorated
+    sections.get(0).setStartPointDecoration(this.startPointDecoration);
+    sections.get(sections.size()-1).setEndPointDecoration(this.endPointDecoration);
+  
+    // Show startEndPoint and endEndPoint
+    startEndPoint.showOnDiagram(diagram); 
+
+    int connectorX =
+        diagram.boundaryPanel.getWidgetLeft(startEndPoint)
+            - diagram.boundaryPanel.getAbsoluteLeft();
+    int connectorY =
+        diagram.boundaryPanel.getWidgetTop(startEndPoint)
+            - diagram.boundaryPanel.getAbsoluteTop();
+    diagram.onDiagramAdd(new DiagramAddEvent(this, connectorX, connectorY));
+	}
+	
 	private void init (int startLeft, int startTop, int endLeft, int endTop, 
 			SectionDecoration startDecoration, SectionDecoration endDecoration, ArrayList<CornerPoint> cornerPoints) {
 		
@@ -611,9 +651,8 @@ public class Connector implements Element {
 			  //LOG.i(section.toDebugString());
 				section.removeFromDiagram();
 			}
-			
+
 			sections.clear();
-			//LOG.i(cp.size()+" - size");
       Section startSection = new Section(startEndPoint, cp.get(0), this);
       if (this.startPointDecoration != null) {
         startSection.startPointDecoration = startPointDecoration;
@@ -623,23 +662,23 @@ public class Connector implements Element {
       for (int i = 0; i < cp.size() - 1; i++) {
         sections.add(new Section(cp.get(i), cp.get(i + 1), this));
       }
-      
+
       Section endSection = new Section(cp.get(cp.size() - 1), endEndPoint, this);
       if (this.endPointDecoration != null) {
         endSection.endPointDecoration = this.endPointDecoration;
       }
       sections.add(endSection);
-      
+
 			for (Section section : sections) {
 				section.showOnDiagram(diagram, isSelected);
 			}
-			
 			refreshCursorStyles();
 		} catch (IllegalArgumentException e) {
+		  logCornerPointsData();
 			this.calculateStandardPointsPositions();
 			LOG.log(Level.SEVERE, "Section must be horizontal or vertical, calculating standard connection points", e);
 			//TODO Do this more gentle
-			drawSections(cornerPoints, isSelected);
+//			drawSections(cornerPoints, isSelected);
 		}
 	}
 	

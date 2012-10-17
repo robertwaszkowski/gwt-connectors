@@ -69,7 +69,7 @@ public class Section extends HTML {
 			//LOG.i("Start :" + startPoint.getLeft() + " " + startPoint.getTop() + " end:" + endPoint.getLeft() + " " + endPoint.getTop());
 			//LOG.w("Section is not horizontal");
 			connector.calculateStandardPointsPositions();
-			connector.drawSections();
+//			connector.drawSections();
 			throw new IllegalArgumentException("Sections must be horizontal or vertical! " + "Start :" + startPoint.getLeft() + " " + startPoint.getTop() + " end:" + endPoint.getLeft() + " " + endPoint.getTop());
 		}
 		

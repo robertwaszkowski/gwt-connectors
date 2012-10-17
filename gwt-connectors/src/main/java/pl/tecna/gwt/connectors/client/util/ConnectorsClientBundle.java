@@ -3,7 +3,6 @@ package pl.tecna.gwt.connectors.client.util;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.CssResource.NotStrict;
 
 public interface ConnectorsClientBundle extends ClientBundle {
   
@@ -23,6 +22,15 @@ public interface ConnectorsClientBundle extends ClientBundle {
     
     @ClassName("dragdrop-positioner")
     public String positioner();    
+
+    @ClassName("dragdrop-selected")
+    public String dragdropSelected(); 
+
+    @ClassName("dragdrop-dragging")
+    public String dragdropDragging(); 
+
+    @ClassName("dragdrop-proxy")
+    public String dragdropProxy (); 
     
     @ClassName("gwt-connectors-widget-padding-selected")
     public String widgetPaddingSelected();
@@ -39,23 +47,16 @@ public interface ConnectorsClientBundle extends ClientBundle {
     @ClassName("gwt-connectors-selection-panel")
     public String selectionPanel();  
 
-    @ClassName("dragdrop-selected")
-    public String dragdropSelected(); 
-
-    @ClassName("dragdrop-dragging")
-    public String dragdropDragging(); 
-
-    @ClassName("dragdrop-proxy")
-    public String dragdropProxy (); 
-
     @ClassName("x-unselectable")
     public String xUnselectable(); 
+    
+    @ClassName("gwt-connectors-shape-connector-start")
+    public String gwtConnectorsShapeConnectorStart();
 
   }
   
   static final ConnectorsClientBundle INSTANCE = GWT.create(ConnectorsClientBundle.class);
   
-  @NotStrict
   @Source("gwt-connectors.css")
   ConnectorsCssResource css();
   

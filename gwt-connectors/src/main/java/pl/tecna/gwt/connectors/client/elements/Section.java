@@ -80,7 +80,7 @@ public class Section extends HTML {
 		addMouseDownHandler(new MouseDownHandler() {
       
       public void onMouseDown(MouseDownEvent event) {
-        if (!Section.this.connector.diagram.isCtrlPressed) {
+        if (!Section.this.connector.diagram.ctrlPressed) {
           Section.this.connector.diagram.deselectAllSections();
           Section.this.connector.diagram.shapeDragController.clearSelection();
         }

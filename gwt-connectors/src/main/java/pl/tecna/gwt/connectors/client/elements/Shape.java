@@ -302,11 +302,19 @@ public class Shape extends FocusPanel implements Element{
   }
 
   public ConnectionPoint findNearestConnectionPoint(int absLeft, int absTop) {
+    return findNearestConnectionPoint(absLeft, absTop, new ArrayList<ConnectionPoint>());
+  }
+  
+  public ConnectionPoint findNearestConnectionPoint(int absLeft, int absTop, List<ConnectionPoint> excluded) {
+    
+    if (excluded == null) {
+      excluded = new ArrayList<ConnectionPoint>();
+    }
     ConnectionPoint retCP = null;
     int distance = Integer.MAX_VALUE;
     for (ConnectionPoint cp : connectionPoints) {
       int tempDist = Math.abs(absLeft - (cp.getAbsoluteLeft() + cp.getOffsetWidth() / 2)) + Math.abs(absTop - (cp.getAbsoluteTop() + cp.getOffsetHeight() / 2));
-      if (tempDist < distance) {
+      if (tempDist < distance && !excluded.contains(cp)) {
         distance = tempDist;
         retCP = cp;
       }
@@ -316,17 +324,13 @@ public class Shape extends FocusPanel implements Element{
   }
 
   public ConnectionPoint findNearestFreeConnectionPoint(int absLeft, int absTop) {
-    ConnectionPoint retCP = null;	
-    int distance = Integer.MAX_VALUE;
-    
+    List<ConnectionPoint> excluded = new ArrayList<ConnectionPoint>();
     for (ConnectionPoint cp : connectionPoints) {
-      int tempDist = Math.abs(absLeft - (cp.getAbsoluteLeft() + cp.getOffsetWidth() / 2)) + Math.abs(absTop - (cp.getAbsoluteTop() + cp.getOffsetHeight() / 2));
-      if (tempDist < distance && cp.gluedEndPoints.size() == 0) {
-        distance = tempDist;
-        retCP = cp;
+      if (cp.gluedEndPoints != null && cp.gluedEndPoints.size() != 0) {
+        excluded.add(cp);
       }
     }
-    return retCP;
+    return findNearestConnectionPoint(absLeft, absTop, excluded);
   }
 
   private List<ConnectionPoint> createRectangleShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {

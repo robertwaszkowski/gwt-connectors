@@ -2,14 +2,13 @@ package pl.tecna.gwt.connectors.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import pl.tecna.gwt.connectors.client.drag.EndPointDragController;
 import pl.tecna.gwt.connectors.client.elements.Connector;
-import pl.tecna.gwt.connectors.client.elements.ShapeConnectorStart;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Section;
 import pl.tecna.gwt.connectors.client.elements.Shape;
@@ -23,14 +22,11 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
-import pl.tecna.gwt.connectors.client.util.CustomPickupDragController;
+import pl.tecna.gwt.connectors.client.util.ShapePickupDragController;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
-import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -61,8 +57,9 @@ public class Diagram {
   private DiagramModeListener modeListener;
   private boolean enableEvents = true;
 
-  public CustomPickupDragController shapeDragController;
-  public PickupDragController endPointDragController;
+  public ShapePickupDragController shapeDragController;
+//  public PickupDragController endPointDragController;
+  public EndPointDragController endPointDragController;
   
   public AbsolutePanel boundaryPanel;
 
@@ -81,12 +78,12 @@ public class Diagram {
   /**
    * Helper list, contains list of selected Widgets
    */
-  List<Widget> selectedWidgets = new ArrayList<Widget>();
+  public List<Widget> selectedWidgets = new ArrayList<Widget>();
 
   /**
    * Defines whether Ctrl key is currently pressed.
    */
-  public boolean isCtrlPressed = false;
+  public boolean ctrlPressed = false;
   
   public Diagram(AbsolutePanel boundaryPanel) {
     super();
@@ -167,7 +164,7 @@ public class Diagram {
       @Override
       public void onKeyDown(int key, Event e) {
 
-        isCtrlPressed = e.getCtrlKey();
+        ctrlPressed = e.getCtrlKey();
       }
 
       public void onKeyUp(int key, Event e) {
@@ -178,7 +175,7 @@ public class Diagram {
           }
 
         }   
-        isCtrlPressed = e.getCtrlKey();
+        ctrlPressed = e.getCtrlKey();
       }
     });
 
@@ -187,142 +184,7 @@ public class Diagram {
     shapes = new ArrayList<Shape>();
 
     // Create drag controller to control shapes dragging
-    shapeDragController = new CustomPickupDragController(boundaryPanel, true) {
-
-      private int startX = 0;
-      private int startY = 0;
-
-      // @override changes deselect style
-      public void clearSelection() {
-
-        deselectAllSections();
-        for (Iterator<Widget> iterator = context.selectedWidgets.iterator(); iterator.hasNext();) {
-          Widget widget = iterator.next();
-          
-          widget.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
-          widget.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
-          if (!(widget instanceof Shape)) {
-            widget.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
-            widget.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
-          }
-          iterator.remove();
-        }
-      }
-
-      // @override, changes selection style
-      public void toggleSelection(com.google.gwt.user.client.ui.Widget draggable) {
-
-        if (!isCtrlPressed) {
-          deselectAllSections();
-        }
-        assert draggable != null;
-        if (context.selectedWidgets.remove(draggable)) {
-          draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
-          draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
-          if (!(draggable instanceof Shape)) {
-            draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
-            draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
-          }
-        } else {
-          context.selectedWidgets.add(draggable);
-          draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
-          draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
-          if (!(draggable instanceof Shape)) {
-            draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
-            draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
-          }
-        }
-
-      };
-
-      public void previewDragStart() throws VetoDragException {
-
-        startX =
-            Diagram.this.boundaryPanel.getWidgetLeft(context.draggable)
-                - Diagram.this.boundaryPanel.getAbsoluteLeft();
-        startY =
-            Diagram.this.boundaryPanel.getWidgetTop(context.draggable)
-                - Diagram.this.boundaryPanel.getAbsoluteTop();
-        
-        for (Widget widget : Diagram.this.shapeDragController.getSelectedWidgets()) {
-          if (widget instanceof Shape) {
-            Shape shape = (Shape) widget;
-            for (ConnectionPoint cp : shape.connectionPoints) {
-              for (EndPoint ep : cp.gluedEndPoints) {
-                ep.connector.rememberSectionsPositions();
-              }
-            }
-          }
-        }
-
-        super.previewDragStart();
-      };
-
-      @Override
-      public void dragMove() {
-        // Update all glued connectors while dragging shape
-        // Update glued end points positions and update connector
-        // TODO
-        selectedWidgets = context.selectedWidgets;
-        for (Widget widget : context.selectedWidgets) {
-          if (widget instanceof Shape) {
-            Shape shape = (Shape) widget;
-            shape.setTranslationX(context.desiredDraggableX - startX
-                - Diagram.this.boundaryPanel.getAbsoluteLeft());
-            shape.setTranslationY(context.desiredDraggableY - startY
-                - Diagram.this.boundaryPanel.getAbsoluteTop());
-            for (ConnectionPoint cp : shape.connectionPoints) {
-              for (EndPoint ep : cp.gluedEndPoints) {
-                if (isCtrlPressed) {
-
-                  ep.setLeft(cp.getCenterLeft());
-                  ep.setTop(cp.getCenterTop());
-                  ep.connector.calculateStandardPointsPositions();
-                  ep.connector.drawSections();
-
-                } else {
-                  // moving multiple selected elements
-                  if (ep.connector.startEndPoint.isGluedToConnectionPoint()
-                      && ep.connector.endEndPoint.isGluedToConnectionPoint()
-                      && context.selectedWidgets
-                          .contains(ep.connector.startEndPoint.gluedConnectionPoint
-                              .getParentShape())
-                      && context.selectedWidgets
-                          .contains(ep.connector.endEndPoint.gluedConnectionPoint.getParentShape())) {
-
-                    ep.connector.moveOffsetFromStartPos(context.desiredDraggableX - startX
-                        - Diagram.this.boundaryPanel.getAbsoluteLeft(), context.desiredDraggableY
-                        - startY - Diagram.this.boundaryPanel.getAbsoluteTop());
-                  } else {
-                    // one element selected
-                    
-                    // if (!shape.isOnThisShape(lastSection)) {
-                    // LOG.d("Section is not on shape");
-                    boolean vertical = false;
-                    if (ep.connector.prevSectionForPoint(ep) != null) {
-                      vertical = ep.connector.prevSectionForPoint(ep).isVertical();
-                    } else {
-                      vertical = ep.connector.nextSectionForPoint(ep).isVertical();
-                    }
-                    ep.setLeft(cp.getCenterLeft());
-                    ep.setTop(cp.getCenterTop());
-                    if (vertical) {
-                      ep.updateOpositeEndPointOfVerticalSection();
-                    } else {
-                      ep.updateOpositeEndPointOfHorizontalSection();
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        
-        super.dragMove();
-      }
-      
-    };
-
+    shapeDragController = new ShapePickupDragController(boundaryPanel, true, Diagram.this);
     shapeDragController.setBehaviorDragStartSensitivity(2);
     shapeDragController.setBehaviorConstrainedToBoundaryPanel(true);
     shapeDragController.setBehaviorMultipleSelection(true);
@@ -353,7 +215,7 @@ public class Diagram {
         }
         if (widget instanceof Shape) {
           Shape shape = (Shape) event.getContext().draggable;
-          if (!isCtrlPressed) {
+          if (!ctrlPressed) {
             fixShapePosition(shape);
 
             for (ConnectionPoint cp : shape.connectionPoints) {
@@ -411,96 +273,9 @@ public class Diagram {
     });
     
     // Create drag controller to control end point dragging
-    endPointDragController = new PickupDragController(this.boundaryPanel, true) {
-      final int VERTICAL = 0;
-      final int HORIZONTAL = 1;
-      int sectionOrientation; // 0 - vertical; 1 - horizontal
-      
-      @Override
-      public void previewDragStart() throws VetoDragException {
-        
-        if (context.draggable instanceof ShapeConnectorStart) {
-          ShapeConnectorStart ep = (ShapeConnectorStart) context.draggable;
-          if (ep.connector == null) {
-            ep.shape.endPoints.remove(ep);
-            ep.shape.hideShapeConnectorStartPionts();
-            ep.removeHandlers();
-            ep.removeStyle();
-            if (ep.connector == null) {
-//              ep.connector = createConnector(ep.getLeft(), ep.getTop(), ep.getLeft(), ep.getTop(), ep);
-              ep.setLeft(ep.getOverlapingCP().getCenterLeft());
-              ep.setTop(ep.getOverlapingCP().getCenterTop());
-              ep.connector = createConnector(
-                  ep.getOverlapingCP().getCenterLeft(), 
-                  ep.getOverlapingCP().getCenterTop(), 
-                  ep.getOverlapingCP().getCenterLeft(), 
-                  ep.getOverlapingCP().getCenterTop(), 
-                  ep);
-              ep.connector.endPointDecoration = ep.shape.getEndDecoration();
-              ep.connector.startPointDecoration = ep.shape.getStartDecoration();
-            }
-            ep.connector.startEndPoint.glueToConnectionPoint(ep.getOverlapingCP());
-          }
-        }
-        super.previewDragStart();
-      }
-      
-      @Override
-      public void dragStart() {
-        // remember Section orientations
-
-        if (((((EndPoint) context.draggable).connector
-            .findSectionWithThisEndPoint((EndPoint) context.draggable) != null) && ((((EndPoint) context.draggable).connector
-            .findSectionWithThisEndPoint((EndPoint) context.draggable).isHorizontal())))
-            || ((((EndPoint) context.draggable).connector
-                .findSectionWithThisStartPoint((EndPoint) context.draggable) != null) && ((((EndPoint) context.draggable).connector
-                .findSectionWithThisStartPoint((EndPoint) context.draggable).isHorizontal())))) {
-          sectionOrientation = HORIZONTAL;
-        }
-        if (((((EndPoint) context.draggable).connector
-            .findSectionWithThisEndPoint((EndPoint) context.draggable) != null) && ((((EndPoint) context.draggable).connector
-            .findSectionWithThisEndPoint((EndPoint) context.draggable).isVertical())))
-            || ((((EndPoint) context.draggable).connector
-                .findSectionWithThisStartPoint((EndPoint) context.draggable) != null) && ((((EndPoint) context.draggable).connector
-                .findSectionWithThisStartPoint((EndPoint) context.draggable).isVertical())))) {
-          sectionOrientation = VERTICAL;
-        }
-        super.dragStart();
-      }
-
-      @Override
-      public void dragMove() {
-        
-        ((EndPoint) context.draggable).connector.select();
-        // Update left and top position for dragged EndPoint
-        ((EndPoint) context.draggable).setLeft(context.draggable.getAbsoluteLeft() + 6
-            - context.boundaryPanel.getAbsoluteLeft());
-        ((EndPoint) context.draggable).setTop(context.draggable.getAbsoluteTop() + 6
-            - context.boundaryPanel.getAbsoluteTop());
-        if (isCtrlPressed) {
-          // Redraw Connector
-          if (sectionOrientation == VERTICAL) {
-            ((EndPoint) context.draggable).updateOpositeEndPointOfVerticalSection();
-          } else if (sectionOrientation == HORIZONTAL) {
-            ((EndPoint) context.draggable).updateOpositeEndPointOfHorizontalSection();
-          }
-        } else {
-          fixConnectorPath((EndPoint) context.draggable);
-        }
-        super.dragMove();
-      }
-
-      public void fixConnectorPath(EndPoint dragEndPoint) {
-        Connector conn = dragEndPoint.connector;
-        conn.calculateStandardPointsPositions();
-//        conn.logCornerPointsData();
-        conn.drawSections();
-      }
-
-    };
+    endPointDragController = new EndPointDragController(this.boundaryPanel, true, Diagram.this);
     endPointDragController.setBehaviorConstrainedToBoundaryPanel(true);
     endPointDragController.setBehaviorDragStartSensitivity(3);
-
     endPointDragController.addDragHandler(new DragHandlerAdapter() {
 
       @Override
@@ -926,7 +701,7 @@ public class Diagram {
 
         boolean isOnElement = isOnElement(clickPoint, Diagram.this);
 
-        if (!isCtrlPressed && !isOnElement) {
+        if (!ctrlPressed && !isOnElement) {
           shapeDragController.clearSelection();
           for (Connector conn : connectors) {
             if (conn.isSelected) {
@@ -947,7 +722,7 @@ public class Diagram {
   
   public void setSelectedPoint(Point point){
     boolean isOnElement = isOnElement(point, Diagram.this);
-    if (!isCtrlPressed && !isOnElement) {
+    if (!ctrlPressed && !isOnElement) {
       shapeDragController.clearSelection();
       for (Connector conn : connectors) {
         if (conn.isSelected) {
@@ -980,7 +755,7 @@ public class Diagram {
     this.enableEvents = enableEvents;
   }
   
-  protected Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint) {
+  public Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint) {
     return new Connector(startLeft, startTop, endLeft, endTop, endEndPoint, Diagram.this);
   }
 }

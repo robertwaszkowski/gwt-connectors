@@ -33,22 +33,30 @@ public class EndPointDragController extends PickupDragController {
     //create new connector for dragged ShapeConnectorStart
     if (context.draggable instanceof ShapeConnectorStart) {
       ShapeConnectorStart ep = (ShapeConnectorStart) context.draggable;
+      ep.setLeft(context.draggable.getAbsoluteLeft() + 6
+          - context.boundaryPanel.getAbsoluteLeft());
+      ep.setTop(context.draggable.getAbsoluteTop() + 6
+          - context.boundaryPanel.getAbsoluteTop());
+      
       if (ep.connector == null) {
         ep.shape.endPoints.remove(ep);
         ep.shape.hideShapeConnectorStartPionts();
         ep.removeHandlers();
         ep.removeStyle();
         if (ep.connector == null) {
-          ep.setLeft(ep.getOverlapingCP().getCenterLeft());
-          ep.setTop(ep.getOverlapingCP().getCenterTop());
+          int startLeft = ep.getOverlapingCP().getCenterLeft();
+          int startTop = ep.getOverlapingCP().getCenterTop();
+          int endLeft = ep.getLeft();
+          int endTop = ep.getTop();
+          if (startLeft == endLeft && startTop == endTop) {
+            startLeft += 2;
+          }
           ep.connector = diagram.createConnector(
-              ep.getOverlapingCP().getCenterLeft(), 
-              ep.getOverlapingCP().getCenterTop(), 
-              ep.getOverlapingCP().getCenterLeft(), 
-              ep.getOverlapingCP().getCenterTop(), 
+              startLeft, 
+              startTop, 
+              endLeft, 
+              endTop, 
               ep);
-          ep.connector.endPointDecoration = ep.shape.getEndDecoration();
-          ep.connector.startPointDecoration = ep.shape.getStartDecoration();
         }
         ep.connector.startEndPoint.glueToConnectionPoint(ep.getOverlapingCP());
       }
@@ -119,7 +127,6 @@ public class EndPointDragController extends PickupDragController {
       }
       ConnectionPoint nearestCP = shape.findNearestConnectionPoint(dragEndPoint.getLeft(), dragEndPoint.getTop(), excluded);
       if (nearestCP != null && nearestCP != conn.startEndPoint.gluedConnectionPoint) {
-        LOG.fine("Change connection to other ConnectionPoint");
         conn.startEndPoint.unglueFromConnectionPoint();
         conn.startEndPoint.glueToConnectionPoint(nearestCP);
         conn.startEndPoint.setLeft(nearestCP.getCenterLeft());

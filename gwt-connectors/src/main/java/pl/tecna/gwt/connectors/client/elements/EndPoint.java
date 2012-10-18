@@ -43,6 +43,7 @@ public class EndPoint extends Point {
 	
 	public EndPoint(Integer left, Integer top) {
 	  super(left, top);
+    this.setGluedToConnectionPoint(false);
     this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.end_point()).createImage());
     this.getElement().getStyle().setZIndex(3);
 	}

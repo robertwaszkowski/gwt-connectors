@@ -1,5 +1,7 @@
 package pl.tecna.gwt.connectors.client.drop;
 
+import java.util.logging.Logger;
+
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
@@ -11,6 +13,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DiagramWidgetDropController extends SimpleDropController {
 
+  private final Logger LOG = Logger.getLogger("DiagramWidgetDropController");
+  
   public DiagramWidgetDropController(Widget dropTarget) {
     super(dropTarget);
   }
@@ -20,7 +24,13 @@ public class DiagramWidgetDropController extends SimpleDropController {
     if (context.draggable instanceof EndPoint) {
       if (getDropTarget() instanceof Shape) {
         Shape dropTarget = (Shape) getDropTarget();
-        dropTarget.showConnectionPoints(dropTarget.diagram);
+        EndPoint ep = (EndPoint) context.draggable;
+        if (ep.connector.startEndPoint.isGluedToConnectionPoint() && 
+            ep.connector.startEndPoint.gluedConnectionPoint.getParentShape().equals(dropTarget)) {
+          
+        } else {
+          dropTarget.showConnectionPoints(dropTarget.diagram);
+        }
       }
     }
     super.onEnter(context);
@@ -44,11 +54,7 @@ public class DiagramWidgetDropController extends SimpleDropController {
       if (getDropTarget() instanceof Shape) {
         Shape dropTarget = (Shape) getDropTarget();
         EndPoint endPoint = (EndPoint) context.draggable;
-
-        endPoint.glueToConnectionPoint(dropTarget.findNearestConnectionPoint(context.draggable
-            .getAbsoluteLeft()
-            + (context.draggable.getOffsetWidth() / 2), context.draggable.getAbsoluteTop()
-            + (context.draggable.getOffsetWidth() / 2)));
+        endPoint.glueToConnectionPoint(dropTarget.findNearestFreeConnectionPoint(endPoint.getLeft(), endPoint.getTop()));
 
         // Unglue if EndPoints are glued to the same element
         Connector conn = endPoint.connector;

@@ -170,7 +170,8 @@ public class ConnectionPoint extends FocusPanel {
 	public int getCenterLeft() {
 		
 		if (this.getParentShape().diagram != null) {
-			return (this.getAbsoluteLeft() - this.getParentShape().diagram.boundaryPanel.getAbsoluteLeft() + (int)Math.floor((double)((double)this.getOffsetWidth() / (double)2)));
+			return (this.getAbsoluteLeft() - this.getParentShape().diagram.boundaryPanel.getAbsoluteLeft() + 
+			    (int)Math.floor((double)((double)this.getOffsetWidth() / (double)2)));
 		} else {
 			return -1;
 		}

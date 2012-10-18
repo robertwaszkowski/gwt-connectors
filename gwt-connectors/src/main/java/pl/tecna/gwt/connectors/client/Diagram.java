@@ -11,6 +11,7 @@ import pl.tecna.gwt.connectors.client.drag.EndPointDragController;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Section;
+import pl.tecna.gwt.connectors.client.elements.SectionDecoration;
 import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.listeners.DiagramListener;
 import pl.tecna.gwt.connectors.client.listeners.DiagramModeListener;
@@ -58,7 +59,6 @@ public class Diagram {
   private boolean enableEvents = true;
 
   public ShapePickupDragController shapeDragController;
-//  public PickupDragController endPointDragController;
   public EndPointDragController endPointDragController;
   
   public AbsolutePanel boundaryPanel;
@@ -275,7 +275,7 @@ public class Diagram {
     // Create drag controller to control end point dragging
     endPointDragController = new EndPointDragController(this.boundaryPanel, true, Diagram.this);
     endPointDragController.setBehaviorConstrainedToBoundaryPanel(true);
-    endPointDragController.setBehaviorDragStartSensitivity(3);
+    endPointDragController.setBehaviorDragStartSensitivity(4);
     endPointDragController.addDragHandler(new DragHandlerAdapter() {
 
       @Override
@@ -461,7 +461,6 @@ public class Diagram {
   }
 
   private void deleteSelectedElements() {
-    LOG.fine("deleteSelectedElements");
     List<Object> removedElList = new ArrayList<Object>();
     for (Widget widget : shapeDragController.getSelectedWidgets()) {
       removedElList.add(widget);
@@ -677,7 +676,7 @@ public class Diagram {
           int endLeft = 0;
           int endTop = 0;
           // set diagram drag mode false if connector EndPoint is dragged
-          for (pl.tecna.gwt.connectors.client.elements.Connector connector : connectors) {
+          for (Connector connector : connectors) {
             startLeft =
                 connector.startEndPoint.getAbsoluteLeft() - boundaryPanel.getAbsoluteLeft();
             startTop =
@@ -756,6 +755,7 @@ public class Diagram {
   }
   
   public Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint) {
-    return new Connector(startLeft, startTop, endLeft, endTop, endEndPoint, Diagram.this);
+    SectionDecoration endDecoration = new SectionDecoration(SectionDecoration.DECORATE_ARROW);
+    return new Connector(startLeft, startTop, endLeft, endTop, null, endDecoration, endEndPoint, Diagram.this);
   }
 }

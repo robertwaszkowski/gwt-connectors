@@ -86,10 +86,13 @@ public class Example implements EntryPoint {
 		final Label label2 = new Label("LABEL_2");
 		final Image image = new Image("http://code.google.com/images/code_sm.png");
 
+		final Label label3 = new Label("LABEL_3 Test Longer Label with rectangle connection points");
+
 		image.setPixelSize(153, 55);
 
 		boundaryPanel.add(label, 50, 250);
 		boundaryPanel.add(label2, 450, 200);
+		boundaryPanel.add(label3, 700, 500);
 
 		Shape shapeForLabel = new Shape(label, CPShapeType.DIAMOND);
 		shapeForLabel.showOnDiagram(diagram);
@@ -99,6 +102,11 @@ public class Example implements EntryPoint {
 		Shape shapeForLabel2 = new Shape(label2, CPShapeType.OVAL);
 		shapeForLabel2.showOnDiagram(diagram);
 		shapeForLabel2.setTitle("shapeForLabel2");
+		
+		Shape shapeForLabel3 = new Shape(label3, CPShapeType.RECTANGLE);
+		shapeForLabel3.showOnDiagram(diagram);
+		shapeForLabel3.setTitle("shapeForLabel");
+		shapeForLabel3.enableConnectionCreate(true);
 
 		Shape shapeForDiamond = new Shape(diamond, CPShapeType.DIAMOND);
 		shapeForDiamond.setEnableOverlap(true);

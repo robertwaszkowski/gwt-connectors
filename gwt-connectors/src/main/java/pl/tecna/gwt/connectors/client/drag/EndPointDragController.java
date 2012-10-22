@@ -33,6 +33,7 @@ public class EndPointDragController extends PickupDragController {
     //create new connector for dragged ShapeConnectorStart
     if (context.draggable instanceof ShapeConnectorStart) {
       ShapeConnectorStart ep = (ShapeConnectorStart) context.draggable;
+      ep.setWidget(ep.createEndPointImage());
       ep.setLeft(getDraggableCenterLeft(ep));
       ep.setTop(getDraggableCenterTop(ep));
       

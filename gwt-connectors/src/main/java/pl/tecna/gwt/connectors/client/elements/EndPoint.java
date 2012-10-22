@@ -13,6 +13,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 
 public class EndPoint extends Point {
 
@@ -147,7 +148,7 @@ public class EndPoint extends Point {
 		this.gluedToConnectionPoint = gluedToConnectionPoint;
 	}
 	
-	private Image createImage() {
+	protected Widget createImage() {
 	  Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.end_point()).createImage();
     img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
 	  return img;

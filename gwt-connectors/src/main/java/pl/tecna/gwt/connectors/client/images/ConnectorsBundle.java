@@ -59,4 +59,7 @@ public interface ConnectorsBundle extends ClientBundle {
 	//For test cases
 	@Source("diamond.png")
     ImageResource diamondImg();
+	
+	@Source("shape_connector_start.png")
+  ImageResource shapeConnectorStart();
 }

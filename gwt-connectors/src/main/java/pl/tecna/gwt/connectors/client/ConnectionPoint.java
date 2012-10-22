@@ -54,7 +54,6 @@ public class ConnectionPoint extends FocusPanel {
 		Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point()).createImage();
     img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
 		this.setWidget(img);
-		//this.getElement().setClassName("x-unselectable");
 		this.position = 1;
 		this.getElement().getStyle().setZIndex(2);
 	}
@@ -148,31 +147,7 @@ public class ConnectionPoint extends FocusPanel {
     this.setWidget(img);
 		
 	}
-	/**
-	 * Gets {@link ConnectionPoint}'s left position on {@link AbsolutePanel}
-	 * @return distance from left side of {@link AbsolutePanel} to this {@link ConnectionPoint}
-	 */
-	public int getRelLeft() {
-		if (this.getParentShape().diagram != null) {
-			return this.getAbsoluteLeft() - this.getParentShape().diagram.boundaryPanel.getAbsoluteLeft();
-		} else {
-			return -1;
-		}
-	}
-	
-	/**
-	 * Gets {@link ConnectionPoint}'s top position on {@link AbsolutePanel}
-	 * @return distance from top side of {@link AbsolutePanel} to this {@link ConnectionPoint}
-	 */
-	public int getRelTop() {
-		
-		if (this.getParentShape().diagram != null) {
-			return this.getAbsoluteTop() - this.getParentShape().diagram.boundaryPanel.getAbsoluteTop();
-		} else {
-			return -1;
-		}
-	}
-	
+
 	/**
 	 * Gets left coordinate of this {@link ConnectionPoint}'s center position on {@link AbsolutePanel} </br>
 	 * Useful to define {@link Connector} end point left coordinate

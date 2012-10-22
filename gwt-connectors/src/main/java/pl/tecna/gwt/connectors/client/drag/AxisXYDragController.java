@@ -1,4 +1,4 @@
-package pl.tecna.gwt.connectors.client.drop;
+package pl.tecna.gwt.connectors.client.drag;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
@@ -36,125 +36,125 @@ import java.util.Iterator;
  * @see #registerDropController(DropController)
  */
 public class AxisXYDragController extends AbstractDragController {
-	
-	class DropControllerCollection {
-		  protected class Candidate implements Comparable<Candidate> {
 
-			    private final DropController dropController;
+  class DropControllerCollection {
+    protected class Candidate implements Comparable<Candidate> {
 
-			    private final Area targetArea;
+      private final DropController dropController;
 
-			    Candidate(DropController dropController) {
-			      this.dropController = dropController;
-			      Widget target = dropController.getDropTarget();
-			      if (!target.isAttached()) {
-			        throw new IllegalStateException(
-			            "Unattached drop target. You must call DragController#unregisterDropController for all drop targets not attached to the DOM.");
-			      }
-			      targetArea = new WidgetArea(target, null);
-			    }
+      private final Area targetArea;
 
-			    public int compareTo(Candidate other) {
-			      Element myElement = getDropTarget().getElement();
-			      Element otherElement = other.getDropTarget().getElement();
-			      if (myElement == otherElement) {
-			        return 0;
-			      } else if (DOM.isOrHasChild(myElement, otherElement)) {
-			        return -1;
-			      } else if (DOM.isOrHasChild(otherElement, myElement)) {
-			        return 1;
-			      } else {
-			        return 0;
-			      }
-			    }
+      Candidate(DropController dropController) {
+        this.dropController = dropController;
+        Widget target = dropController.getDropTarget();
+        if (!target.isAttached()) {
+          throw new IllegalStateException(
+              "Unattached drop target. You must call DragController#unregisterDropController for all drop targets not attached to the DOM.");
+        }
+        targetArea = new WidgetArea(target, null);
+      }
 
-			    @Override
-			    public boolean equals(Object other) {
-			      throw new RuntimeException("hash code not implemented");
-			    }
+      public int compareTo(Candidate other) {
+        Element myElement = getDropTarget().getElement();
+        Element otherElement = other.getDropTarget().getElement();
+        if (myElement == otherElement) {
+          return 0;
+        } else if (DOM.isOrHasChild(myElement, otherElement)) {
+          return -1;
+        } else if (DOM.isOrHasChild(otherElement, myElement)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
 
-			    @Override
-			    public int hashCode() {
-			      throw new RuntimeException("hash code not implemented");
-			    }
+      @Override
+      public boolean equals(Object other) {
+        throw new RuntimeException("hash code not implemented");
+      }
 
-			    DropController getDropController() {
-			      return dropController;
-			    }
+      @Override
+      public int hashCode() {
+        throw new RuntimeException("hash code not implemented");
+      }
 
-			    Widget getDropTarget() {
-			      return dropController.getDropTarget();
-			    }
+      DropController getDropController() {
+        return dropController;
+      }
 
-			    Area getTargetArea() {
-			      return targetArea;
-			    }
-			  }
+      Widget getDropTarget() {
+        return dropController.getDropTarget();
+      }
 
-			  private final ArrayList<DropController> dropControllerList;
+      Area getTargetArea() {
+        return targetArea;
+      }
+    }
 
-			  private Candidate[] sortedCandidates = null;
+    private final ArrayList<DropController> dropControllerList;
 
-			  /**
-			   * Default constructor.
-			   */
-			  DropControllerCollection(ArrayList<DropController> dropControllerList) {
-			    this.dropControllerList = dropControllerList;
-			  }
+    private Candidate[] sortedCandidates = null;
 
-			  /**
-			   * Determines which DropController represents the deepest DOM descendant
-			   * drop target located at the provided location <code>(x, y)</code>.
-			   * 
-			   * @param x offset left relative to document body
-			   * @param y offset top relative to document body
-			   * @return a drop controller for the intersecting drop target or <code>null</code> if none
-			   *         are applicable
-			   */
-			  DropController getIntersectDropController(int x, int y) {
-			    Location location = new CoordinateLocation(x, y);
-			    for (int i = sortedCandidates.length - 1; i >= 0; i--) {
-			      Candidate candidate = sortedCandidates[i];
-			      Area targetArea = candidate.getTargetArea();
-			      if (targetArea.intersects(location)) {
-			        return candidate.getDropController();
-			      }
-			    }
-			    return null;
-			  }
+    /**
+     * Default constructor.
+     */
+    DropControllerCollection(ArrayList<DropController> dropControllerList) {
+      this.dropControllerList = dropControllerList;
+    }
 
-			  /**
-			   * Cache a list of eligible drop controllers, sorted by relative DOM positions
-			   * of their respective drop targets. Called at the beginning of each drag operation,
-			   * or whenever drop target eligibility has changed while dragging.
-			   * 
-			   * @param boundaryPanel boundary area for drop target eligibility considerations
-			   * @param context the current drag context
-			   */
-			  void resetCache(Panel boundaryPanel, DragContext context) {
-			    ArrayList<Candidate> list = new ArrayList<Candidate>();
+    /**
+     * Determines which DropController represents the deepest DOM descendant
+     * drop target located at the provided location <code>(x, y)</code>.
+     * 
+     * @param x offset left relative to document body
+     * @param y offset top relative to document body
+     * @return a drop controller for the intersecting drop target or <code>null</code> if none
+     *         are applicable
+     */
+    DropController getIntersectDropController(int x, int y) {
+      Location location = new CoordinateLocation(x, y);
+      for (int i = sortedCandidates.length - 1; i >= 0; i--) {
+        Candidate candidate = sortedCandidates[i];
+        Area targetArea = candidate.getTargetArea();
+        if (targetArea.intersects(location)) {
+          return candidate.getDropController();
+        }
+      }
+      return null;
+    }
 
-			    if (context.draggable != null) {
-			      WidgetArea boundaryArea = new WidgetArea(boundaryPanel, null);
-			      for (DropController dropController : dropControllerList) {
-			        Candidate candidate = new Candidate(dropController);
-			        if (DOM.isOrHasChild(context.draggable.getElement(), candidate.getDropTarget().getElement())) {
-			          continue;
-			        }
-			        if (candidate.getTargetArea().intersects(boundaryArea)) {
-			          list.add(candidate);
-			        }
-			      }
-			    }
+    /**
+     * Cache a list of eligible drop controllers, sorted by relative DOM positions
+     * of their respective drop targets. Called at the beginning of each drag operation,
+     * or whenever drop target eligibility has changed while dragging.
+     * 
+     * @param boundaryPanel boundary area for drop target eligibility considerations
+     * @param context the current drag context
+     */
+    void resetCache(Panel boundaryPanel, DragContext context) {
+      ArrayList<Candidate> list = new ArrayList<Candidate>();
 
-			    sortedCandidates = list.toArray(new Candidate[list.size()]);
-			    Arrays.sort(sortedCandidates);
-			  }
-}
+      if (context.draggable != null) {
+        WidgetArea boundaryArea = new WidgetArea(boundaryPanel, null);
+        for (DropController dropController : dropControllerList) {
+          Candidate candidate = new Candidate(dropController);
+          if (DOM.isOrHasChild(context.draggable.getElement(), candidate.getDropTarget().getElement())) {
+            continue;
+          }
+          if (candidate.getTargetArea().intersects(boundaryArea)) {
+            list.add(candidate);
+          }
+        }
+      }
 
-	
-	
-	
+      sortedCandidates = list.toArray(new Candidate[list.size()]);
+      Arrays.sort(sortedCandidates);
+    }
+  }
+
+
+
+
   private static class SavedWidgetInfo {
     int initialDraggableIndex;
     String initialDraggableMargin;
@@ -185,33 +185,33 @@ public class AxisXYDragController extends AbstractDragController {
   private boolean dragProxyEnabled = false;
   private DropControllerCollection dropControllerCollection;
   @SuppressWarnings("rawtypes")
-private ArrayList dropControllerList = new ArrayList();
+  private ArrayList dropControllerList = new ArrayList();
   protected int dropTargetClientHeight;
   protected int dropTargetClientWidth;
   private Widget movablePanel;
   @SuppressWarnings("rawtypes")
-private HashMap savedWidgetInfoMap;
+  private HashMap savedWidgetInfoMap;
 
   //To provide XY drag feature (BEGIN)
   private WidgetLocation initialDraggableLocation;
   private boolean allowHorizontalDragging;
   public boolean isAllowHorizontalDragging() {
-	return allowHorizontalDragging;
-}
+    return allowHorizontalDragging;
+  }
 
-public void setAllowHorizontalDragging(boolean allowHorizontalDragging) {
-	this.allowHorizontalDragging = allowHorizontalDragging;
-}
+  public void setAllowHorizontalDragging(boolean allowHorizontalDragging) {
+    this.allowHorizontalDragging = allowHorizontalDragging;
+  }
 
-public boolean isAllowVerticalDragging() {
-	return allowVerticalDragging;
-}
+  public boolean isAllowVerticalDragging() {
+    return allowVerticalDragging;
+  }
 
-public void setAllowVerticalDragging(boolean allowVerticalDragging) {
-	this.allowVerticalDragging = allowVerticalDragging;
-}
+  public void setAllowVerticalDragging(boolean allowVerticalDragging) {
+    this.allowVerticalDragging = allowVerticalDragging;
+  }
 
-private boolean allowVerticalDragging;
+  private boolean allowVerticalDragging;
   //To provide XY drag feature (END)
 
 
@@ -234,8 +234,8 @@ private boolean allowVerticalDragging;
    * @param allowVerticalDragging whether or not the Widget can be dragged vertically
    */
   @SuppressWarnings("unchecked")
-public AxisXYDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOnBoundaryPanel, 
-		  boolean allowHorizontalDragging, boolean allowVerticalDragging) {
+  public AxisXYDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOnBoundaryPanel, 
+      boolean allowHorizontalDragging, boolean allowVerticalDragging) {
     super(boundaryPanel);
     this.allowHorizontalDragging = allowHorizontalDragging;
     this.allowVerticalDragging = allowVerticalDragging;
@@ -261,10 +261,10 @@ public AxisXYDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOn
    *            allow dropping
    */
   public AxisXYDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOnBoundaryPanel) {
-	  this(boundaryPanel, allowDroppingOnBoundaryPanel, true, true);
+    this(boundaryPanel, allowDroppingOnBoundaryPanel, true, true);
   }
   //To provide XY drag feature (END)
-  
+
   public void dragEnd() {
     assert context.finalDropController == null == (context.vetoException != null);
     if (context.vetoException != null) {
@@ -286,19 +286,19 @@ public AxisXYDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOn
   }
 
   public void dragMove() {
-	  
-	//To provide XY drag feature (BEGIN)
-	if (allowHorizontalDragging == false) {
-	  context.desiredDraggableX = initialDraggableLocation.getLeft() + boundaryOffsetX;
-	}
-	if (allowVerticalDragging == false) {
-	  context.desiredDraggableY = initialDraggableLocation.getTop() + boundaryOffsetY;
-	}
-	//To provide XY drag feature (END)
+
+    //To provide XY drag feature (BEGIN)
+    if (allowHorizontalDragging == false) {
+      context.desiredDraggableX = initialDraggableLocation.getLeft() + boundaryOffsetX;
+    }
+    if (allowVerticalDragging == false) {
+      context.desiredDraggableY = initialDraggableLocation.getTop() + boundaryOffsetY;
+    }
+    //To provide XY drag feature (END)
 
     int desiredLeft = context.desiredDraggableX - boundaryOffsetX;
     int desiredTop = context.desiredDraggableY - boundaryOffsetY;
-	
+
     if (getBehaviorConstrainedToBoundaryPanel()) {
       desiredLeft = Math.max(0, Math.min(desiredLeft, dropTargetClientWidth
           - context.draggable.getOffsetWidth()));
@@ -325,16 +325,16 @@ public AxisXYDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOn
   }
 
   @SuppressWarnings("rawtypes")
-public void dragStart() {
+  public void dragStart() {
     super.dragStart();
-    
+
     WidgetLocation currentDraggableLocation = new WidgetLocation(context.draggable,
         context.boundaryPanel);
-    
-	//To provide XY drag feature (BEGIN)
+
+    //To provide XY drag feature (BEGIN)
     initialDraggableLocation = currentDraggableLocation;
-	//To provide XY drag feature (END)
-    
+    //To provide XY drag feature (END)
+
     if (getBehaviorDragProxy()) {
       movablePanel = newDragProxy(context);
       context.boundaryPanel.add(movablePanel, currentDraggableLocation.getLeft(),
@@ -426,7 +426,7 @@ public void dragStart() {
    * @param dropController the controller to register
    */
   @SuppressWarnings("unchecked")
-public void registerDropController(DropController dropController) {
+  public void registerDropController(DropController dropController) {
     dropControllerList.add(dropController);
   }
 
@@ -504,7 +504,7 @@ public void registerDropController(DropController dropController) {
    * @return a new drag proxy
    */
   @SuppressWarnings("rawtypes")
-protected Widget newDragProxy(DragContext context) {
+  protected Widget newDragProxy(DragContext context) {
     AbsolutePanel container = new AbsolutePanel();
     DOM.setStyleAttribute(container.getElement(), "overflow", "visible");
 
@@ -528,7 +528,7 @@ protected Widget newDragProxy(DragContext context) {
    * @see #restoreSelectedWidgetsStyle()
    */
   @SuppressWarnings({ "rawtypes", "deprecation" })
-protected void restoreSelectedWidgetsLocation() {
+  protected void restoreSelectedWidgetsLocation() {
     for (Iterator iterator = context.selectedWidgets.iterator(); iterator.hasNext();) {
       Widget widget = (Widget) iterator.next();
       SavedWidgetInfo info = (SavedWidgetInfo) savedWidgetInfoMap.get(widget);
@@ -560,7 +560,7 @@ protected void restoreSelectedWidgetsLocation() {
    * @see #restoreSelectedWidgetsLocation()
    */
   @SuppressWarnings("rawtypes")
-protected void restoreSelectedWidgetsStyle() {
+  protected void restoreSelectedWidgetsStyle() {
     for (Iterator iterator = context.selectedWidgets.iterator(); iterator.hasNext();) {
       Widget widget = (Widget) iterator.next();
       SavedWidgetInfo info = (SavedWidgetInfo) savedWidgetInfoMap.get(widget);
@@ -574,7 +574,7 @@ protected void restoreSelectedWidgetsStyle() {
    * @see #restoreSelectedWidgetsLocation()
    */
   @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
-protected void saveSelectedWidgetsLocationAndStyle() {
+  protected void saveSelectedWidgetsLocationAndStyle() {
     savedWidgetInfoMap = new HashMap();
     for (Iterator iterator = context.selectedWidgets.iterator(); iterator.hasNext();) {
       Widget widget = (Widget) iterator.next();

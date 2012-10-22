@@ -114,7 +114,6 @@ public class Connector implements Element {
 
 	public Connector(int startLeft, int startTop, int endLeft, int endTop, SectionDecoration startDecoration, 
 	      SectionDecoration endDecoration, EndPoint endEndPoint, Diagram diagram) {
-	  LOG.info("Createing new connector : " + startLeft + " " + startTop + " " + endLeft + " " + endTop);
 	  
     this.startEndPoint = new EndPoint(startLeft, startTop, this);
     this.endEndPoint = endEndPoint;
@@ -368,7 +367,7 @@ public class Connector implements Element {
 	public void calculateStandardPointsPositions() {
 	  //LOG.i("calculateStandardPP");
 		cornerPoints.removeAll(cornerPoints);
-
+		
 		int width = Math.abs(startEndPoint.getLeft() - endEndPoint.getLeft());
 		int height = Math.abs(startEndPoint.getTop() - endEndPoint.getTop());
 		
@@ -390,7 +389,7 @@ public class Connector implements Element {
 		cornerPoints.add(cp1);
 		cornerPoints.add(cp2);
 	}
-	
+
 	public void updateCornerPoints() {
 		//Log.info("updateCornerPoints - Connector - 275");
 		this.cornerPoints = (ArrayList<CornerPoint>) getCorners(sections);
@@ -470,7 +469,6 @@ public class Connector implements Element {
 
 	public Section getPrevSection(Section currentSection) {
 		
-//		Log.fine("getPrevSection");
 		if (this.sections.indexOf(currentSection) > 0) {
 			return this.sections.get(this.sections.indexOf(currentSection) - 1);
 		} else {
@@ -480,7 +478,6 @@ public class Connector implements Element {
 
 	public Section getNextSection(Section currentSection) {
 
-//		Log.fine("getNextSection");
 		if (this.sections.size() > this.sections.indexOf(currentSection) + 1) {
 			return this.sections.get(this.sections.indexOf(currentSection) + 1);
 		} else {
@@ -536,7 +533,6 @@ public class Connector implements Element {
 	 * @param endPoint 
 	 */
 	public boolean fixEndSectionDirection(EndPoint endPoint) {
-		//LOG.i("fixEndSectionDirection");
 		//end point must be connected
 		if (!endPoint.isGluedToConnectionPoint()) {
 			LOG.severe("End point is not glued to the connection point");

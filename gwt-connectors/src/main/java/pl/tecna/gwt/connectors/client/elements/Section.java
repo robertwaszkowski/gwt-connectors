@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import pl.tecna.gwt.connectors.client.CornerPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.Point;
-import pl.tecna.gwt.connectors.client.drop.AxisXYDragController;
+import pl.tecna.gwt.connectors.client.drag.AxisXYDragController;
 import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
@@ -63,36 +63,32 @@ public class Section extends HTML {
 		
 		this.startPoint = startPoint;
 		this.endPoint = endPoint;
-		
+
 		if ((isHorizontal() == false) && (isVertical() == false)) {
-			//TODO remove try
-			//LOG.i("Start :" + startPoint.getLeft() + " " + startPoint.getTop() + " end:" + endPoint.getLeft() + " " + endPoint.getTop());
-			//LOG.w("Section is not horizontal");
-			connector.calculateStandardPointsPositions();
-//			connector.drawSections();
-			throw new IllegalArgumentException("Sections must be horizontal or vertical! " + "Start :" + startPoint.getLeft() + " " + startPoint.getTop() + " end:" + endPoint.getLeft() + " " + endPoint.getTop());
+		  connector.calculateStandardPointsPositions();
+		  throw new IllegalArgumentException("Sections must be horizontal or vertical! " + "Start :" + 
+		      startPoint.getLeft() + " " + startPoint.getTop() + " end:" + endPoint.getLeft() + " " + endPoint.getTop());
 		}
-		
+
 		// Count Section width and height
 		this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
 		this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());
-		
+
 		addMouseDownHandler(new MouseDownHandler() {
-      
-      public void onMouseDown(MouseDownEvent event) {
-        if (!Section.this.connector.diagram.ctrlPressed) {
-          Section.this.connector.diagram.deselectAllSections();
-          Section.this.connector.diagram.shapeDragController.clearSelection();
-        }
-        
-        if (Section.this.connector.isSelected) {
-          Section.this.connector.deselect();
-        } else {
-          Section.this.connector.select();
-        }
-      }
-    });
-	
+
+		  public void onMouseDown(MouseDownEvent event) {
+		    if (!Section.this.connector.diagram.ctrlPressed) {
+		      Section.this.connector.diagram.deselectAllSections();
+		      Section.this.connector.diagram.shapeDragController.clearSelection();
+		    }
+		    if (Section.this.connector.isSelected) {
+		      Section.this.connector.deselect();
+		    } else {
+		      Section.this.connector.select();
+		    }
+		  }
+		});
+
 	}
 	
 	/**
@@ -206,7 +202,6 @@ public class Section extends HTML {
 			@Override
 			public void dragMove() {
 
-				
 				if (Section.this.startPoint.getLeft() < Section.this.endPoint.getLeft()) {
 					Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft()
 							- context.boundaryPanel.getAbsoluteLeft());
@@ -241,16 +236,23 @@ public class Section extends HTML {
 				Section.this.connector.endEndPoint.update();
 				Section.this.connector.startEndPoint.update();
 				
+				if (startPointDecoration != null) {
+		      startPointDecoration.update( 
+		          calculateStartPointDecorationDirection(), 
+		          startPoint.getLeft(), startPoint.getTop());
+		    }
+		    if (endPointDecoration != null) {
+		      endPointDecoration.update( 
+		          calculateEndPointDecorationDirection(), 
+		          endPoint.getLeft(), endPoint.getTop());
+		    }
+				
 				super.dragMove();
 			}
 
 			@Override
 			public void dragEnd() {
 				
-//			  connector.diagram.onDiagramChanged(DiagramChangeEvent.MOVE, 
-//            new ElementDragEvent(context.draggable, ElementDragEvent.DRAG_END));
-				//TODO Section.this.connector.deselect();
-
 				// If after dragging two or more neighbor Sections are aligned to the line
 				// (they form one single line), those neighbor Sections are merged to one.
 				if (Section.this.connector.sections.size() > 2) {
@@ -555,15 +557,8 @@ public class Section extends HTML {
 		this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());	
 		
 		if (isVertical()) {
-			// if section is selected then draw it selected
-//			if (this.connector.isSelected) {
-			
-			//TODO sprawdzanie czy element jest zaznaczony
-//			if (SelectionManager.get().isSelected(this.connector)) {
-//				this.setHTML(selectedVerticalLine(this.height + additionalHeight));
-//			} else {
+
 				this.setHTML(verticalLine(this.height + additionalHeight));
-//			}
 
 			sectionDragController.setAllowHorizontalDragging(true);
 			sectionDragController.setAllowVerticalDragging(false);
@@ -659,47 +654,25 @@ public class Section extends HTML {
 	}
 	
 	public boolean isVertical(List<Section> checkedSections) {
-		
-//		Log.fine("Section.isVertical() " +
-//		        "(" + startPoint.getLeft() + "," + startPoint.getTop() + 
-//		        "," + endPoint.getLeft() + "," + endPoint.getTop() + ") ");	
-//		Log.fine("prev index :" + this.connector.sections.indexOf(previousChecked) + " this:" + this.connector.sections.indexOf(this));
-		
-		checkedSections.add(this);
-		if (!(this.hasNoDimensions())) {
-//			System.out.println("Section.isVertical() -> Has Dimensions");
-			if (this.startPoint.getLeft().intValue() == this.endPoint.getLeft().intValue()) {
-				return true;
-			}
-		} else {
-//				if (!previousChecked.equals(this) && this.connector.sections.indexOf(previousChecked) >= this.connector.sections.indexOf(this)) {
-//					Log.fine("next");
-					if (!checkedSections.contains(this.connector.getNextSection(this)) && 
-							(this.connector.getNextSection(this) != null) 
-							&& (this.connector.getNextSection(this).isHorizontal(checkedSections))){
-						return true;
-					}
-//				} else {
-//					Log.fine("prev");
-					if (!checkedSections.contains(this.connector.getPrevSection(this)) && 
-							(this.connector.getPrevSection(this) != null) 
-							&& (this.connector.getPrevSection(this).isHorizontal(checkedSections))){
-						return true;
-					}
-//				}
-			
-//			} else {
-//				if ((this.connector.getNextSection(this) != null) 
-//						&& (this.connector.getNextSection(this).isHorizontal())){
-//					return true;
-//				}
-//				if ((this.connector.getPrevSection(this) != null) 
-//						&& (this.connector.getPrevSection(this).isHorizontal())){
-//					return true;
-//				}
-//			}
-		}
-		return false;
+
+	  checkedSections.add(this);
+	  if (!(this.hasNoDimensions())) {
+	    if (this.startPoint.getLeft().intValue() == this.endPoint.getLeft().intValue()) {
+	      return true;
+	    }
+	  } else {
+	    if (!checkedSections.contains(this.connector.getNextSection(this)) && 
+	        (this.connector.getNextSection(this) != null) 
+	        && (this.connector.getNextSection(this).isHorizontal(checkedSections))){
+	      return true;
+	    }
+	    if (!checkedSections.contains(this.connector.getPrevSection(this)) && 
+	        (this.connector.getPrevSection(this) != null) 
+	        && (this.connector.getPrevSection(this).isHorizontal(checkedSections))){
+	      return true;
+	    }
+	  }
+	  return false;
 	}
 
 	public boolean isHorizontal() {
@@ -708,34 +681,24 @@ public class Section extends HTML {
 	}
 	
 	public boolean isHorizontal(List<Section> checkedSections) {
-
-//		Log.fine("Section.isHorizontal() " +
-//		        "(" + startPoint.getLeft() + "," + startPoint.getTop() + 
-//		        "," + endPoint.getLeft() + "," + endPoint.getTop() + ") ");
-//		Log.fine("prev index :" + this.connector.sections.indexOf(previousChecked) + " this:" + this.connector.sections.indexOf(this));
-		checkedSections.add(this);
-		if (!(this.hasNoDimensions())) {
-			if (this.startPoint.getTop().intValue() == this.endPoint.getTop().intValue()) {
-				return true;
-			}
-		} else {
-//			if (!previousChecked.equals(this) && this.connector.sections.indexOf(previousChecked) >= this.connector.sections.indexOf(this)) {
-//				Log.fine("next");
-				if (!checkedSections.contains(this.connector.getNextSection(this)) && 
-						(this.connector.getNextSection(this) != null) 
-						&& (this.connector.getNextSection(this).isVertical(checkedSections))){
-					return true;
-				}
-//			} else {
-//				Log.fine("prev");
-				if (!checkedSections.contains(this.connector.getPrevSection(this)) && 
-						(this.connector.getPrevSection(this) != null) 
-						&& (this.connector.getPrevSection(this).isVertical(checkedSections))){
-					return true;
-				}
-//			}
-		}
-		return false;
+	  checkedSections.add(this);
+	  if (!(this.hasNoDimensions())) {
+	    if (this.startPoint.getTop().intValue() == this.endPoint.getTop().intValue()) {
+	      return true;
+	    }
+	  } else {
+	    if (!checkedSections.contains(this.connector.getNextSection(this)) && 
+	        (this.connector.getNextSection(this) != null) 
+	        && (this.connector.getNextSection(this).isVertical(checkedSections))){
+	      return true;
+	    }
+	    if (!checkedSections.contains(this.connector.getPrevSection(this)) && 
+	        (this.connector.getPrevSection(this) != null) 
+	        && (this.connector.getPrevSection(this).isVertical(checkedSections))){
+	      return true;
+	    }
+	  }
+	  return false;
 	}
 
 	public SectionDecoration getStartPointDecoration() {

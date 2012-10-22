@@ -33,10 +33,8 @@ public class EndPointDragController extends PickupDragController {
     //create new connector for dragged ShapeConnectorStart
     if (context.draggable instanceof ShapeConnectorStart) {
       ShapeConnectorStart ep = (ShapeConnectorStart) context.draggable;
-      ep.setLeft(context.draggable.getAbsoluteLeft() + 6
-          - context.boundaryPanel.getAbsoluteLeft());
-      ep.setTop(context.draggable.getAbsoluteTop() + 6
-          - context.boundaryPanel.getAbsoluteTop());
+      ep.setLeft(getDraggableCenterLeft(ep));
+      ep.setTop(getDraggableCenterTop(ep));
       
       if (ep.connector == null) {
         ep.shape.endPoints.remove(ep);
@@ -48,9 +46,14 @@ public class EndPointDragController extends PickupDragController {
           int startTop = ep.getOverlapingCP().getCenterTop();
           int endLeft = ep.getLeft();
           int endTop = ep.getTop();
+
           if (startLeft == endLeft && startTop == endTop) {
-            endLeft += 2;
+            endTop += 3;
+            endLeft += 3;
+            ep.setLeft(endLeft);
+            ep.setTop(endTop);
           }
+
           ep.connector = diagram.createConnector(
               startLeft, 
               startTop, 
@@ -93,10 +96,8 @@ public class EndPointDragController extends PickupDragController {
     EndPoint draggedEP = (EndPoint) context.draggable;
     draggedEP.connector.select();
     // Update left and top position for dragged EndPoint
-    draggedEP.setLeft(context.draggable.getAbsoluteLeft() + 6
-        - context.boundaryPanel.getAbsoluteLeft());
-    draggedEP.setTop(context.draggable.getAbsoluteTop() + 6
-        - context.boundaryPanel.getAbsoluteTop());
+    draggedEP.setLeft(getDraggableCenterLeft(draggedEP));
+    draggedEP.setTop(getDraggableCenterTop(draggedEP));
 
     if (draggedEP.connector.sections.size() <= 3) {
       fixConnectorPath(draggedEP);
@@ -135,6 +136,16 @@ public class EndPointDragController extends PickupDragController {
     }
     conn.calculateStandardPointsPositions();
     conn.drawSections();
+  }
+  
+  private int getDraggableCenterLeft(EndPoint w) {
+    return (w.getAbsoluteLeft() - context.boundaryPanel.getAbsoluteLeft() + 
+        (int)Math.floor((double)((double)w.getOffsetWidth() / (double)2)));
+  }
+  
+  private int getDraggableCenterTop(EndPoint w) {
+    return (w.getAbsoluteTop()- context.boundaryPanel.getAbsoluteTop() + 
+        (int)Math.floor((double)((double)w.getOffsetHeight() / (double)2)));
   }
 
 }

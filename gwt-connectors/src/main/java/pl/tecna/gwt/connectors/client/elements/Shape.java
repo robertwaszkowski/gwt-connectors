@@ -820,7 +820,9 @@ public class Shape extends FocusPanel implements Element{
   }
   
   public void refreshShapeCP() {
-    endPointsShowTimer.run();
+    if (endPointsShowTimer != null) {
+      endPointsShowTimer.run();
+    }
   }
   
   public boolean isConnectable() {

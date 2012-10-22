@@ -62,4 +62,8 @@
 	filter:alpha(opacity=40); /* For IE8 and earlier */
 	cursor: pointer !important;
 }
+
+.gwt-connectors-image {
+	display: block;
+}
 	

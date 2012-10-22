@@ -7,10 +7,12 @@ import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
+import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Image;
 
 public class EndPoint extends Point {
 
@@ -37,14 +39,14 @@ public class EndPoint extends Point {
 		
 		this.connector = connector;
 		this.setGluedToConnectionPoint(false);
-		this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.end_point()).createImage());
+		this.setWidget(createImage());
 		this.getElement().getStyle().setZIndex(3);
 	}
 	
 	public EndPoint(Integer left, Integer top) {
 	  super(left, top);
     this.setGluedToConnectionPoint(false);
-    this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.end_point()).createImage());
+    this.setWidget(createImage());
     this.getElement().getStyle().setZIndex(3);
 	}
 
@@ -143,6 +145,12 @@ public class EndPoint extends Point {
 
 	public void setGluedToConnectionPoint(boolean gluedToConnectionPoint) {
 		this.gluedToConnectionPoint = gluedToConnectionPoint;
+	}
+	
+	private Image createImage() {
+	  Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.end_point()).createImage();
+    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+	  return img;
 	}
 	
 }

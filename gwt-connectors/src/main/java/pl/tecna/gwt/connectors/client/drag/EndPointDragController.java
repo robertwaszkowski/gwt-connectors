@@ -49,7 +49,7 @@ public class EndPointDragController extends PickupDragController {
           int endLeft = ep.getLeft();
           int endTop = ep.getTop();
           if (startLeft == endLeft && startTop == endTop) {
-            startLeft += 2;
+            endLeft += 2;
           }
           ep.connector = diagram.createConnector(
               startLeft, 

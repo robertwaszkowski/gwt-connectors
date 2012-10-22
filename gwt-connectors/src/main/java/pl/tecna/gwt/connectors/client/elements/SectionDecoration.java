@@ -1,6 +1,9 @@
 package pl.tecna.gwt.connectors.client.elements;
 
+import java.util.logging.Logger;
+
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
+import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -47,6 +50,14 @@ public class SectionDecoration extends FocusPanel {
 		default:
 			break;
 		}
+		
+		for (Image img : decorationDirectedImages) {
+	    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+		}
+		
+		for (Image img : decorationDirectedSelectedImages) {
+      img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+    }
 		
 	}
 	
@@ -114,37 +125,5 @@ public class SectionDecoration extends FocusPanel {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
-
-//	private String arrowedLineRight() {
-//		return 	"<div style=\"background-image:url(arrow_right.png); " +
-//		"background-repeat:no-repeat; " +
-//		"width:29px; " +
-//		"height:8px;\">; " +
-//		"</div>";
-//	}
-//	
-//	private String arrowedLineLeft() {
-//		return 	"<div style=\"background-image:url(arrow_left.png); " +
-//		"background-repeat:no-repeat; " +
-//		"width:29px; " +
-//		"height:8px;\">; " +
-//		"</div>";
-//	}
-//	
-//	private String arrowedLineUp() {
-//		return 	"<div style=\"background-image:url(arrow_up.png); " +
-//		"background-repeat:no-repeat; " +
-//		"width:8px; " +
-//		"height:29px;\">; " +
-//		"</div>";
-//	}
-//
-//	private String arrowedLineDown() {
-//		return 	"<div style=\"background-image:url(arrow_down.png); " +
-//		"background-repeat:no-repeat; " +
-//		"width:8px; " +
-//		"height:29px;\">; " +
-//		"</div>";
-//	}
 
 }

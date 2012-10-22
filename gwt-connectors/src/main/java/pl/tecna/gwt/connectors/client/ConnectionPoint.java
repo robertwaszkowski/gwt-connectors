@@ -6,10 +6,12 @@ import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
+import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -49,7 +51,9 @@ public class ConnectionPoint extends FocusPanel {
 		gluedEndPoints = new ArrayList<EndPoint>();
 		connectionDirection = ConnectionPoint.ALL;
 		
-		this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point()).createImage());
+		Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point()).createImage();
+    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+		this.setWidget(img);
 		//this.getElement().setClassName("x-unselectable");
 		this.position = 1;
 		this.getElement().getStyle().setZIndex(2);
@@ -108,7 +112,10 @@ public class ConnectionPoint extends FocusPanel {
 	 * @author robert.waszkowski@gmail.com
 	 */
 	public void setSelected() {
-		this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_selected()).createImage());
+	  Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_selected()).createImage();
+    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+    this.setWidget(img);
+//		this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_selected()).createImage());
 	}
 
 	/**
@@ -121,7 +128,9 @@ public class ConnectionPoint extends FocusPanel {
 	 * @author robert.waszkowski@gmail.com
 	 */
 	public void setFocused() { 
-		this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_focused()).createImage());
+	  Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_focused()).createImage();
+	  img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+    this.setWidget(img);
 	}
 
 	/**
@@ -134,7 +143,9 @@ public class ConnectionPoint extends FocusPanel {
 	 * @author robert.waszkowski@gmail.com
 	 */
 	public void setUnfocused() {
-		this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point()).createImage());
+	  Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point()).createImage();
+    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+    this.setWidget(img);
 		
 	}
 	/**

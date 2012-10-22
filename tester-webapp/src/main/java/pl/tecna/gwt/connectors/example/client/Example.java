@@ -16,6 +16,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -47,14 +48,20 @@ public class Example implements EntryPoint {
 			}
 		});
 
+		AbsolutePanel viewPanel = new AbsolutePanel();
+		DOM.setStyleAttribute(viewPanel.getElement(), "overflow", "scroll");
+		viewPanel.setSize("100%", "100%");
+		
 		// Create boundary panel
 		AbsolutePanel boundaryPanel = new AbsolutePanel();
 		boundaryPanel.setSize("20000px", "20000px");
-		RootPanel.get().add(boundaryPanel, 10, 10);
-
+		viewPanel.add(boundaryPanel, 0, 0);
+		
+		RootPanel.get().add(viewPanel, 0, 0);
+		
 		final Diagram diagram = new Diagram(boundaryPanel);
 
-		boundaryPanel.add(new Label("Connectors example for GWT 2.1"), 10, 2);
+		boundaryPanel.add(new Label("Connectors example for GWT 2.4"), 10, 2);
 		Connector connector1 = new Connector(50, 80, 150, 200);
 		connector1.showOnDiagram(diagram);
 

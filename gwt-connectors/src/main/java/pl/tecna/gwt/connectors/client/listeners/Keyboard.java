@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
@@ -47,7 +48,8 @@ public final class Keyboard {
 	}
 
 	private static Keyboard instance = new Keyboard();
-
+	private HandlerRegistration windowClosingHandler = null;
+	
 	private Set<KeyboardListener> listeners;
 
 	private Keyboard() {
@@ -67,9 +69,11 @@ public final class Keyboard {
 	 * Init keyboard listener.
 	 */
 	public void init() {
-		WindowCloseListenerImpl closingHandler = new WindowCloseListenerImpl();
-		Window.addWindowClosingHandler(closingHandler);
-		closingHandler.init();
+	  if (windowClosingHandler == null) {
+	    WindowCloseListenerImpl closingHandler = new WindowCloseListenerImpl();
+	    windowClosingHandler = Window.addWindowClosingHandler(closingHandler);
+	    closingHandler.init();
+	  }
 	}
 
 	/**

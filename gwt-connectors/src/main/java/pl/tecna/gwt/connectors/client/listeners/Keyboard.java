@@ -84,13 +84,16 @@ public final class Keyboard {
 	public void addListener(KeyboardListener listener) {
 		listeners.add(listener);
 	}
+	
+	public boolean removeListener(KeyboardListener listener) {
+	  return listeners.remove(listener);
+	}
 
 	@SuppressWarnings("unused")
 	private static void onKeyDown(Event event) {
 		for (KeyboardListener listener : getInstance().listeners) {
 			listener.onKeyDown(event.getKeyCode(), event);
 		}
-//		System.out.println("Keyboard.onKeyDown " + event.getKeyCode());
 	}
 
 	@SuppressWarnings("unused")
@@ -98,7 +101,6 @@ public final class Keyboard {
 		for (KeyboardListener listener : getInstance().listeners) {
 			listener.onKeyPress(event.getKeyCode(), event);
 		}
-//		System.out.println("Keyboard.onKeyPress " + event.getKeyCode());
 	}
 
 	@SuppressWarnings("unused")
@@ -106,6 +108,5 @@ public final class Keyboard {
 		for (KeyboardListener listener : getInstance().listeners) {
 			listener.onKeyUp(event.getKeyCode(), event);
 		}
-//		System.out.println("Keyboard.onKeyUp " + event.getKeyCode());
 	}
 }

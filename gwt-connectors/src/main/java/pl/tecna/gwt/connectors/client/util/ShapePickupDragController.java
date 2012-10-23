@@ -3,6 +3,7 @@ package pl.tecna.gwt.connectors.client.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
@@ -23,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ShapePickupDragController extends PickupDragController {
 	
+  Logger LOG = Logger.getLogger("ShapePickupDragController");
 	public List<Widget> dragableWidgets;
 	private Diagram diagram;
 

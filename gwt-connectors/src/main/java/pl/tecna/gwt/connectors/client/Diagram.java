@@ -72,6 +72,7 @@ public class Diagram {
   public HandlerRegistration boundarySelectionHandler = null;
   private boolean selectionMode;
   private boolean dragModeOnClick;
+  private KeyboardListener keyboardListener;
 
   private ArrayList<HTML> markers = new ArrayList<HTML>();
 
@@ -87,6 +88,8 @@ public class Diagram {
   
   public Diagram(AbsolutePanel boundaryPanel) {
     super();
+    
+    addKeyboardListener();
     
     this.listeners = new ArrayList<DiagramListener>();
 
@@ -155,29 +158,6 @@ public class Diagram {
       }
 
     }, MouseMoveEvent.getType());
-
-    // Add keyboard listener
-    Keyboard.getInstance().init();
-
-    Keyboard.getInstance().addListener(new KeyboardListener() {
-
-      @Override
-      public void onKeyDown(int key, Event e) {
-
-        ctrlPressed = e.getCtrlKey();
-      }
-
-      public void onKeyUp(int key, Event e) {
-        if (keyboardEnabled) {
-          if (e.getKeyCode() == KeyCodes.KEY_DELETE && e.getCtrlKey()) {
-            // Delete selected elements
-            deleteSelectedElements();
-          }
-
-        }   
-        ctrlPressed = e.getCtrlKey();
-      }
-    });
 
     // Store all connectors and shapes
     connectors = new ArrayList<Connector>();
@@ -757,6 +737,39 @@ public class Diagram {
 
   public void setEnableEvents(boolean enableEvents) {
     this.enableEvents = enableEvents;
+  }
+  
+  public void addKeyboardListener() {
+    // Add keyboard listener
+    Keyboard.getInstance().init();
+
+    if (keyboardListener == null) {
+      keyboardListener = new KeyboardListener() {
+
+        @Override
+        public void onKeyDown(int key, Event e) {
+
+          ctrlPressed = e.getCtrlKey();
+        }
+
+        public void onKeyUp(int key, Event e) {
+          if (keyboardEnabled) {
+            if (e.getKeyCode() == KeyCodes.KEY_DELETE && e.getCtrlKey()) {
+              // Delete selected elements
+              deleteSelectedElements();
+            }
+
+          }   
+          ctrlPressed = e.getCtrlKey();
+        }
+      };
+
+      Keyboard.getInstance().addListener(keyboardListener);
+    }
+  }
+  
+  public boolean removeKeyboardListener() {
+    return Keyboard.getInstance().removeListener(keyboardListener);
   }
   
   public Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint) {

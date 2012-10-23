@@ -84,7 +84,7 @@ public class ShapeConnectorStart extends EndPoint {
     w.setSize("12px", "12px");
     Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.shapeConnectorStart()).createImage();
     img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
-    w.add(img, 4, 4);
+    w.add(img, 5, 5);
     return w;
   }
   

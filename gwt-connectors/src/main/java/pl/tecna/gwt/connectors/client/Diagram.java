@@ -646,6 +646,11 @@ public class Diagram {
       conn.deselect();
     }
   }
+  
+  public void clearSelection() {
+    shapeDragController.clearSelection();
+    deselectAllSections();
+  }
 
   public static void disableTextSelection(Element elem, boolean disable) {
     elem.setClassName("x-unselectable");

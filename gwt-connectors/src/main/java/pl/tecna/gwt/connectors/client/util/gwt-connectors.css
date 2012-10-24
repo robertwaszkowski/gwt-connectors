@@ -1,7 +1,7 @@
 .gwt-connectors-line {
   font-size: 1px;
   line-height:1px;
-  background-color: gray
+  background-color: #b2b2b2;
 }
 
 .gwt-connectors-line-vertical {
@@ -15,7 +15,7 @@
 .gwt-connectors-line-selected {
   font-size: 1px;
   line-height:1px;
-  background-color: DodgerBlue
+  background-color: #00bfff;
 }
 
 .dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {

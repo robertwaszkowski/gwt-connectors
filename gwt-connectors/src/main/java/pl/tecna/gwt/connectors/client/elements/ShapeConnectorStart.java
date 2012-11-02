@@ -79,12 +79,8 @@ public class ShapeConnectorStart extends EndPoint {
   
   @Override
   protected Widget createImage() {
-//    Widget w = new Widget();
-    AbsolutePanel w = new AbsolutePanel();
-    w.setSize("12px", "12px");
-    Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.shapeConnectorStart()).createImage();
-    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
-    w.add(img, 5, 5);
+    Widget w = new AbsolutePanel();
+    w.addStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorStartInner());
     return w;
   }
   

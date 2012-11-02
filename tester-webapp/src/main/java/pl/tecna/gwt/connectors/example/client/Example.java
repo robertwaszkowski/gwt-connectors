@@ -16,6 +16,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -78,7 +79,9 @@ public class Example implements EntryPoint {
 		connector3.showOnDiagram(diagram);
 
 		FocusPanel diamond = new FocusPanel();
-		diamond.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.diamondImg()).createImage());
+		Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.diamondImg()).createImage();
+		img.getElement().getStyle().setDisplay(Display.BLOCK);
+		diamond.setWidget(img);
 		boundaryPanel.add(diamond, 700, 400);
 
 		// Add some elements that can be connected
@@ -90,6 +93,9 @@ public class Example implements EntryPoint {
 
 		image.setPixelSize(153, 55);
 
+		BPMNTask task = new BPMNTask();
+		boundaryPanel.add(task, 500, 300);
+		
 		boundaryPanel.add(label, 50, 250);
 		boundaryPanel.add(label2, 450, 200);
 		boundaryPanel.add(label3, 700, 500);
@@ -109,10 +115,14 @@ public class Example implements EntryPoint {
 		shapeForLabel3.enableConnectionCreate(true);
 
 		Shape shapeForDiamond = new Shape(diamond, CPShapeType.DIAMOND);
-		shapeForDiamond.setEnableOverlap(true);
 		shapeForDiamond.showOnDiagram(diagram);
-		shapeForDiamond.makeConnectable(false);
+		shapeForDiamond.enableConnectionCreate(true);
 		shapeForDiamond.setTitle("shapeForDiamond");
+		
+		Shape shapeForTask = new Shape(task, CPShapeType.RECTANGLE);
+		shapeForTask.showOnDiagram(diagram);
+		shapeForTask.enableConnectionCreate(true);
+		shapeForTask.setTitle("Shape for task");
 		
 	}
 	

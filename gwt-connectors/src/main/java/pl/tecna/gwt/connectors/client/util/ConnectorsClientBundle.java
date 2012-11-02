@@ -53,6 +53,9 @@ public interface ConnectorsClientBundle extends ClientBundle {
     @ClassName("gwt-connectors-shape-connector-start")
     public String gwtConnectorsShapeConnectorStart();
     
+    @ClassName("gwt-connectors-shape-connector-start-inner")
+    public String gwtConnectorsShapeConnectorStartInner();
+    
     @ClassName("gwt-connectors-image")
     public String imageDispBlock();
 

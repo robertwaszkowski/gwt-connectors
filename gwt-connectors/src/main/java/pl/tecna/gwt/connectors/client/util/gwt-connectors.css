@@ -57,10 +57,14 @@
 	user-select:none;
 }
 
-.gwt-connectors-shape-connector-start {	
-	/*opacity:0.4;
-	filter:alpha(opacity=40);  For IE8 and earlier */
-	cursor: pointer !important;
+.gwt-connectors-shape-connector-start {
+	padding: 4px;
+}
+
+.gwt-connectors-shape-connector-start-inner {
+	background-color: #B2B2B2;
+	height: 6px;
+	width: 6px;
 }
 
 .gwt-connectors-image {

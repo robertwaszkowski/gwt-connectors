@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 /**
  * DragController used for drag-and-drop operations where a draggable widget or
@@ -320,6 +321,15 @@ public class AxisXYDragController extends AbstractDragController {
     }
 
     if (context.dropController != null) {
+
+      //dirty fix : when dragged element is greater than the parent scroll panel, then it is scrolled to bottom
+//      if (getBoundaryPanel().getParent() == null ||
+//            (getBoundaryPanel().getParent().getOffsetHeight() < context.draggable.getOffsetHeight() ||
+//                getBoundaryPanel().getParent().getOffsetWidth() < context.draggable.getOffsetWidth()) ) {
+//        setBehaviorScrollIntoView(false);
+//      } else {
+//        setBehaviorScrollIntoView(true);
+//      }
       context.dropController.onMove(context);
     }
   }

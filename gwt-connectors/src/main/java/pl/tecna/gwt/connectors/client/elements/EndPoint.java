@@ -40,14 +40,20 @@ public class EndPoint extends Point {
 		
 		this.connector = connector;
 		this.setGluedToConnectionPoint(false);
-		this.setWidget(createImage());
+		Widget img = createImage();
+		if (img != null) {
+		  this.setWidget(img);
+		}
 		this.getElement().getStyle().setZIndex(3);
 	}
 	
 	public EndPoint(Integer left, Integer top) {
 	  super(left, top);
     this.setGluedToConnectionPoint(false);
-    this.setWidget(createImage());
+    Widget img = createImage();
+    if (img != null) {
+      this.setWidget(img);
+    }
     this.getElement().getStyle().setZIndex(3);
 	}
 

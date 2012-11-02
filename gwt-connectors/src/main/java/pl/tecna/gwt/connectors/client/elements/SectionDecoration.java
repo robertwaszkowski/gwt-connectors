@@ -76,11 +76,11 @@ public class SectionDecoration extends FocusPanel {
 			break;
 		case VERTICAL_DOWN:
 			left = left - (this.getWidget().getOffsetWidth() / 2) + 1;
-			top = top - this.getWidget().getOffsetHeight() + 2;
+			top = top - this.getWidget().getOffsetHeight() + 1;
 			break;
 		case HORIZONTAL_LEFT:
 			top = top - (this.getWidget().getOffsetHeight() / 2) + 1;
-			left = left - 1;
+			left = left;
 			break;
 		case HORIZONTAL_RIGHT:
 			top = top - (this.getWidget().getOffsetHeight() / 2) + 1;

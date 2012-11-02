@@ -301,6 +301,20 @@ public class Section extends HTML {
 		
 		this.sectionDragController.addDragHandler(new DragHandlerAdapter() {
 			
+		  @Override
+		  public void onPreviewDragStart(DragStartEvent event) {
+		    if (event.getContext().draggable != null) {
+          event.getContext().draggable.getElement().scrollIntoView();
+		      if (sectionDragController.getBoundaryPanel().getParent() == null ||
+		          (sectionDragController.getBoundaryPanel().getParent().getOffsetHeight() < event.getContext().draggable.getOffsetHeight() ||
+		              sectionDragController.getBoundaryPanel().getParent().getOffsetWidth() < event.getContext().draggable.getOffsetWidth()) ) {
+		        sectionDragController.setBehaviorScrollIntoView(false);
+		      } else {
+		        sectionDragController.setBehaviorScrollIntoView(true);
+		      }
+		    }
+		  }
+		  
 			@Override
 			public void onDragStart(DragStartEvent event) {
 
@@ -548,56 +562,53 @@ public class Section extends HTML {
 	 * Also sets the functionality of the horizontal or vertical dragging.
 	 */
 	public void update() {
-		try {
-//		System.out.println("Section.update " +
-//		           "(" + startPoint.getLeft() + "," + startPoint.getTop() + 
-//		           "," + endPoint.getLeft() + "," + endPoint.getTop() + ") ");
-		
-		this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
-		this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());	
-		
-		if (isVertical()) {
+	  try {
 
-				this.setHTML(verticalLine(this.height + additionalHeight));
+	    this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
+	    this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());	
 
-			sectionDragController.setAllowHorizontalDragging(true);
-			sectionDragController.setAllowVerticalDragging(false);
+	    if (isVertical()) {
 
-			((AbsolutePanel)this.getParent()).setWidgetPosition(this, 
-					this.startPoint.getLeft(), 
-			        Math.min(this.startPoint.getTop(), this.endPoint.getTop()));
-			
-		} else if (isHorizontal()) {
-			// if section is selected then draw it selected
-//			if (SelectionManager.get().isSelected(this.connector)) {
-			if (this.connector.isSelected) {
-				this.setHTML(selectedHorizontalLine(this.width + additionalWidth));
-			} else {
-				this.setHTML(horizontalLine(this.width + additionalWidth));
-			}
-			
-			sectionDragController.setAllowHorizontalDragging(false);
-			sectionDragController.setAllowVerticalDragging(true);
+	      this.setHTML(verticalLine(this.height + additionalHeight));
 
-			((AbsolutePanel)this.getParent()).setWidgetPosition(this, 
-					Math.min(this.startPoint.getLeft(), this.endPoint.getLeft()), 
-			        this.endPoint.getTop());
-		}
+	      sectionDragController.setAllowHorizontalDragging(true);
+	      sectionDragController.setAllowVerticalDragging(false);
 
-		// Calculate decoration's direction and update decorations
-		if (startPointDecoration != null) {
-			this.startPointDecoration.update( 
-					calculateStartPointDecorationDirection(), 
-					startPoint.getLeft(), startPoint.getTop());
-		}
-		if (endPointDecoration != null) {
-			this.endPointDecoration.update( 
-					calculateEndPointDecorationDirection(), 
-					endPoint.getLeft(), endPoint.getTop());
-		}
-		} catch (Exception e) {
-			LOG.log(Level.SEVERE, "Error updating section", e);
-		}
+	      ((AbsolutePanel)this.getParent()).setWidgetPosition(this, 
+	          this.startPoint.getLeft(), 
+	          Math.min(this.startPoint.getTop(), this.endPoint.getTop()));
+
+	    } else if (isHorizontal()) {
+	      if (this.connector.isSelected) {
+	        this.setHTML(selectedHorizontalLine(this.width + additionalWidth));
+	      } else {
+	        this.setHTML(horizontalLine(this.width + additionalWidth));
+	      }
+
+	      sectionDragController.setAllowHorizontalDragging(false);
+	      sectionDragController.setAllowVerticalDragging(true);
+
+	      ((AbsolutePanel)this.getParent()).setWidgetPosition(this, 
+	          Math.min(this.startPoint.getLeft(), this.endPoint.getLeft()), 
+	          this.endPoint.getTop());
+	    }
+
+	    // Calculate decoration's direction and update decorations
+	    if (startPointDecoration != null) {
+	      this.startPointDecoration.update( 
+	          calculateStartPointDecorationDirection(), 
+	          startPoint.getLeft(), startPoint.getTop());
+	    }
+	    if (endPointDecoration != null) {
+	      this.endPointDecoration.update( 
+	          calculateEndPointDecorationDirection(), 
+	          endPoint.getLeft(), endPoint.getTop());
+	    }
+	  } catch (Exception e) {
+	    LOG.log(Level.SEVERE, "Error updating section", e);
+	    connector.calculateStandardPointsPositions();
+	    connector.drawSections();
+	  }
 	}
 	
 	public void select() {

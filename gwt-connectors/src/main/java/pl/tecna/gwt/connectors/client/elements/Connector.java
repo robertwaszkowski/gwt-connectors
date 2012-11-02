@@ -129,25 +129,6 @@ public class Connector implements Element {
     this.startPointDecoration = startDecoration;
     this.endPointDecoration = endDecoration;
     
-//    //TODO Change workaround for trouble of 3 CornerPoint in a row
-//    //removing neighbour corner points with same coordinates (3 in a row)
-//    List<CornerPoint> toRemove = new ArrayList<CornerPoint>();
-//    for (int i = 1 ; i < cornerPoints.size() - 1 ; i++) {
-//      if (cornerPoints.get(i).compareTo(cornerPoints.get(i+1)) == 0 && cornerPoints.get(i).compareTo(cornerPoints.get(i-1)) == 0) {
-//        toRemove.add(cornerPoints.get(i+1));
-//      }
-//    }
-//    for (CornerPoint removed : toRemove) {
-//      cornerPoints.remove(removed);
-//    }
-//    
-//    if (toRemove.size() > 0) {
-//      logCornerPointsData(cornerPoints);
-//    } 
-//    
-//    this.cornerPoints = cornerPoints;
-//    
-    
  // Remember the Diagram
     this.diagram = diagram;
     
@@ -163,14 +144,15 @@ public class Connector implements Element {
     this.drawSections(cornerPoints, isSelected);
 
     // Set start and end Sections decorated
-    sections.get(0).setStartPointDecoration(this.startPointDecoration);
-    sections.get(sections.size()-1).setEndPointDecoration(this.endPointDecoration);
-  
-    // Show startEndPoint and endEndPoint
-//    endEndPoint.showOnDiagram(diagram);  
-
-    startEndPoint.showOnDiagram(diagram);
-//    endEndPoint.showOnDiagram(diagram);   
+    try {
+      //TODO this is DIRTY FIX, to make it better fix section horizontal or vertical error
+      sections.get(0).setStartPointDecoration(this.startPointDecoration);
+      sections.get(sections.size()-1).setEndPointDecoration(this.endPointDecoration);
+    } catch (Exception e) {
+      LOG.severe("Error while setting decorations" + e.getStackTrace());
+    }
+    
+    startEndPoint.showOnDiagram(diagram);   
     
     int connectorX =
         diagram.boundaryPanel.getWidgetLeft(startEndPoint)
@@ -179,38 +161,7 @@ public class Connector implements Element {
         diagram.boundaryPanel.getWidgetTop(startEndPoint)
             - diagram.boundaryPanel.getAbsoluteTop();
     diagram.onDiagramAdd(new DiagramAddEvent(this, connectorX, connectorY));
-    
-    
-//    this.sections = new ArrayList<Section>();
-//    this.cornerPoints = new ArrayList<CornerPoint>();
-//    this.diagram = diagram;
-//
-// // Add Connector to the Diagram
-//    diagram.connectors.add(this);
-//    
-//    // Calculate standard corner points positions
-//    if (cornerPoints.isEmpty()) {
-//      calculateStandardPointsPositions();     
-//    }
-//
-//    // Show startEndPoint and endEndPoint
-//       startEndPoint.showOnDiagram(diagram); 
-//    
-//    // Recreate Sections between start, end, and corner points
-//    this.drawSections(cornerPoints, isSelected);
-//    
-//    LOG.info("Ilosc sekcji : " + sections.size());
-//    // Set start and end Sections decorated
-//    sections.get(0).setStartPointDecoration(this.startPointDecoration);
-//    sections.get(sections.size()-1).setEndPointDecoration(this.endPointDecoration);    
-//
-//    int connectorX =
-//        diagram.boundaryPanel.getWidgetLeft(startEndPoint)
-//            - diagram.boundaryPanel.getAbsoluteLeft();
-//    int connectorY =
-//        diagram.boundaryPanel.getWidgetTop(startEndPoint)
-//            - diagram.boundaryPanel.getAbsoluteTop();
-//    diagram.onDiagramAdd(new DiagramAddEvent(this, connectorX, connectorY));
+
 	}
 	
 	private void init (int startLeft, int startTop, int endLeft, int endTop, 

@@ -117,8 +117,10 @@ public class Connector implements Element {
 	  
     this.startEndPoint = new EndPoint(startLeft, startTop, this);
     this.endEndPoint = endEndPoint;
-    endEndPoint.setLeft(endEndPoint.getLeft().intValue());
-    endEndPoint.setTop(endEndPoint.getTop().intValue());
+//    endEndPoint.setLeft(endEndPoint.getLeft().intValue());
+//    endEndPoint.setTop(endEndPoint.getTop().intValue());
+    endEndPoint.setLeft(endLeft);
+    endEndPoint.setTop(endTop);
     this.startEndPoint.connector = this;
     this.endEndPoint.connector = this;
     

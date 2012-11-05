@@ -55,7 +55,7 @@ public class EndPointDragController extends PickupDragController {
             ep.setLeft(endLeft);
             ep.setTop(endTop);
           }
-
+          
           ep.connector = diagram.createConnector(
               startLeft, 
               startTop, 

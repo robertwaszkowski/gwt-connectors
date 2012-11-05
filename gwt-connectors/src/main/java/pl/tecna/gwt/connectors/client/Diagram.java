@@ -262,8 +262,8 @@ public class Diagram {
       public void onDragStart(DragStartEvent event) {
         endPointDragging = true;
         if (event != null) {
-        EndPoint ep = (EndPoint) event.getSource();
-        ep.connector.select();
+          EndPoint ep = (EndPoint) event.getSource();
+          ep.connector.select();
         }
         
         int startX =

@@ -1,7 +1,5 @@
 package pl.tecna.gwt.connectors.client.elements;
 
-import java.util.logging.Logger;
-
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
@@ -76,7 +74,7 @@ public class SectionDecoration extends FocusPanel {
 			break;
 		case VERTICAL_DOWN:
 			left = left - (this.getWidget().getOffsetWidth() / 2) + 1;
-			top = top - this.getWidget().getOffsetHeight() + 1;
+			top = top - this.getWidget().getOffsetHeight() + 2;
 			break;
 		case HORIZONTAL_LEFT:
 			top = top - (this.getWidget().getOffsetHeight() / 2) + 1;

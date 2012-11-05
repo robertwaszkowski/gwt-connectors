@@ -1,6 +1,7 @@
 package pl.tecna.gwt.connectors.client;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
@@ -20,6 +21,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConnectionPoint extends FocusPanel {
 
+  Logger LOG = Logger.getLogger("ConnectionPoint");
+  
 	public ArrayList<EndPoint> gluedEndPoints;
 	public int connectionDirection;
 	public int position;
@@ -154,10 +157,11 @@ public class ConnectionPoint extends FocusPanel {
 	 * @return distance from left side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
 	 */
 	public int getCenterLeft() {
-		
+		int left;
 		if (this.getParentShape().diagram != null) {
-			return (this.getAbsoluteLeft() - this.getParentShape().diagram.boundaryPanel.getAbsoluteLeft() + 
+			left = (this.getAbsoluteLeft() - this.getParentShape().diagram.boundaryPanel.getAbsoluteLeft() + 
 			    (int)Math.floor((double)((double)this.getOffsetWidth() / (double)2)));
+			return left;
 		} else {
 			return -1;
 		}
@@ -169,9 +173,15 @@ public class ConnectionPoint extends FocusPanel {
 	 * @return distance from top side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
 	 */
 	public int getCenterTop() {
-		
+		int top;
 		if (this.getParentShape().diagram != null) {
-			return (this.getAbsoluteTop() - this.getParentShape().diagram.boundaryPanel.getAbsoluteTop() + (int)Math.floor((double)((double)this.getOffsetHeight() / (double)2)));
+			top = (this.getAbsoluteTop() - this.getParentShape().diagram.boundaryPanel.getAbsoluteTop() + (int)Math.floor((double)((double)this.getOffsetHeight() / (double)2)));
+			if (connectionDirection == DIRECTION_TOP) {
+			  top -= 1;
+			} else if (connectionDirection == DIRECTION_BOTTOM) {
+			  top += 1;
+			}
+			return top;
 		} else {
 			return -1;
 		}

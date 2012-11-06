@@ -65,7 +65,7 @@ public class Section extends HTML {
 		this.endPoint = endPoint;
 
 		if ((isHorizontal() == false) && (isVertical() == false)) {
-		  connector.calculateStandardPointsPositions();
+//		  connector.calculateStandardPointsPositions();
 		  throw new IllegalArgumentException("Sections must be horizontal or vertical! " + "Start :" + 
 		      startPoint.getLeft() + " " + startPoint.getTop() + " end:" + endPoint.getLeft() + " " + endPoint.getTop());
 		}
@@ -426,9 +426,8 @@ public class Section extends HTML {
 	 * 		   false if Section has dimensions
 	 */
 	protected boolean hasNoDimensions() {
-		
-		if ((this.startPoint.getLeft().compareTo(this.endPoint.getLeft().intValue()) == 0 )
-		 && (this.startPoint.getTop().compareTo(this.endPoint.getTop().intValue()) == 0)){
+	  if ((this.startPoint.getLeft().intValue() == this.endPoint.getLeft().intValue()) &&
+	      (this.startPoint.getTop().intValue() == this.endPoint.getTop().intValue())) {
 			return true;
 		} else {
 			return false;
@@ -682,7 +681,11 @@ public class Section extends HTML {
 	        && (this.connector.getPrevSection(this).isHorizontal(checkedSections))){
 	      return true;
 	    }
+	    if (this.connector.getPrevSection(this) == null && this.connector.getNextSection(this) == null) {
+	      return true;
+	    }
 	  }
+	  	  
 	  return false;
 	}
 
@@ -708,6 +711,9 @@ public class Section extends HTML {
 	        && (this.connector.getPrevSection(this).isVertical(checkedSections))){
 	      return true;
 	    }
+	    if (this.connector.getPrevSection(this) == null && this.connector.getNextSection(this) == null) {
+        return true;
+      }
 	  }
 	  return false;
 	}

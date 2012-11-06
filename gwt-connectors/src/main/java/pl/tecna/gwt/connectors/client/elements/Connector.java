@@ -117,8 +117,6 @@ public class Connector implements Element {
 	  
     this.startEndPoint = new EndPoint(startLeft, startTop, this);
     this.endEndPoint = endEndPoint;
-//    endEndPoint.setLeft(endEndPoint.getLeft().intValue());
-//    endEndPoint.setTop(endEndPoint.getTop().intValue());
     endEndPoint.setLeft(endLeft);
     endEndPoint.setTop(endTop);
     this.startEndPoint.connector = this;
@@ -324,23 +322,27 @@ public class Connector implements Element {
 		int width = Math.abs(startEndPoint.getLeft() - endEndPoint.getLeft());
 		int height = Math.abs(startEndPoint.getTop() - endEndPoint.getTop());
 		
-		CornerPoint cp1 = new CornerPoint(0, 0);
-		CornerPoint cp2 = new CornerPoint(0, 0);
-		if (width < height) {
-			//the connection contains two vertical sections and one horizontal section
-			cp1.setLeft(startEndPoint.getLeft()); 
-			cp1.setTop(startEndPoint.getTop() + ((endEndPoint.getTop() - startEndPoint.getTop())/2));
-			cp2.setLeft(endEndPoint.getLeft()); 
-			cp2.setTop(cp1.getTop());
+		if (width == 0 || height == 0) {
+		  
 		} else {
-			//the connection contains two horizontal sections and one vertical section
-			cp1.setLeft(startEndPoint.getLeft() + ((endEndPoint.getLeft() - startEndPoint.getLeft())/2));
-			cp1.setTop(startEndPoint.getTop());
-			cp2.setLeft(cp1.getLeft());
-			cp2.setTop(endEndPoint.getTop());
+		  CornerPoint cp1 = new CornerPoint(0, 0);
+		  CornerPoint cp2 = new CornerPoint(0, 0);
+		  if (width < height) {
+		    //the connection contains two vertical sections and one horizontal section
+		    cp1.setLeft(startEndPoint.getLeft()); 
+		    cp1.setTop(startEndPoint.getTop() + ((endEndPoint.getTop() - startEndPoint.getTop())/2));
+		    cp2.setLeft(endEndPoint.getLeft()); 
+		    cp2.setTop(cp1.getTop());
+		  } else {
+		    //the connection contains two horizontal sections and one vertical section
+		    cp1.setLeft(startEndPoint.getLeft() + ((endEndPoint.getLeft() - startEndPoint.getLeft())/2));
+		    cp1.setTop(startEndPoint.getTop());
+		    cp2.setLeft(cp1.getLeft());
+		    cp2.setTop(endEndPoint.getTop());
+		  }
+		  cornerPoints.add(cp1);
+		  cornerPoints.add(cp2);
 		}
-		cornerPoints.add(cp1);
-		cornerPoints.add(cp2);
 	}
 
 	public void updateCornerPoints() {
@@ -664,21 +666,27 @@ public class Connector implements Element {
 			}
 
 			sections.clear();
-      Section startSection = new Section(startEndPoint, cp.get(0), this);
-      if (this.startPointDecoration != null) {
-        startSection.startPointDecoration = startPointDecoration;
-      }
-      sections.add(startSection);
-      
-      for (int i = 0; i < cp.size() - 1; i++) {
-        sections.add(new Section(cp.get(i), cp.get(i + 1), this));
-      }
+			
+			if (cornerPoints.size() == 0) {
+			  Section section = new Section(startEndPoint, endEndPoint, this);
+			  sections.add(section);
+			} else {			
+			  Section startSection = new Section(startEndPoint, cp.get(0), this);
+			  if (this.startPointDecoration != null) {
+			    startSection.startPointDecoration = startPointDecoration;
+			  }
+			  sections.add(startSection);
 
-      Section endSection = new Section(cp.get(cp.size() - 1), endEndPoint, this);
-      if (this.endPointDecoration != null) {
-        endSection.endPointDecoration = this.endPointDecoration;
-      }
-      sections.add(endSection);
+			  for (int i = 0; i < cp.size() - 1; i++) {
+			    sections.add(new Section(cp.get(i), cp.get(i + 1), this));
+			  }
+
+			  Section endSection = new Section(cp.get(cp.size() - 1), endEndPoint, this);
+			  if (this.endPointDecoration != null) {
+			    endSection.endPointDecoration = this.endPointDecoration;
+			  }
+			  sections.add(endSection);
+			}
 
 			for (Section section : sections) {
 				section.showOnDiagram(diagram, isSelected);
@@ -688,8 +696,6 @@ public class Connector implements Element {
 		  logCornerPointsData();
 			this.calculateStandardPointsPositions();
 			LOG.log(Level.SEVERE, "Section must be horizontal or vertical, calculating standard connection points", e);
-			//TODO Do this more gentle
-//			drawSections(cornerPoints, isSelected);
 		}
 	}
 	

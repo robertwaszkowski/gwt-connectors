@@ -11,6 +11,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -33,6 +34,8 @@ public class ShapeConnectorStart extends EndPoint {
     this.overlapingCP = overlapingCP;
     addHandlers();
     setStyle();
+    DOM.setStyleAttribute(this.getElement(), 
+        "cursor", "pointer"); 
   }
   
   protected void setStyle() {

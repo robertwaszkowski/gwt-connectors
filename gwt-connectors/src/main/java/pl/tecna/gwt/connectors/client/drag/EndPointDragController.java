@@ -12,6 +12,7 @@ import pl.tecna.gwt.connectors.client.elements.ShapeConnectorStart;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
 public class EndPointDragController extends PickupDragController {
@@ -43,6 +44,7 @@ public class EndPointDragController extends PickupDragController {
         ep.shape.hideShapeConnectorStartPionts();
         ep.removeHandlers();
         ep.removeStyle();
+        DOM.setStyleAttribute(ep.getElement(), "cursor", "crosshair"); 
         if (ep.connector == null) {
           int startLeft = ep.getOverlapingCP().getCenterLeft();
           int startTop = ep.getOverlapingCP().getCenterTop();

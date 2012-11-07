@@ -681,7 +681,7 @@ public class Section extends HTML {
 	        && (this.connector.getPrevSection(this).isHorizontal(checkedSections))){
 	      return true;
 	    }
-	    if (this.connector.getPrevSection(this) == null && this.connector.getNextSection(this) == null) {
+	    if (this.connector.getPrevSection(this) == null) {
 	      return true;
 	    }
 	  }
@@ -711,7 +711,7 @@ public class Section extends HTML {
 	        && (this.connector.getPrevSection(this).isVertical(checkedSections))){
 	      return true;
 	    }
-	    if (this.connector.getPrevSection(this) == null && this.connector.getNextSection(this) == null) {
+	    if (this.connector.getPrevSection(this) == null) {
         return true;
       }
 	  }

@@ -322,9 +322,7 @@ public class Connector implements Element {
 		int width = Math.abs(startEndPoint.getLeft() - endEndPoint.getLeft());
 		int height = Math.abs(startEndPoint.getTop() - endEndPoint.getTop());
 		
-		if (width == 0 || height == 0) {
-		  
-		} else {
+
 		  CornerPoint cp1 = new CornerPoint(0, 0);
 		  CornerPoint cp2 = new CornerPoint(0, 0);
 		  if (width < height) {
@@ -342,7 +340,7 @@ public class Connector implements Element {
 		  }
 		  cornerPoints.add(cp1);
 		  cornerPoints.add(cp2);
-		}
+		
 	}
 
 	public void updateCornerPoints() {

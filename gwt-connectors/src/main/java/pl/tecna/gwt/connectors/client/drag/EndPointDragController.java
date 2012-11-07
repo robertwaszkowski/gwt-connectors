@@ -112,7 +112,7 @@ public class EndPointDragController extends PickupDragController {
     }
     super.dragMove();
   }
-
+  
   public void fixConnectorPath(EndPoint dragEndPoint) {
     Connector conn = dragEndPoint.connector;
     if (conn.startEndPoint.isGluedToConnectionPoint()) {

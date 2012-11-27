@@ -479,7 +479,7 @@ public class Diagram {
    * Changes position of dropped Shape to make last section straight (if the
    * section before is shorter than section tolerance (default 8))
    */
-  private void fixShapePosition(Shape shape) {
+  public void fixShapePosition(Shape shape) {
 
     // LOG.d("fixShapePosition");
     // map with sections of connectors connected to the shape, from this map

@@ -6,12 +6,12 @@
 	<groupId>pl.tecna.gwt</groupId>
 	<artifactId>gwt-connectors</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.3.3-SNAPSHOT</version>
 	
 	<name>GWT Connectors</name>
 
 	<properties>
-		<gwt.version>2.4.0</gwt.version>
+		<gwt.version>2.5.1</gwt.version>
 		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>com.allen-sauer.gwt.dnd</groupId>
 			<artifactId>gwt-dnd</artifactId>
-			<version>3.1.2</version>
+			<version>3.2.0</version>
 		</dependency>
 
 		<dependency>

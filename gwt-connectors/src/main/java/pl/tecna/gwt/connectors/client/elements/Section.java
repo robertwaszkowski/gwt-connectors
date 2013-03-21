@@ -181,73 +181,91 @@ public class Section extends HTML {
 				// If dragged section startPoint or dragged section endPoint 
 				// is glued to connectionPoint then split section into three 
 				// to draw new lines to connectionPoint
-				if (Section.this.startPointIsGluedToConnectionPoint() || Section.this.endPointIsGluedToConnectionPoint()) {
-					// Calculate new CornerPoints
-					ArrayList<CornerPoint> newCornerPoints = new ArrayList<CornerPoint>();
-					Point sp = Section.this.startPoint;
-					Point ep = Section.this.endPoint;
-					CornerPoint cp1 = new CornerPoint(sp.getLeft() + (ep.getLeft() - sp.getLeft()) / 2,
-													  sp.getTop() + (ep.getTop() - sp.getTop()) / 2);
-					CornerPoint cp2 = new CornerPoint(sp.getLeft() + (ep.getLeft() - sp.getLeft()) / 2,
-							  						  sp.getTop() + (ep.getTop() - sp.getTop()) / 2);
-					newCornerPoints.add(cp1);
-					newCornerPoints.add(cp2);
-					// Split Section
-					Section.this.splitSection(newCornerPoints);					
-				}
-				
-				super.dragStart();
+			  try {
+			    if (Section.this.startPointIsGluedToConnectionPoint() || Section.this.endPointIsGluedToConnectionPoint()) {
+			      // Calculate new CornerPoints
+			      ArrayList<CornerPoint> newCornerPoints = new ArrayList<CornerPoint>();
+			      Point sp = Section.this.startPoint;
+			      Point ep = Section.this.endPoint;
+			      CornerPoint cp1 = new CornerPoint(sp.getLeft() + (ep.getLeft() - sp.getLeft()) / 2,
+			          sp.getTop() + (ep.getTop() - sp.getTop()) / 2);
+			      CornerPoint cp2 = new CornerPoint(sp.getLeft() + (ep.getLeft() - sp.getLeft()) / 2,
+			          sp.getTop() + (ep.getTop() - sp.getTop()) / 2);
+			      newCornerPoints.add(cp1);
+			      newCornerPoints.add(cp2);
+			      // Split Section
+			      Section.this.splitSection(newCornerPoints);					
+			    }
+			  } catch (Exception e) {
+			    LOG.info("Section drag start error " + e.getMessage());
+			    e.printStackTrace();
+			  }
+			  try {
+	        super.dragStart();
+			  } catch (Exception e) {
+          LOG.info("Section (super) drag start error " + e.getMessage());
+          e.printStackTrace();
+        }
 			}
 
 			@Override
 			public void dragMove() {
+			  try {
+			    if (Section.this.startPoint.getLeft() < Section.this.endPoint.getLeft()) {
+			      Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft()
+			          - context.boundaryPanel.getAbsoluteLeft());
+			      Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft() 
+			          - context.boundaryPanel.getAbsoluteLeft() + width);
+			    } else {
+			      Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft() 
+			          - context.boundaryPanel.getAbsoluteLeft() + width);
+			      Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft() 
+			          - context.boundaryPanel.getAbsoluteLeft());
+			    }
 
-				if (Section.this.startPoint.getLeft() < Section.this.endPoint.getLeft()) {
-					Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft()
-							- context.boundaryPanel.getAbsoluteLeft());
-					Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft() 
-							- context.boundaryPanel.getAbsoluteLeft() + width);
-				} else {
-					Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft() 
-							- context.boundaryPanel.getAbsoluteLeft() + width);
-					Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft() 
-							- context.boundaryPanel.getAbsoluteLeft());
-				}
+			    if (Section.this.startPoint.getTop() < Section.this.endPoint.getTop()) {
+			      Section.this.startPoint.setTop(context.draggable.getAbsoluteTop() 
+			          - context.boundaryPanel.getAbsoluteTop());
+			      Section.this.endPoint.setTop(context.draggable.getAbsoluteTop() 
+			          - context.boundaryPanel.getAbsoluteTop() + height);
+			    } else {
+			      Section.this.startPoint.setTop(context.draggable.getAbsoluteTop() 
+			          - context.boundaryPanel.getAbsoluteTop() + height);
+			      Section.this.endPoint.setTop(context.draggable.getAbsoluteTop() 
+			          - context.boundaryPanel.getAbsoluteTop());
+			    }
 
-				if (Section.this.startPoint.getTop() < Section.this.endPoint.getTop()) {
-					Section.this.startPoint.setTop(context.draggable.getAbsoluteTop() 
-							- context.boundaryPanel.getAbsoluteTop());
-					Section.this.endPoint.setTop(context.draggable.getAbsoluteTop() 
-							- context.boundaryPanel.getAbsoluteTop() + height);
-				} else {
-					Section.this.startPoint.setTop(context.draggable.getAbsoluteTop() 
-							- context.boundaryPanel.getAbsoluteTop() + height);
-					Section.this.endPoint.setTop(context.draggable.getAbsoluteTop() 
-							- context.boundaryPanel.getAbsoluteTop());
-				}
+			    if (Section.this.connector.getNextSection(Section.this) != null) {
+			      Section.this.connector.getNextSection(Section.this).update(); 
+			    };
+			    if (Section.this.connector.getPrevSection(Section.this) != null)   {
+			      Section.this.connector.getPrevSection(Section.this).update();
+			    };
+
+			    Section.this.connector.endEndPoint.update();
+			    Section.this.connector.startEndPoint.update();
+
+			    if (startPointDecoration != null) {
+			      startPointDecoration.update( 
+			          calculateStartPointDecorationDirection(), 
+			          startPoint.getLeft(), startPoint.getTop());
+			    }
+			    if (endPointDecoration != null) {
+			      endPointDecoration.update( 
+			          calculateEndPointDecorationDirection(), 
+			          endPoint.getLeft(), endPoint.getTop());
+			    }
+			  } catch (Exception e) {
+			    LOG.info("Section drag move error " + e.getMessage());
+			    e.printStackTrace();
+			  }
 				
-				if (Section.this.connector.getNextSection(Section.this) != null) {
-					Section.this.connector.getNextSection(Section.this).update(); 
-				};
-				if (Section.this.connector.getPrevSection(Section.this) != null)   {
-					Section.this.connector.getPrevSection(Section.this).update();
-				};
-				
-				Section.this.connector.endEndPoint.update();
-				Section.this.connector.startEndPoint.update();
-				
-				if (startPointDecoration != null) {
-		      startPointDecoration.update( 
-		          calculateStartPointDecorationDirection(), 
-		          startPoint.getLeft(), startPoint.getTop());
-		    }
-		    if (endPointDecoration != null) {
-		      endPointDecoration.update( 
-		          calculateEndPointDecorationDirection(), 
-		          endPoint.getLeft(), endPoint.getTop());
-		    }
-				
-				super.dragMove();
+			  try {
+			    super.dragMove();
+			  } catch (Exception e) {
+			    LOG.info("Section (super) drag move error " + e.getMessage());
+			    e.printStackTrace();
+			  }
 			}
 
 			@Override

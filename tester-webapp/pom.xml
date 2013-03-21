@@ -11,9 +11,9 @@
 	<name>GWT Connectors</name>
 
 	<properties>
-		<gwt.version>2.4.0</gwt.version>
+		<gwt.version>2.5.1</gwt.version>
 
-		<plugin.gwt.version>2.4.0</plugin.gwt.version>
+		<plugin.gwt.version>2.5.1</plugin.gwt.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

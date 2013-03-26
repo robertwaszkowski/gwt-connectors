@@ -189,12 +189,12 @@ public class AxisXYDragController extends AbstractDragController {
   private ArrayList dropControllerList = new ArrayList();
   protected int dropTargetClientHeight;
   protected int dropTargetClientWidth;
-  private Widget movablePanel;
+  protected Widget movablePanel;
   @SuppressWarnings("rawtypes")
   private HashMap savedWidgetInfoMap;
 
   //To provide XY drag feature (BEGIN)
-  private WidgetLocation initialDraggableLocation;
+  protected WidgetLocation initialDraggableLocation;
   private boolean allowHorizontalDragging;
   public boolean isAllowHorizontalDragging() {
     return allowHorizontalDragging;
@@ -321,15 +321,6 @@ public class AxisXYDragController extends AbstractDragController {
     }
 
     if (context.dropController != null) {
-
-      //dirty fix : when dragged element is greater than the parent scroll panel, then it is scrolled to bottom
-//      if (getBoundaryPanel().getParent() == null ||
-//            (getBoundaryPanel().getParent().getOffsetHeight() < context.draggable.getOffsetHeight() ||
-//                getBoundaryPanel().getParent().getOffsetWidth() < context.draggable.getOffsetWidth()) ) {
-//        setBehaviorScrollIntoView(false);
-//      } else {
-//        setBehaviorScrollIntoView(true);
-//      }
       context.dropController.onMove(context);
     }
   }
@@ -618,7 +609,7 @@ public class AxisXYDragController extends AbstractDragController {
     }
   }
 
-  private DropController getIntersectDropController(int x, int y) {
+  protected DropController getIntersectDropController(int x, int y) {
     DropController dropController = dropControllerCollection.getIntersectDropController(x, y);
     return dropController != null ? dropController : boundaryDropController;
   }

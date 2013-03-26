@@ -16,6 +16,8 @@ import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.DOM;
@@ -211,29 +213,34 @@ public class Section extends HTML {
 			@Override
 			public void dragMove() {
 			  try {
-			    if (Section.this.startPoint.getLeft() < Section.this.endPoint.getLeft()) {
-			      Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft()
-			          - context.boundaryPanel.getAbsoluteLeft());
-			      Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft() 
-			          - context.boundaryPanel.getAbsoluteLeft() + width);
-			    } else {
-			      Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft() 
-			          - context.boundaryPanel.getAbsoluteLeft() + width);
-			      Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft() 
-			          - context.boundaryPanel.getAbsoluteLeft());
-			    }
 
-			    if (Section.this.startPoint.getTop() < Section.this.endPoint.getTop()) {
-			      Section.this.startPoint.setTop(context.draggable.getAbsoluteTop() 
-			          - context.boundaryPanel.getAbsoluteTop());
-			      Section.this.endPoint.setTop(context.draggable.getAbsoluteTop() 
-			          - context.boundaryPanel.getAbsoluteTop() + height);
-			    } else {
-			      Section.this.startPoint.setTop(context.draggable.getAbsoluteTop() 
-			          - context.boundaryPanel.getAbsoluteTop() + height);
-			      Section.this.endPoint.setTop(context.draggable.getAbsoluteTop() 
-			          - context.boundaryPanel.getAbsoluteTop());
-			    }
+			    if (isAllowHorizontalDragging()) {
+            if (Section.this.startPoint.getLeft() < Section.this.endPoint.getLeft()) {
+              Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft()
+                  - context.boundaryPanel.getAbsoluteLeft());
+              Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft() 
+                  - context.boundaryPanel.getAbsoluteLeft() + width);
+            } else {
+              Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft()
+                  - context.boundaryPanel.getAbsoluteLeft() + width);
+              Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft() 
+                  - context.boundaryPanel.getAbsoluteLeft());
+            }
+          }
+
+          if (isAllowVerticalDragging()) {
+            if (Section.this.startPoint.getTop() < Section.this.endPoint.getTop()) {
+              Section.this.startPoint.setTop(context.draggable.getAbsoluteTop()
+                  - context.boundaryPanel.getAbsoluteTop());
+              Section.this.endPoint.setTop(context.draggable.getAbsoluteTop()
+                  - context.boundaryPanel.getAbsoluteTop() + height);
+            } else {
+              Section.this.startPoint.setTop(context.draggable.getAbsoluteTop()
+                  - context.boundaryPanel.getAbsoluteTop() + height);
+              Section.this.endPoint.setTop(context.draggable.getAbsoluteTop()
+                  - context.boundaryPanel.getAbsoluteTop());
+            }
+          }
 
 			    if (Section.this.connector.getNextSection(Section.this) != null) {
 			      Section.this.connector.getNextSection(Section.this).update(); 
@@ -261,7 +268,60 @@ public class Section extends HTML {
 			  }
 				
 			  try {
-			    super.dragMove();
+//			    super.dragMove();
+			    
+			  //To provide XY drag feature (BEGIN)
+			    if (isAllowHorizontalDragging() == false) {
+			      context.desiredDraggableX = initialDraggableLocation.getLeft() + boundaryOffsetX;
+			    }
+			    if (isAllowVerticalDragging() == false) {
+			      context.desiredDraggableY = initialDraggableLocation.getTop() + boundaryOffsetY;
+			    }
+			    //To provide XY drag feature (END)
+
+			    int desiredLeft = context.desiredDraggableX - boundaryOffsetX;
+			    int desiredTop = context.desiredDraggableY - boundaryOffsetY;
+
+			    if (getBehaviorConstrainedToBoundaryPanel()) {
+			      desiredLeft = Math.max(0, Math.min(desiredLeft, dropTargetClientWidth
+			          - context.draggable.getOffsetWidth()));
+			      desiredTop = Math.max(0, Math.min(desiredTop, dropTargetClientHeight
+			          - context.draggable.getOffsetHeight()));
+			    }
+			    
+			    if (isAllowHorizontalDragging()) {
+			      if (startPoint.getTop().intValue() > endPoint.getTop().intValue()) {
+			        desiredTop = endPoint.getTop();
+			      } else {
+			        desiredTop = startPoint.getTop();
+			      }
+			    }
+			    if (isAllowVerticalDragging()) {
+			      if (startPoint.getLeft().intValue() > endPoint.getLeft().intValue()) {
+			        desiredLeft = endPoint.getLeft();
+            } else {
+              desiredLeft = startPoint.getLeft();
+            }
+			    }
+
+			    DOMUtil.fastSetElementPosition(movablePanel.getElement(), desiredLeft, desiredTop);
+
+			    DropController newDropController = getIntersectDropController(context.mouseX, context.mouseY);
+			    if (context.dropController != newDropController) {
+			      if (context.dropController != null) {
+			        context.dropController.onLeave(context);
+			      }
+			      context.dropController = newDropController;
+			      if (context.dropController != null) {
+			        context.dropController.onEnter(context);
+			      }
+			    }
+
+			    if (context.dropController != null) {
+			      context.dropController.onMove(context);
+			    }
+			    
+			    
 			  } catch (Exception e) {
 			    LOG.info("Section (super) drag move error " + e.getMessage());
 			    e.printStackTrace();

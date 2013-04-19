@@ -56,7 +56,8 @@ public class EndPointDragController extends PickupDragController {
               startTop, 
               endLeft, 
               endTop, 
-              ep);
+              ep,
+              ep.shape.connectorsStyle);
         }
         ep.connector.startEndPoint.glueToConnectionPoint(ep.getOverlapingCP());
       }

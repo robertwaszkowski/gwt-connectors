@@ -12,6 +12,7 @@ import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
+import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.SectionData;
 
 import com.google.gwt.user.client.DOM;
@@ -34,6 +35,8 @@ public class Connector implements Element {
 	public SectionDecoration endPointDecoration;
 	
 	public List<SectionData> savedSectionsData;
+	
+	public ConnectorStyle style = ConnectorStyle.SOLID;
 	
 	private final int sectionMargin = 20;
 	private final int lastSectionTolerance = 10;
@@ -113,8 +116,9 @@ public class Connector implements Element {
 	}
 
 	public Connector(int startLeft, int startTop, int endLeft, int endTop, SectionDecoration startDecoration, 
-	      SectionDecoration endDecoration, EndPoint endEndPoint, Diagram diagram) {
+	      SectionDecoration endDecoration, EndPoint endEndPoint, Diagram diagram, ConnectorStyle style) {
 	  
+	  this.style = style;
     this.startEndPoint = new EndPoint(startLeft, startTop, this);
     this.endEndPoint = endEndPoint;
     endEndPoint.setLeft(endLeft);
@@ -687,7 +691,7 @@ public class Connector implements Element {
 			}
 
 			for (Section section : sections) {
-				section.showOnDiagram(diagram, isSelected);
+				section.showOnDiagram(diagram, isSelected, style);
 			}
 			refreshCursorStyles();
 		} catch (IllegalArgumentException e) {

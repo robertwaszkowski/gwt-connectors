@@ -11,6 +11,7 @@ import pl.tecna.gwt.connectors.client.elements.SectionDecoration;
 import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.elements.Shape.CPShapeType;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
+import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -120,6 +121,7 @@ public class Example implements EntryPoint {
 		shapeForDiamond.setTitle("shapeForDiamond");
 		
 		Shape shapeForTask = new Shape(task, CPShapeType.RECTANGLE);
+		shapeForTask.connectorsStyle = ConnectorStyle.DASHED;
 		shapeForTask.showOnDiagram(diagram);
 		shapeForTask.enableConnectionCreate(true);
 		shapeForTask.setTitle("Shape for task");

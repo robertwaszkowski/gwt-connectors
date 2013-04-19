@@ -11,6 +11,7 @@ import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.drop.DiagramWidgetDropController;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
+import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -85,9 +86,8 @@ public class Shape extends FocusPanel implements Element{
   private HandlerRegistration showConnStartMouseHandler;
   private HandlerRegistration hideConnStartMouseHandler;
   
-  private SectionDecoration startDecoration;
-  private SectionDecoration endDecoration;
-
+  public ConnectorStyle connectorsStyle = ConnectorStyle.SOLID;
+  
   public Shape(Widget w) {
 
     this(w, CPShapeType.RECTANGLE);
@@ -842,19 +842,6 @@ public class Shape extends FocusPanel implements Element{
         LOG.log(Level.SEVERE, "error while disable connectors for shape", e);
       }
     }
-  }
-  
-  public void setConnectorDecorations(SectionDecoration startDecoration, SectionDecoration endDecoration) {
-    this.startDecoration = startDecoration;
-    this.endDecoration = endDecoration;
-  }
-  
-  public SectionDecoration getStartDecoration() {
-    return startDecoration;
-  }
-  
-  public SectionDecoration getEndDecoration() {
-    return endDecoration;
   }
 
 }

@@ -11,6 +11,7 @@ import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.drag.AxisXYDragController;
 import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
+import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
@@ -45,6 +46,8 @@ public class Section extends HTML {
 	public static final int VERTICAL = 0;
 	public static final int HORIZONTAL = 1;
 	
+	private ConnectorStyle style;
+	
 	/**
 	 * Defines saved orientation, it doesn't contain current orientation
 	 */
@@ -52,46 +55,43 @@ public class Section extends HTML {
 
 	private AxisXYDragController sectionDragController;
 	
-	/**
-	 * Section represents vertical or horizontal part of {@link Connector}. 
-	 *
-	 * @param  startPoint a {@link CornerPoint} or {@link EndPoint} where the Section starts
-	 * @param  endPoint a {@link CornerPoint} or {@link EndPoint} where the Section ends
-	 */
-	public Section(Point startPoint, Point endPoint, Connector connector) throws IllegalArgumentException {
-		super();
-		
-		this.connector = connector;
-		
-		this.startPoint = startPoint;
-		this.endPoint = endPoint;
+	 /**
+   * Section represents vertical or horizontal part of {@link Connector}. 
+   *
+   * @param  startPoint a {@link CornerPoint} or {@link EndPoint} where the Section starts
+   * @param  endPoint a {@link CornerPoint} or {@link EndPoint} where the Section ends
+   */
+  public Section(Point startPoint, Point endPoint, Connector connector) throws IllegalArgumentException {
+    super();
+    this.connector = connector;
+    
+    this.startPoint = startPoint;
+    this.endPoint = endPoint;
 
-		if ((isHorizontal() == false) && (isVertical() == false)) {
-//		  connector.calculateStandardPointsPositions();
-		  throw new IllegalArgumentException("Sections must be horizontal or vertical! " + "Start :" + 
-		      startPoint.getLeft() + " " + startPoint.getTop() + " end:" + endPoint.getLeft() + " " + endPoint.getTop());
-		}
+    if ((isHorizontal() == false) && (isVertical() == false)) {
+      throw new IllegalArgumentException("Sections must be horizontal or vertical! " + "Start :" + 
+          startPoint.getLeft() + " " + startPoint.getTop() + " end:" + endPoint.getLeft() + " " + endPoint.getTop());
+    }
 
-		// Count Section width and height
-		this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
-		this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());
+    // Count Section width and height
+    this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
+    this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());
 
-		addMouseDownHandler(new MouseDownHandler() {
+    addMouseDownHandler(new MouseDownHandler() {
 
-		  public void onMouseDown(MouseDownEvent event) {
-		    if (!Section.this.connector.diagram.ctrlPressed) {
-		      Section.this.connector.diagram.deselectAllSections();
-		      Section.this.connector.diagram.shapeDragController.clearSelection();
-		    }
-		    if (Section.this.connector.isSelected) {
-		      Section.this.connector.deselect();
-		    } else {
-		      Section.this.connector.select();
-		    }
-		  }
-		});
-
-	}
+      public void onMouseDown(MouseDownEvent event) {
+        if (!Section.this.connector.diagram.ctrlPressed) {
+          Section.this.connector.diagram.deselectAllSections();
+          Section.this.connector.diagram.shapeDragController.clearSelection();
+        }
+        if (Section.this.connector.isSelected) {
+          Section.this.connector.deselect();
+        } else {
+          Section.this.connector.select();
+        }
+      }
+    });
+  }
 	
 	/**
 	 * Shows Section on a given panel. The Section is represented by 
@@ -109,7 +109,7 @@ public class Section extends HTML {
 	 */
 	public void showOnDiagram(Diagram diagram) {
 		
-		showOnDiagram(diagram, false);
+		showOnDiagram(diagram, false, ConnectorStyle.SOLID);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class Section extends HTML {
 	 * @param isSelected defines whether connector is selected
 	 * @return        the section drawn on specified panel
 	 */
-	public void showOnDiagram(Diagram diagram, boolean isSelected){
+	public void showOnDiagram(Diagram diagram, boolean isSelected, ConnectorStyle style){
 		// Create DIV to draw a line
 		// Using CSS
 		/*
@@ -143,6 +143,8 @@ public class Section extends HTML {
   				height:1px
 			}
 		 */
+	  
+	  this.style = style;
 		AbsolutePanel panel = diagram.boundaryPanel;
 		
 		boolean allowHorizontalDragging = false;
@@ -152,16 +154,16 @@ public class Section extends HTML {
 	
 		if (isVertical()) {
 			if (isSelected) {
-				this.setHTML(selectedVerticalLine(this.height + additionalHeight));
+				this.setHTML(selectedVerticalLine(this.height + additionalHeight, style));
 			} else {
-				this.setHTML(verticalLine(this.height + additionalHeight));
+				this.setHTML(verticalLine(this.height + additionalHeight, style));
 			}
 			allowHorizontalDragging = true;
 		} else if (isHorizontal()) {
 			if (isSelected) {
-				this.setHTML(selectedHorizontalLine(this.width + additionalWidth));
+				this.setHTML(selectedHorizontalLine(this.width + additionalWidth, style));
 			} else {
-				this.setHTML(horizontalLine(this.width + additionalWidth));
+				this.setHTML(horizontalLine(this.width + additionalWidth, style));
 			}
 			allowVerticalDragging = true;
 		}
@@ -608,28 +610,32 @@ public class Section extends HTML {
 		return connector.diagram.boundaryPanel.remove(this);
 	}
 
-	private String verticalLine(int height) {
-	  return "<div class=\"" + ConnectorsClientBundle.INSTANCE.css().line() + " " +
-	  ConnectorsClientBundle.INSTANCE.css().lineVertical() +"\"" +
-	      " style=\"height:" + (height) + "px\">&nbsp;</div>";
+	private String verticalLine(int height, ConnectorStyle style) {
+//	  return "<div class=\"" + ConnectorsClientBundle.INSTANCE.css().line() + " " +
+//    ConnectorsClientBundle.INSTANCE.css().lineVertical() +"\"" +
+//    " style=\"height:" + (height) + "px\">&nbsp;</div>";
+	  return "<div style=\"border-left:2px " + style.name().toLowerCase() + " #B2B2B2; height:" + height + "px\">";
 	}
 
-	private String horizontalLine(int width) {
-		return	"<div class=\"" + ConnectorsClientBundle.INSTANCE.css().line() + " " +
-		ConnectorsClientBundle.INSTANCE.css().lineHorizontal() + "\"" + 
-		    " style=\"width:" + (width) + "px\">&nbsp;</div>";
+	private String horizontalLine(int width, ConnectorStyle style) {
+//		return	"<div class=\"" + ConnectorsClientBundle.INSTANCE.css().line() + " " +
+//		ConnectorsClientBundle.INSTANCE.css().lineHorizontal() + "\"" + 
+//		    " style=\"width:" + (width) + "px\">&nbsp;</div>";
+	  return "<div style=\"border-top:2px " + style.name().toLowerCase() + " #B2B2B2; width:" + width + "px\">";
 	}
 	
-	private String selectedVerticalLine(int height) {
-		return "<div class=\"" + ConnectorsClientBundle.INSTANCE.css().lineSelected() + " " +
-		ConnectorsClientBundle.INSTANCE.css().lineVertical() + "\"" +
-		    " style=\"height:" + (height) + "px\">&nbsp;</div>";
+	private String selectedVerticalLine(int height, ConnectorStyle style) {
+//		return "<div class=\"" + ConnectorsClientBundle.INSTANCE.css().lineSelected() + " " +
+//		ConnectorsClientBundle.INSTANCE.css().lineVertical() + "\"" +
+//		    " style=\"height:" + (height) + "px\">&nbsp;</div>";
+	  return "<div style=\"border-left:2px " + style.name().toLowerCase() + " #00BFFF; height:" + height + "px\">";
 	}
 	
-	private String selectedHorizontalLine(int width) {
-		return	"<div class=\"" + ConnectorsClientBundle.INSTANCE.css().lineSelected() + " " +
-		ConnectorsClientBundle.INSTANCE.css().lineHorizontal() + "\"" + 
-		    " style=\"width:" + (width) + "px\">&nbsp;</div>";
+	private String selectedHorizontalLine(int width, ConnectorStyle style) {
+//		return	"<div class=\"" + ConnectorsClientBundle.INSTANCE.css().lineSelected() + " " +
+//		ConnectorsClientBundle.INSTANCE.css().lineHorizontal() + "\"" + 
+//		    " style=\"width:" + (width) + "px\">&nbsp;</div>";
+	  return "<div style=\"border-top:2px " + style.name().toLowerCase() + " #00BFFF; width:" + width + "px\">";
 	}
 	
 
@@ -646,7 +652,7 @@ public class Section extends HTML {
 
 	    if (isVertical()) {
 
-	      this.setHTML(verticalLine(this.height + additionalHeight));
+	      this.setHTML(verticalLine(this.height + additionalHeight, style));
 
 	      sectionDragController.setAllowHorizontalDragging(true);
 	      sectionDragController.setAllowVerticalDragging(false);
@@ -657,9 +663,9 @@ public class Section extends HTML {
 
 	    } else if (isHorizontal()) {
 	      if (this.connector.isSelected) {
-	        this.setHTML(selectedHorizontalLine(this.width + additionalWidth));
+	        this.setHTML(selectedHorizontalLine(this.width + additionalWidth, style));
 	      } else {
-	        this.setHTML(horizontalLine(this.width + additionalWidth));
+	        this.setHTML(horizontalLine(this.width + additionalWidth, style));
 	      }
 
 	      sectionDragController.setAllowHorizontalDragging(false);
@@ -690,9 +696,9 @@ public class Section extends HTML {
 	
 	public void select() {
 		if (isVertical()) {
-			this.setHTML(selectedVerticalLine(this.height + additionalHeight));
+			this.setHTML(selectedVerticalLine(this.height + additionalHeight, style));
 		} else if (isHorizontal()) {
-			this.setHTML(selectedHorizontalLine(this.width + additionalWidth));
+			this.setHTML(selectedHorizontalLine(this.width + additionalWidth, style));
 		}
 		
 		// Select Section Decorations
@@ -707,9 +713,9 @@ public class Section extends HTML {
 
 	public void deselect() {
 		if (isVertical()) {
-			this.setHTML(verticalLine(this.height + additionalHeight));
+			this.setHTML(verticalLine(this.height + additionalHeight, style));
 		} else if (isHorizontal()) {
-			this.setHTML(horizontalLine(this.width + additionalWidth));
+			this.setHTML(horizontalLine(this.width + additionalWidth, style));
 		}
 
 		// Deselect Section Decorations

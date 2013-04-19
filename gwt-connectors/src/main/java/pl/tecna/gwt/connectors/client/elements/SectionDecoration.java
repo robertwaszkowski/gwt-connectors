@@ -17,12 +17,15 @@ public class SectionDecoration extends FocusPanel {
 	public final static int HORIZONTAL_LEFT   = 3;
 	
 	public final static int DECORATE_ARROW = 101;
+  public final static int DECORATE_LINE_ARROW = 102;
 
 	private boolean selected = false;
 	private int direction;
 	
 	private Image[] decorationDirectedImages;
 	private Image[] decorationDirectedSelectedImages;
+	private Image[] decorationLaneArrowImages;
+  private Image[] decorationLaneArrowSelectedImages;
 	
 	public Connector connector;
 	
@@ -33,7 +36,7 @@ public class SectionDecoration extends FocusPanel {
 		decorationDirectedSelectedImages = new Image[4];
 
 		switch (decorationType) {
-		case DECORATE_ARROW:
+		case DECORATE_ARROW: {
 			decorationDirectedImages[VERTICAL_UP]      = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_up()).createImage();
 			decorationDirectedImages[HORIZONTAL_RIGHT] = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_right()).createImage();
 			decorationDirectedImages[VERTICAL_DOWN]    = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_down()).createImage();
@@ -43,8 +46,18 @@ public class SectionDecoration extends FocusPanel {
 			decorationDirectedSelectedImages[HORIZONTAL_RIGHT] = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_right_selected()).createImage();
 			decorationDirectedSelectedImages[VERTICAL_DOWN]    = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_down_selected()).createImage();
 			decorationDirectedSelectedImages[HORIZONTAL_LEFT]  = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_left_selected()).createImage();
-			break;
+		} break;
+		case DECORATE_LINE_ARROW: {
+      decorationDirectedImages[VERTICAL_UP]      = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_up()).createImage();
+      decorationDirectedImages[HORIZONTAL_RIGHT] = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_right()).createImage();
+      decorationDirectedImages[VERTICAL_DOWN]    = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_down()).createImage();
+      decorationDirectedImages[HORIZONTAL_LEFT]  = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_left()).createImage();
 
+      decorationDirectedSelectedImages[VERTICAL_UP]      = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_up_selected()).createImage();
+      decorationDirectedSelectedImages[HORIZONTAL_RIGHT] = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_right_selected()).createImage();
+      decorationDirectedSelectedImages[VERTICAL_DOWN]    = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_down_selected()).createImage();
+      decorationDirectedSelectedImages[HORIZONTAL_LEFT]  = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_left_selected()).createImage();
+		} break;
 		default:
 			break;
 		}

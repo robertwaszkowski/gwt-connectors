@@ -56,6 +56,39 @@ public interface ConnectorsBundle extends ClientBundle {
 	@Source("arrow_up_selected.png")
     ImageResource arrow_up_selected(); 
 	
+	 // For VERTICAL_DOWN direction DASHED style
+  @Source("line_arrow_down.png")
+    ImageResource line_arrow_down();
+  
+  // For HORIZONTAL_LEFT direction DASHED style
+  @Source("line_arrow_left.png")
+    ImageResource line_arrow_left();
+  
+  // For HORIZONTAL_RIGHT direction DASHED style
+  @Source("line_arrow_right.png")
+    ImageResource line_arrow_right();
+  
+  // For VERTICAL_UP direction DASHED style
+  @Source("line_arrow_up.png")
+    ImageResource line_arrow_up();
+	
+	 // For VERTICAL_DOWN direction DASHED style
+  @Source("line_arrow_down_selected.png")
+    ImageResource line_arrow_down_selected();
+  
+  // For selected HORIZONTAL_LEFT direction DASHED style
+  @Source("line_arrow_left_selected.png")
+    ImageResource line_arrow_left_selected();
+  
+  // For selected HORIZONTAL_RIGHT direction DASHED style
+  @Source("line_arrow_right_selected.png")
+    ImageResource line_arrow_right_selected();
+  
+  // For selected VERTICAL_UP direction DASHED style
+  @Source("line_arrow_up_selected.png")
+    ImageResource line_arrow_up_selected(); 	
+	
+  
 	//For test cases
 	@Source("diamond.png")
     ImageResource diamondImg();

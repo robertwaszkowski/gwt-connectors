@@ -24,6 +24,7 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
+import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
@@ -776,8 +777,13 @@ public class Diagram {
     return Keyboard.getInstance().removeListener(keyboardListener);
   }
   
-  public Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint) {
-    SectionDecoration endDecoration = new SectionDecoration(SectionDecoration.DECORATE_ARROW);
-    return new Connector(startLeft, startTop, endLeft, endTop, null, endDecoration, endEndPoint, Diagram.this);
+  public Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint, ConnectorStyle style) {
+    SectionDecoration endDecoration;
+    if (style == ConnectorStyle.SOLID) {
+      endDecoration = new SectionDecoration(SectionDecoration.DECORATE_ARROW);
+    } else {
+      endDecoration = new SectionDecoration(SectionDecoration.DECORATE_LINE_ARROW);      
+    }
+    return new Connector(startLeft, startTop, endLeft, endTop, null, endDecoration, endEndPoint, Diagram.this, style);
   }
 }

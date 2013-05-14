@@ -6,7 +6,7 @@ import pl.tecna.gwt.connectors.client.elements.Connector;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public class DiagramRemoveEvent implements ConnectorsEvent {
+public class DiagramRemoveEvent implements ConnectorEvent {
 
   private Widget removedEl;
   private Connector removedConn;

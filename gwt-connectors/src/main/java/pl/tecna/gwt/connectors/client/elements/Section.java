@@ -9,20 +9,22 @@ import pl.tecna.gwt.connectors.client.CornerPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.drag.AxisXYDragController;
+import pl.tecna.gwt.connectors.client.elements.SectionDecoration.DecorationDirection;
 import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ConnectorDoubleClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -63,6 +65,11 @@ public class Section extends HTML {
    */
   public Section(Point startPoint, Point endPoint, Connector connector) throws IllegalArgumentException {
     super();
+    
+//    this.sinkEvents(Event.ONMOUSEDOWN);
+//    this.unsinkEvents(Event.ONDBLCLICK); 
+//    this.unsinkEvents(Event.ONCLICK); 
+    
     this.connector = connector;
     
     this.startPoint = startPoint;
@@ -77,9 +84,16 @@ public class Section extends HTML {
     this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
     this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());
 
-    addMouseDownHandler(new MouseDownHandler() {
+    addDoubleClickHandler(new DoubleClickHandler() {
 
-      public void onMouseDown(MouseDownEvent event) {
+      public void onDoubleClick(DoubleClickEvent event) {
+        Section.this.connector.diagram.onConnectorDoubleClick(new ConnectorDoubleClickEvent(Section.this.connector, Section.this));
+      }
+    });
+    
+    addClickHandler(new ClickHandler() {
+      
+      public void onClick(ClickEvent event) {
         if (!Section.this.connector.diagram.ctrlPressed) {
           Section.this.connector.diagram.deselectAllSections();
           Section.this.connector.diagram.shapeDragController.clearSelection();
@@ -89,8 +103,12 @@ public class Section extends HTML {
         } else {
           Section.this.connector.select();
         }
+        Section.this.connector.diagram.onConnectorClick(new ConnectorClickEvent(Section.this.connector, Section.this));
       }
     });
+    
+    
+    
   }
 	
 	/**
@@ -377,7 +395,7 @@ public class Section extends HTML {
 		panel.add(this, Math.min(this.startPoint.getLeft(), this.endPoint.getLeft()), 
 				        Math.min(this.startPoint.getTop(), this.endPoint.getTop()));
 		this.sectionDragController.makeDraggable(this);
-		this.sectionDragController.setBehaviorDragStartSensitivity(1);
+		this.sectionDragController.setBehaviorDragStartSensitivity(5);
 		
 		this.sectionDragController.addDragHandler(new DragHandlerAdapter() {
 			
@@ -461,41 +479,41 @@ public class Section extends HTML {
 			this.endPointDecoration.showOnDiagram(panel, 
 					calculateEndPointDecorationDirection(), 
 					endPoint.getLeft(), endPoint.getTop());
-		}		
+		}
 	}
 
-	public int calculateEndPointDecorationDirection() {
+	public DecorationDirection calculateEndPointDecorationDirection() {
 		if (isHorizontal()) {
 			if (this.endPoint.getLeft() < this.startPoint.getLeft()) {
-				return SectionDecoration.HORIZONTAL_LEFT;
+				return DecorationDirection.HORIZONTAL_LEFT;
 			} else {
-				return SectionDecoration.HORIZONTAL_RIGHT;
+				return DecorationDirection.HORIZONTAL_RIGHT;
 			}
 		} else if (isVertical()){
 			if (this.endPoint.getTop() < this.startPoint.getTop()) {
-				return SectionDecoration.VERTICAL_UP;
+				return DecorationDirection.VERTICAL_UP;
 			} else {
-				return SectionDecoration.VERTICAL_DOWN;
+				return DecorationDirection.VERTICAL_DOWN;
 			}
 		}
-		return 0;
+		return DecorationDirection.HORIZONTAL_LEFT;
 	}
 
-	public int calculateStartPointDecorationDirection() {
+	public DecorationDirection calculateStartPointDecorationDirection() {
 		if (isHorizontal()) {
 			if (this.startPoint.getLeft() < this.endPoint.getLeft()) {
-				return SectionDecoration.HORIZONTAL_LEFT;
+				return DecorationDirection.HORIZONTAL_LEFT;
 			} else {
-				return SectionDecoration.HORIZONTAL_RIGHT;
+				return DecorationDirection.HORIZONTAL_RIGHT;
 			}
 		} else if (isVertical()){
 			if (this.startPoint.getTop() < this.endPoint.getTop()) {
-				return SectionDecoration.VERTICAL_UP;
+				return DecorationDirection.VERTICAL_UP;
 			} else {
-				return SectionDecoration.VERTICAL_DOWN;
+				return DecorationDirection.VERTICAL_DOWN;
 			}
 		}
-		return 0;
+		return DecorationDirection.HORIZONTAL_LEFT;
 	}
 
 	/**
@@ -611,30 +629,18 @@ public class Section extends HTML {
 	}
 
 	private String verticalLine(int height, ConnectorStyle style) {
-//	  return "<div class=\"" + ConnectorsClientBundle.INSTANCE.css().line() + " " +
-//    ConnectorsClientBundle.INSTANCE.css().lineVertical() +"\"" +
-//    " style=\"height:" + (height) + "px\">&nbsp;</div>";
 	  return "<div style=\"border-left:2px " + style.name().toLowerCase() + " #B2B2B2; height:" + height + "px\">";
 	}
 
 	private String horizontalLine(int width, ConnectorStyle style) {
-//		return	"<div class=\"" + ConnectorsClientBundle.INSTANCE.css().line() + " " +
-//		ConnectorsClientBundle.INSTANCE.css().lineHorizontal() + "\"" + 
-//		    " style=\"width:" + (width) + "px\">&nbsp;</div>";
 	  return "<div style=\"border-top:2px " + style.name().toLowerCase() + " #B2B2B2; width:" + width + "px\">";
 	}
 	
 	private String selectedVerticalLine(int height, ConnectorStyle style) {
-//		return "<div class=\"" + ConnectorsClientBundle.INSTANCE.css().lineSelected() + " " +
-//		ConnectorsClientBundle.INSTANCE.css().lineVertical() + "\"" +
-//		    " style=\"height:" + (height) + "px\">&nbsp;</div>";
 	  return "<div style=\"border-left:2px " + style.name().toLowerCase() + " #00BFFF; height:" + height + "px\">";
 	}
 	
 	private String selectedHorizontalLine(int width, ConnectorStyle style) {
-//		return	"<div class=\"" + ConnectorsClientBundle.INSTANCE.css().lineSelected() + " " +
-//		ConnectorsClientBundle.INSTANCE.css().lineHorizontal() + "\"" + 
-//		    " style=\"width:" + (width) + "px\">&nbsp;</div>";
 	  return "<div style=\"border-top:2px " + style.name().toLowerCase() + " #00BFFF; width:" + width + "px\">";
 	}
 	
@@ -695,12 +701,11 @@ public class Section extends HTML {
 	}
 	
 	public void select() {
-		if (isVertical()) {
-			this.setHTML(selectedVerticalLine(this.height + additionalHeight, style));
-		} else if (isHorizontal()) {
-			this.setHTML(selectedHorizontalLine(this.width + additionalWidth, style));
-		}
-		
+	  
+	  if (getElement().getChildCount() != 0 && getElement().getChild(0) instanceof com.google.gwt.user.client.Element) {
+      ((com.google.gwt.user.client.Element) getElement().getChild(0)).getStyle().setBorderColor("#00BFFF");
+    }
+
 		// Select Section Decorations
 		if (startPointDecoration != null) {
 			this.startPointDecoration.select();
@@ -712,12 +717,11 @@ public class Section extends HTML {
 	}
 
 	public void deselect() {
-		if (isVertical()) {
-			this.setHTML(verticalLine(this.height + additionalHeight, style));
-		} else if (isHorizontal()) {
-			this.setHTML(horizontalLine(this.width + additionalWidth, style));
-		}
-
+	  
+	  if (getElement().getChildCount() != 0 && getElement().getChild(0) instanceof com.google.gwt.user.client.Element) {
+	    ((com.google.gwt.user.client.Element) getElement().getChild(0)).getStyle().setBorderColor("#B2B2B2");
+	  }
+	  
 		// Deselect Section Decorations
 		if (startPointDecoration != null) {
 			this.startPointDecoration.deselect();
@@ -817,15 +821,7 @@ public class Section extends HTML {
 	public void setEndPointDecoration(SectionDecoration endPointDecoration) {
 		this.endPointDecoration = endPointDecoration;
 	}
-	
-	@Override
-	public void onBrowserEvent(Event event) {
-		if (DOM.eventGetType(event) == Event.ONMOUSEDOWN) {
-			connector.diagram.onConnectorClick(new ConnectorClickEvent(connector, this));
-		}
-		super.onBrowserEvent(event);
-	}
-	
+		
 	public int getLength() {
 		if (isVertical()) {
 			return Math.abs(startPoint.getTop() - endPoint.getTop());

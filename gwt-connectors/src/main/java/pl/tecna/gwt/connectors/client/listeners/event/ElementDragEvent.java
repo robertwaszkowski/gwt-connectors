@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public class ElementDragEvent implements ConnectorsEvent {
+public class ElementDragEvent implements ConnectorEvent {
 
   public enum DragEventType {
     

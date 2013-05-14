@@ -13,12 +13,14 @@ import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Section;
 import pl.tecna.gwt.connectors.client.elements.SectionDecoration;
+import pl.tecna.gwt.connectors.client.elements.SectionDecoration.DecorationType;
 import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.listeners.DiagramListener;
 import pl.tecna.gwt.connectors.client.listeners.DiagramModeListener;
 import pl.tecna.gwt.connectors.client.listeners.Keyboard;
 import pl.tecna.gwt.connectors.client.listeners.KeyboardListener;
 import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ConnectorDoubleClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
@@ -407,6 +409,14 @@ public class Diagram {
     }
   }
   
+  public void onConnectorDoubleClick(ConnectorDoubleClickEvent event) {
+    if (isEnableEvents()) {
+      for (DiagramListener listener : listeners) {
+        listener.onConnectorDoubleClick(event);
+      }
+    }
+  }
+  
   public void onDiagramAdd(DiagramAddEvent event) {
     if (isEnableEvents()) {
       for (DiagramListener listener : listeners) {
@@ -780,9 +790,9 @@ public class Diagram {
   public Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint, ConnectorStyle style) {
     SectionDecoration endDecoration;
     if (style == ConnectorStyle.SOLID) {
-      endDecoration = new SectionDecoration(SectionDecoration.DECORATE_ARROW);
+      endDecoration = new SectionDecoration(DecorationType.ARROW_SOLID);
     } else {
-      endDecoration = new SectionDecoration(SectionDecoration.DECORATE_LINE_ARROW);      
+      endDecoration = new SectionDecoration(DecorationType.ARROW_LINE);      
     }
     return new Connector(startLeft, startTop, endLeft, endTop, null, endDecoration, endEndPoint, Diagram.this, style);
   }

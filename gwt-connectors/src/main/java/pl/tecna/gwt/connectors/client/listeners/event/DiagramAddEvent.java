@@ -4,7 +4,7 @@ import pl.tecna.gwt.connectors.client.elements.Connector;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public class DiagramAddEvent implements ConnectorsEvent {
+public class DiagramAddEvent implements ConnectorEvent {
 
   private Widget addedEl;
   private Connector addedConn;

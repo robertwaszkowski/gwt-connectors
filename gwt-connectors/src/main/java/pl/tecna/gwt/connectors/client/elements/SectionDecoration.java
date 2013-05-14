@@ -10,69 +10,126 @@ import com.google.gwt.user.client.ui.Image;
 
 public class SectionDecoration extends FocusPanel {
 	
-	// decorationDirections
-	public final static int VERTICAL_UP       = 0;
-	public final static int HORIZONTAL_RIGHT  = 1;
-	public final static int VERTICAL_DOWN     = 2;
-	public final static int HORIZONTAL_LEFT   = 3;
-	
-	public final static int DECORATE_ARROW = 101;
-  public final static int DECORATE_LINE_ARROW = 102;
-
+  public enum DecorationType {
+    ARROW_SOLID,
+    ARROW_LINE,
+    USER
+  }
+  
+  public enum DecorationDirection {
+    
+    VERTICAL_UP(0),
+    HORIZONTAL_RIGHT(1),
+    VERTICAL_DOWN(2),
+    HORIZONTAL_LEFT(3);
+    
+    private int index;
+    
+    private DecorationDirection(int index) {
+      this.index = index;
+    }
+    
+    public int getIndex() {
+      return index;
+    }
+    
+  }
+  
 	private boolean selected = false;
-	private int direction;
+	private DecorationDirection direction;
 	
 	private Image[] decorationDirectedImages;
 	private Image[] decorationDirectedSelectedImages;
-	private Image[] decorationLaneArrowImages;
-  private Image[] decorationLaneArrowSelectedImages;
 	
 	public Connector connector;
 	
-	public SectionDecoration(int decorationType) {
-		super();
-				
-		decorationDirectedImages = new Image[4];
-		decorationDirectedSelectedImages = new Image[4];
+	/**
+	 * If true, then decoration image center is on end point
+	 */
+	public boolean center = false;
+	
+	private SectionDecoration() {
+    super();
+	  decorationDirectedImages = new Image[4];
+    decorationDirectedSelectedImages = new Image[4];
+	}
+	
+	public SectionDecoration(Image img, Image selImg) {
+    this();
+    for (int i = 0 ; i < 4 ; i++) {
+      decorationDirectedImages[i] = img;
+      decorationDirectedSelectedImages[i] = selImg;
+    }
+    initStyles();
+	}
+	
+	public SectionDecoration(Image[] decorations, Image[] decorationsSelected) {
+	  this();
+	  decorationDirectedImages = decorations;
+	  decorationDirectedSelectedImages = decorationsSelected;
+    initStyles();
+	}
+	
+	public SectionDecoration(DecorationType type) {
+	  
+	  this();
+		switch (type) {
+		case ARROW_SOLID: {
+			decorationDirectedImages[DecorationDirection.VERTICAL_UP.getIndex()]      = 
+			    AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_up()).createImage();
+			decorationDirectedImages[DecorationDirection.HORIZONTAL_RIGHT.getIndex()] = 
+			    AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_right()).createImage();
+			decorationDirectedImages[DecorationDirection.VERTICAL_DOWN.getIndex()]    = 
+			    AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_down()).createImage();
+			decorationDirectedImages[DecorationDirection.HORIZONTAL_LEFT.getIndex()]  = 
+			    AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_left()).createImage();
 
-		switch (decorationType) {
-		case DECORATE_ARROW: {
-			decorationDirectedImages[VERTICAL_UP]      = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_up()).createImage();
-			decorationDirectedImages[HORIZONTAL_RIGHT] = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_right()).createImage();
-			decorationDirectedImages[VERTICAL_DOWN]    = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_down()).createImage();
-			decorationDirectedImages[HORIZONTAL_LEFT]  = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_left()).createImage();
-
-			decorationDirectedSelectedImages[VERTICAL_UP]      = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_up_selected()).createImage();
-			decorationDirectedSelectedImages[HORIZONTAL_RIGHT] = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_right_selected()).createImage();
-			decorationDirectedSelectedImages[VERTICAL_DOWN]    = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_down_selected()).createImage();
-			decorationDirectedSelectedImages[HORIZONTAL_LEFT]  = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_left_selected()).createImage();
+			decorationDirectedSelectedImages[DecorationDirection.VERTICAL_UP.getIndex()]      = 
+			    AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_up_selected()).createImage();
+			decorationDirectedSelectedImages[DecorationDirection.HORIZONTAL_RIGHT.getIndex()] = 
+			    AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_right_selected()).createImage();
+			decorationDirectedSelectedImages[DecorationDirection.VERTICAL_DOWN.getIndex()]    = 
+			    AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_down_selected()).createImage();
+			decorationDirectedSelectedImages[DecorationDirection.HORIZONTAL_LEFT.getIndex()]  = 
+			    AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.arrow_left_selected()).createImage();
 		} break;
-		case DECORATE_LINE_ARROW: {
-      decorationDirectedImages[VERTICAL_UP]      = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_up()).createImage();
-      decorationDirectedImages[HORIZONTAL_RIGHT] = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_right()).createImage();
-      decorationDirectedImages[VERTICAL_DOWN]    = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_down()).createImage();
-      decorationDirectedImages[HORIZONTAL_LEFT]  = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_left()).createImage();
+		case ARROW_LINE: {
+      decorationDirectedImages[DecorationDirection.VERTICAL_UP.getIndex()]      = 
+          AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_up()).createImage();
+      decorationDirectedImages[DecorationDirection.HORIZONTAL_RIGHT.getIndex()] = 
+          AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_right()).createImage();
+      decorationDirectedImages[DecorationDirection.VERTICAL_DOWN.getIndex()]    = 
+          AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_down()).createImage();
+      decorationDirectedImages[DecorationDirection.HORIZONTAL_LEFT.getIndex()]  = 
+          AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_left()).createImage();
 
-      decorationDirectedSelectedImages[VERTICAL_UP]      = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_up_selected()).createImage();
-      decorationDirectedSelectedImages[HORIZONTAL_RIGHT] = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_right_selected()).createImage();
-      decorationDirectedSelectedImages[VERTICAL_DOWN]    = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_down_selected()).createImage();
-      decorationDirectedSelectedImages[HORIZONTAL_LEFT]  = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_left_selected()).createImage();
+      decorationDirectedSelectedImages[DecorationDirection.VERTICAL_UP.getIndex()]      = 
+          AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_up_selected()).createImage();
+      decorationDirectedSelectedImages[DecorationDirection.HORIZONTAL_RIGHT.getIndex()] = 
+          AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_right_selected()).createImage();
+      decorationDirectedSelectedImages[DecorationDirection.VERTICAL_DOWN.getIndex()]    = 
+          AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_down_selected()).createImage();
+      decorationDirectedSelectedImages[DecorationDirection.HORIZONTAL_LEFT.getIndex()]  = 
+          AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.line_arrow_left_selected()).createImage();
 		} break;
 		default:
 			break;
 		}
-		
-		for (Image img : decorationDirectedImages) {
-	    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
-		}
-		
-		for (Image img : decorationDirectedSelectedImages) {
-      img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
-    }
+		initStyles();
 		
 	}
 	
-	public void update(int direction, int left, int top) {
+	private void initStyles() {
+	  for (Image img : decorationDirectedImages) {
+      img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+    }
+    
+    for (Image img : decorationDirectedSelectedImages) {
+      img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+    }
+	}
+	
+	public void update(DecorationDirection direction, int left, int top) {
 		// Remember direction
 		this.direction = direction;
 		
@@ -84,33 +141,45 @@ public class SectionDecoration extends FocusPanel {
 		case VERTICAL_UP:
 			left = left - (this.getWidget().getOffsetWidth() / 2) + 1;
 			top = top - 1;
+			if (center) {
+        top -= this.getWidget().getOffsetHeight() / 2;
+      }
 			break;
 		case VERTICAL_DOWN:
 			left = left - (this.getWidget().getOffsetWidth() / 2) + 1;
 			top = top - this.getWidget().getOffsetHeight() + 2;
+			if (center) {
+        top += this.getWidget().getOffsetHeight() / 2;
+      }
 			break;
 		case HORIZONTAL_LEFT:
 			top = top - (this.getWidget().getOffsetHeight() / 2) + 1;
-			left = left;
+//			left = left;
+			if (center) {
+			  left -= this.getWidget().getOffsetWidth() /2 ;
+      }
 			break;
 		case HORIZONTAL_RIGHT:
 			top = top - (this.getWidget().getOffsetHeight() / 2) + 1;
 			left = left - this.getWidget().getOffsetWidth();
+			if (center) {
+        left += this.getWidget().getOffsetWidth() / 2;
+      }
 			break;
 		}
 		((AbsolutePanel)this.getParent()).setWidgetPosition(this, left, top); 
 	}
 	
-	private void setDecoration(boolean sel, int direction) {
+	private void setDecoration(boolean sel, DecorationDirection direction) {
 		// Set decoration depending on direction and selection
 		if (sel) {
-			this.setWidget(decorationDirectedSelectedImages[direction]);
+			this.setWidget(decorationDirectedSelectedImages[direction.getIndex()]);
 		} else {
-			this.setWidget(decorationDirectedImages[direction]);
+			this.setWidget(decorationDirectedImages[direction.getIndex()]);
 		}
 	}
 
-	public void showOnDiagram(AbsolutePanel panel, int direction, int left, int top) {
+	public void showOnDiagram(AbsolutePanel panel, DecorationDirection direction, int left, int top) {
 		// Add decoration to given panel
 		panel.add(this, left, top);
 		// Update decoration's position and picture

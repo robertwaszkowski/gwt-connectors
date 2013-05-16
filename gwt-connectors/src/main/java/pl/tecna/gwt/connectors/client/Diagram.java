@@ -19,8 +19,6 @@ import pl.tecna.gwt.connectors.client.listeners.DiagramListener;
 import pl.tecna.gwt.connectors.client.listeners.DiagramModeListener;
 import pl.tecna.gwt.connectors.client.listeners.Keyboard;
 import pl.tecna.gwt.connectors.client.listeners.KeyboardListener;
-import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
-import pl.tecna.gwt.connectors.client.listeners.event.ConnectorDoubleClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
@@ -400,23 +398,7 @@ public class Diagram {
   public void clearListeners() {
     listeners.clear();
   }
-
-  public void onConnectorClick(ConnectorClickEvent event) {
-    if (isEnableEvents()) {
-      for (DiagramListener listener : listeners) {
-        listener.onConnectorClick(event);
-      }
-    }
-  }
-  
-  public void onConnectorDoubleClick(ConnectorDoubleClickEvent event) {
-    if (isEnableEvents()) {
-      for (DiagramListener listener : listeners) {
-        listener.onConnectorDoubleClick(event);
-      }
-    }
-  }
-  
+    
   public void onDiagramAdd(DiagramAddEvent event) {
     if (isEnableEvents()) {
       for (DiagramListener listener : listeners) {

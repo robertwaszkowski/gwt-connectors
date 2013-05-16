@@ -87,7 +87,7 @@ public class Section extends HTML {
     addDoubleClickHandler(new DoubleClickHandler() {
 
       public void onDoubleClick(DoubleClickEvent event) {
-        Section.this.connector.diagram.onConnectorDoubleClick(new ConnectorDoubleClickEvent(Section.this.connector, Section.this));
+        Section.this.connector.onConnectorDoubleClick(new ConnectorDoubleClickEvent(Section.this.connector, Section.this));
       }
     });
     
@@ -103,7 +103,7 @@ public class Section extends HTML {
         } else {
           Section.this.connector.select();
         }
-        Section.this.connector.diagram.onConnectorClick(new ConnectorClickEvent(Section.this.connector, Section.this));
+        Section.this.connector.onConnectorClick(new ConnectorClickEvent(Section.this.connector, Section.this));
       }
     });
     
@@ -624,7 +624,13 @@ public class Section extends HTML {
 		// END_DEBUG
 	}
 
-	public boolean removeFromDiagram() {	
+	public boolean removeFromDiagram() {
+	  if (endPointDecoration != null && endPointDecoration.isAttached()) {
+	    endPointDecoration.removeFromParent();
+	  }
+	  if (startPointDecoration != null && startPointDecoration.isAttached()) {
+	    startPointDecoration.removeFromParent();
+    }
 		return connector.diagram.boundaryPanel.remove(this);
 	}
 

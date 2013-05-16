@@ -8,8 +8,6 @@ import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 
 
-	
-
 public interface DiagramListener {
 
 	void onConnectorClick(ConnectorClickEvent event);

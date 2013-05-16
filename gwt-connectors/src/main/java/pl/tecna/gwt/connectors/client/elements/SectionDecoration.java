@@ -181,7 +181,16 @@ public class SectionDecoration extends FocusPanel {
 
 	public void showOnDiagram(AbsolutePanel panel, DecorationDirection direction, int left, int top) {
 		// Add decoration to given panel
-		panel.add(this, left, top);
+	  if (this.isAttached()) {
+	    if (this.getParent().equals(panel)) {
+	      panel.setWidgetPosition(this, left, top);
+	    } else {
+	      this.removeFromParent();
+	      panel.add(this, left, top);
+	    }
+	  } else {
+	    panel.add(this, left, top);
+	  }
 		// Update decoration's position and picture
 		update(direction, left, top);
 	}

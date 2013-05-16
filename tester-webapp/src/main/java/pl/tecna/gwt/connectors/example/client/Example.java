@@ -12,9 +12,6 @@ import pl.tecna.gwt.connectors.client.elements.SectionDecoration.DecorationType;
 import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.elements.Shape.CPShapeType;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
-import pl.tecna.gwt.connectors.client.listeners.DiagramListenerAdapter;
-import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
-import pl.tecna.gwt.connectors.client.listeners.event.ConnectorDoubleClickEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -76,7 +73,9 @@ public class Example implements EntryPoint {
 		cp.add(new CornerPoint(370, 120));
 		cp.add(new CornerPoint(270, 120));
 		SectionDecoration startDecoration = new SectionDecoration(DecorationType.ARROW_LINE);
-		SectionDecoration endDecoration = new SectionDecoration(DecorationType.ARROW_LINE);
+		SectionDecoration endDecoration = new SectionDecoration(
+				new Image("http://code.google.com/images/code_sm.png"), 
+				new Image("http://code.google.com/images/code_sm.png"));
 		Connector connector2 = new Connector(350, 200, 270, 80, cp, startDecoration, endDecoration);
 		connector2.style = ConnectorStyle.DASHED;
 		connector2.showOnDiagram(diagram);

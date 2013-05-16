@@ -10,6 +10,9 @@ import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.CornerPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.Point;
+import pl.tecna.gwt.connectors.client.listeners.ConnectorListener;
+import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
+import pl.tecna.gwt.connectors.client.listeners.event.ConnectorDoubleClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
@@ -37,6 +40,8 @@ public class Connector implements Element {
 	public List<SectionData> savedSectionsData;
 	
 	public ConnectorStyle style = ConnectorStyle.SOLID;
+	
+	private List<ConnectorListener> listeners = new ArrayList<ConnectorListener>();
 	
 	private final int sectionMargin = 20;
 	private final int lastSectionTolerance = 10;
@@ -1369,4 +1374,28 @@ public class Connector implements Element {
 		return false;
 	}
 	
+	public void addConnectorListener(ConnectorListener listener) {
+	  listeners.add(listener);
+	}
+	
+	public void removeConnectorListener(ConnectorListener listener) {
+	  listeners.remove(listener);
+	}
+	
+	public List<ConnectorListener> getListeners() {
+	  return listeners;
+	}
+	
+	public void onConnectorClick(ConnectorClickEvent event) {
+	  for (ConnectorListener listener : listeners) {
+	    listener.onConnectorClick(event);
+	  }
+	}
+	
+	public void onConnectorDoubleClick(ConnectorDoubleClickEvent event) {
+    for (ConnectorListener listener : listeners) {
+      listener.onConnectorDoubleClick(event);
+    }
+  }
+  	
 }

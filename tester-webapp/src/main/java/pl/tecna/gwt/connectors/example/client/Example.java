@@ -81,6 +81,7 @@ public class Example implements EntryPoint {
 		connector2.showOnDiagram(diagram);
 
 		Connector connector3 = new Connector(450, 120, 500, 80);
+		connector3.style = ConnectorStyle.DOTTED;
 		connector3.showOnDiagram(diagram);
 
 		FocusPanel diamond = new FocusPanel();

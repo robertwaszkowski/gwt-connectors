@@ -14,7 +14,7 @@ Using the library you will be able to:
 Getting Started
 ---------------
 The [Wiki](https://github.com/robertwaszkowski/gwt-connectors/wiki) contains all the information you'll need to write your own application with drawing connections capabilities.
-You can also check sources of our [tester-project](tester-project), where you should find all what you need.
+You can also check sources of our [tester project](tester-webapp), where you should find all what you need.
 
 
 Reporting Issues

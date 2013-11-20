@@ -10,3 +10,13 @@ Using the library you will be able to:
 * Keep shapes connected (glued) while you move them around.
 * Add text to connections.
 * Add decorations to the connections (such as arrows).
+
+Getting Started
+---------------
+The [Wiki](https://github.com/robertwaszkowski/gwt-connectors/wiki) contains all the information you'll need to write your own application with drawing connections capabilities.
+You can also check sources of our [tester-project](tester-project), where you should find all what you need.
+
+
+Reporting Issues
+----------------
+Use the [issue tracker](https://github.com/robertwaszkowski/gwt-connectors/issues) here on Github to report issues. Make sure you read the Getting Help article that walks you through the process or properly reporting an issue.

@@ -6,12 +6,48 @@
 	<groupId>pl.tecna.gwt</groupId>
 	<artifactId>gwt-connectors</artifactId>
 	<packaging>jar</packaging>
-	<version>2.4.1</version>
+	<version>2.4.2-SNAPSHOT</version>
+	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 	
 	<name>GWT Connectors</name>
+	<description>A library for drawing connections between shapes on diagrams.</description>
+	<url>https://github.com/robertwaszkowski/gwt-connectors</url>
+	
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<scm>
+		<connection>scm:git:git@github.com:robertwaszkowski/gwt-connectors.git</connection>
+		<developerConnection>scm:git:git@github.com:robertwaszkowski/gwt-connectors.git</developerConnection>
+		<url>git@github.com:robertwaszkowski/gwt-connectors.git</url>
+	</scm>
+	
+	<developers>
+		<developer>
+			<id>yuppy</id>
+			<name>Piotr Ostrowski</name>
+			<email>yuppy@avd.pl</email>
+		</developer>
+		<developer>
+			<id>kurek</id>
+			<name>Kamil Kurek</name>
+			<email>kurek@tecna.pl</email>
+		</developer>
+	</developers>
 
 	<properties>
 		<gwt.version>2.5.1</gwt.version>
+		<gwt-dnd.version>3.1.2</gwt-dnd.version>
 		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -37,32 +73,58 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
-	<!-- DEPENDENCIES SECTION -->
+	<!-- Dependencies -->
 	<dependencies>
 		<dependency>
 			<groupId>com.allen-sauer.gwt.dnd</groupId>
 			<artifactId>gwt-dnd</artifactId>
-			<version>3.1.2</version>
+			<version>${gwt-dnd.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwt.version}</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
-	<!-- REPOSITORIES SECTION -->
-	<repositories>
-	</repositories>
-
+	<!-- Profiles -->
+	<profiles>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

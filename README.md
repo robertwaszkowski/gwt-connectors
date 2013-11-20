@@ -1,9 +1,11 @@
 gwt-connectors
 ==============
 
+#### Whe are moving from old [Google Code](https://code.google.com/p/gwt-connectors/) project page, so much information in the wiki is incomplete. Please, be patient.
+
 A library for drawing connections between shapes on diagrams.
 
-Using the library you will be able to:
+##### Using the library you will be able to:
 
 * Draw connections between shapes.
 * Change shape of the connection by dragging its sections.

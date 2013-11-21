@@ -25,24 +25,23 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * @author Kamil Kurek
+ */
 public class Shape extends FocusPanel implements Element {
 
   /**
    * Enum with values defining Shape object connection points positioning type
-   * 
-   * @author Kamil Kurek
-   * 
    */
+  public enum CPShapeType {
+    OVAL, DIAMOND, RECTANGLE, USER_DEFINED
+  }
 
   public static final int END_POINTS_VIS_DELAY = 1000;
 
   private Logger LOG = Logger.getLogger("Shape");
 
   public List<EndPoint> endPoints;
-
-  public enum CPShapeType {
-    OVAL, DIAMOND, RECTANGLE, USER_DEFINED
-  }
 
   public CPShapeType cpShapeType;
 
@@ -267,20 +266,18 @@ public class Shape extends FocusPanel implements Element {
   }
 
   /**
-   * Removes Shape from Diagram
+   * Removes Shape from Diagram and from its boundaryPanel
    * 
    * @param diagram a Diagram the Shape will be removed from
-   * @return the Shape removed from specified Diagram and from its boundaryPanel
    */
   public void removeFromDiagram(Diagram diagram) {
     removeFromDiagram(diagram, true);
   }
 
   /**
-   * Removes Shape from Diagram
+   * Removes Shape from Diagram and from its boundaryPanel
    * 
    * @param diagram a Diagram the Shape will be removed from
-   * @return the Shape removed from specified Diagram and from its boundaryPanel
    */
   public void removeFromDiagram(Diagram diagram, boolean fireEvent) {
     try {
@@ -627,10 +624,7 @@ public class Shape extends FocusPanel implements Element {
   /**
    * Determines whether given {@link Section} is on this Shape's containing widget
    * 
-   * @param startPoint
-   * @param endPoint
-   * @param direction
-   * @return
+   * @return <code>true</code>, if section is on current shape
    */
   public boolean isOnThisShape(Section section) {
     Point startPoint = section.startPoint;
@@ -682,7 +676,7 @@ public class Shape extends FocusPanel implements Element {
    * 
    * @param x
    * @param y
-   * @return
+   * @return <code>true</code>, if the point is on the shape
    */
   public boolean isOnShape(int x, int y) {
     if (this.getParent() != null) {
@@ -720,7 +714,7 @@ public class Shape extends FocusPanel implements Element {
    * 
    * @param startSelectionPoint
    * @param endSelectionPoint
-   * @return
+   * @return <code>true</code>, if the shape is on defined rectangle
    */
   public boolean isInRect(Point startSelectionPoint, Point endSelectionPoint) {
     boolean xBetween = false;

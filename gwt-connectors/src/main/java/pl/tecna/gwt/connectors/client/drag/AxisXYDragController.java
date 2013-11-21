@@ -482,7 +482,7 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   /**
-   * Called by {@link PickupDragController#dragStart(Widget)} to allow subclasses to provide their
+   * Called by {@link PickupDragController#dragStart()} to allow subclasses to provide their
    * own drag proxies.
    * 
    * @param context the current drag context

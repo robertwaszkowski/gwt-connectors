@@ -559,8 +559,9 @@ public class Diagram {
   /**
    * Defines whether given point is on one of selected elements.
    * 
-   * @param point
-   * @return
+   * @param point the point
+   * @param diagram the diagram
+   * @return <code>true</code>, if the point is on the selected elements;
    */
   public boolean isOnElement(Point point, Diagram diagram) {
 
@@ -586,9 +587,9 @@ public class Diagram {
   /**
    * Defines whether given point is on widget.
    * 
-   * @param point
-   * @param widget
-   * @return
+   * @param point the point
+   * @param widget the diagram
+   * @return <code>true</code>, if the point is on the widget
    */
   private boolean isOnWidget(Point point, Widget widget) {
     int widgetLeft = boundaryPanel.getWidgetLeft(widget);

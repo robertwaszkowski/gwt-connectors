@@ -88,22 +88,15 @@ public class ConnectionPoint extends FocusPanel {
    * This method also add a drop controller to the ConnectionPoint. Drop controller is necessary to
    * allow ConnectionPoints to be glued with EndPoint.
    * 
-   * @param panel an absolute panel on witch the connection point will be drawn
-   * @return the connection point drawn on specified panel
-   * 
-   * @author robert.waszkowski@gmail.com
+   * @param diagram an absolute panel on witch the connection point will be drawn
    */
   public void showOnDiagram(Diagram diagram) {
-
   }
 
   /**
    * Changes ConnectionPoint's picture. The ConnectionPoint is represented by a small x, which is
-   * visible when wrapped element is focused.
-   * 
-   * @return the ConnectionPoint's picture is changed to connection_point_selected.png
-   * 
-   * @author robert.waszkowski@gmail.com
+   * visible when wrapped element is focused. The ConnectionPoint's picture is changed to
+   * connection_point_selected.png.
    */
   public void setSelected() {
     Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_selected()).createImage();
@@ -113,11 +106,8 @@ public class ConnectionPoint extends FocusPanel {
 
   /**
    * Changes ConnectionPoint's picture. The ConnectionPoint is represented by a small x, which is
-   * visible when ConnectionPoint is focused.
-   * 
-   * @return the ConnectionPoint's picture is changed to connection_point_focused.png
-   * 
-   * @author robert.waszkowski@gmail.com
+   * visible when ConnectionPoint is focused. The ConnectionPoint's picture is changed to
+   * connection_point_focused.png.
    */
   public void setFocused() {
     Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_focused()).createImage();
@@ -127,11 +117,8 @@ public class ConnectionPoint extends FocusPanel {
 
   /**
    * Changes ConnectionPoint's picture. The ConnectionPoint is represented by invisible element when
-   * ConnectionPoint is not focused and its wrapped element is not focused too.
-   * 
-   * @return the ConnectionPoint's picture is changed to connection_point.png
-   * 
-   * @author robert.waszkowski@gmail.com
+   * ConnectionPoint is not focused and its wrapped element is not focused too. The
+   * ConnectionPoint's picture is changed to connection_point.png.
    */
   public void setUnfocused() {
     Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point()).createImage();

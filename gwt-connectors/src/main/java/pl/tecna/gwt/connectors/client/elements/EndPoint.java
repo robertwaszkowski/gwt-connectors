@@ -67,7 +67,6 @@ public class EndPoint extends Point {
 
   /**
    * 
-   * @param connectionPoint
    */
   public void unglueFromConnectionPoint() {
     this.gluedConnectionPoint.unglueFromEndPoint(this);
@@ -86,9 +85,7 @@ public class EndPoint extends Point {
   }
 
   /**
-   * @param panel
-   * 
-   * 
+   * @param diagram
    */
   public void showOnDiagram(Diagram diagram) {
     // Add EndPoint to given panel

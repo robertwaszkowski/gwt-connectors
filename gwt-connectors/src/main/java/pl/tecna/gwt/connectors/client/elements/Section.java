@@ -119,11 +119,9 @@ public class Section extends HTML {
    * <p>
    * If the Section is already on the Diagram this method do nothing.
    * 
-   * @param panel an absolute panel on witch the line will be drawn
-   * @return the section drawn on specified panel
+   * @param diagram an absolute panel on witch the line will be drawn
    */
   public void showOnDiagram(Diagram diagram) {
-
     showOnDiagram(diagram, false, ConnectorStyle.SOLID);
   }
 
@@ -136,9 +134,8 @@ public class Section extends HTML {
    * <p>
    * If the Section is already on the Diagram this method do nothing.
    * 
-   * @param panel an absolute panel on witch the line will be drawn
+   * @param diagram an absolute panel on witch the line will be drawn
    * @param isSelected defines whether connector is selected
-   * @return the section drawn on specified panel
    */
   public void showOnDiagram(Diagram diagram, boolean isSelected, ConnectorStyle style) {
     // Create DIV to draw a line

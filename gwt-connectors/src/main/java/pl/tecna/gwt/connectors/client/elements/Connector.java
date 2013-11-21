@@ -47,7 +47,7 @@ public class Connector implements Element {
   private final int lastSectionTolerance = 10;
 
   /**
-   * Connector is a rectilinear connection that connects two {@link EndPoint). Connector is made of
+   * Connector is a rectilinear connection that connects two {@link EndPoint}. Connector is made of
    * a couple of {@link Section} and it always starts and ends on {@link EndPoint}.
    * 
    * @param startLeft a left position of the point where the Connector starts
@@ -61,7 +61,7 @@ public class Connector implements Element {
   }
 
   /**
-   * Connector is a rectilinear connection that connects two {@link EndPoint). Connector is made of
+   * Connector is a rectilinear connection that connects two {@link EndPoint}. Connector is made of
    * a couple of {@link Section} and it always starts and ends on {@link EndPoint}.
    * 
    * @param startLeft a left position of the point where the Connector starts
@@ -77,7 +77,7 @@ public class Connector implements Element {
   }
 
   /**
-   * Connector is a rectilinear connection that connects two {@link EndPoint). Connector is made of
+   * Connector is a rectilinear connection that connects two {@link EndPoint}. Connector is made of
    * a couple of {@link Section} and it always starts and ends on {@link EndPoint}.
    * 
    * @param startLeft a left position of the point where the Connector starts
@@ -96,14 +96,13 @@ public class Connector implements Element {
   }
 
   /**
-   * Connector is a rectilinear connection that connects two {@link EndPoint). Connector is made of
+   * Connector is a rectilinear connection that connects two {@link EndPoint}. Connector is made of
    * a couple of {@link Section} and it always starts and ends on {@link EndPoint}.
    * 
    * @param startLeft a left position of the point where the Connector starts
    * @param startTop a top position of the point where the Connector starts
    * @param endLeft a left position of the point where the Connector ends
    * @param endTop a top position of the point where the Connector ends
-   * @param cornerPoints a list of corner points of the Connector
    * @param startDecoration a way the connector is decorated at its start
    * @param endDecoration a way the connector is decorated at its end
    */
@@ -205,14 +204,13 @@ public class Connector implements Element {
    * This method also add all necessary {@link Point}s: {@link EndPoint}s at the beginning and at
    * the end of the Connector and {@link CornerPoint}s at the Connector's corners.
    * <p>
-   * The way sections are generated: </br> Let "width" � a width of rectangle drown on connectors
-   * start point and end point </br> Let "height" � a height of rectangle drown on connectors start
-   * point and end point </br> If ("width" < "height") � the connection contains two vertical
-   * sections and one horizontal section. </br> If ("height" < "width") � the connection contains
-   * two horizontal sections and one vertical section.
+   * The way sections are generated: </br> Let "width" a width of rectangle drown on connectors
+   * start point and end point </br> Let "height" a height of rectangle drown on connectors start
+   * point and end point </br> If ("width" < "height") the connection contains two vertical sections
+   * and one horizontal section. </br> If ("height" < "width") the connection contains two
+   * horizontal sections and one vertical section.
    * 
    * @param diagram a Diagram the Connector will be added to
-   * @return the Connector added to specified Diagram and drawn on its boundaryPanel
    */
   public void showOnDiagram(Diagram diagram) {
 
@@ -244,20 +242,18 @@ public class Connector implements Element {
   }
 
   /**
-   * Removes Connector from Diagram
+   * Removes Connector from Diagram and from its boundaryPanel.
    * 
    * @param diagram a Diagram the Connector will be removed from
-   * @return the Connector removed from specified Diagram and from its boundaryPanel
    */
   public void removeFromDiagram(Diagram diagram) {
     removeFromDiagram(diagram, true);
   }
 
   /**
-   * Removes Connector from Diagram
+   * Removes Connector from Diagram and from its boundaryPanel
    * 
    * @param diagram a Diagram the Connector will be removed from
-   * @return the Connector removed from specified Diagram and from its boundaryPanel
    */
   public void removeFromDiagram(Diagram diagram, boolean fireEvent) {
 
@@ -301,10 +297,6 @@ public class Connector implements Element {
    * depends on connector's width and height. If the width is less than the height the connection
    * contains two vertical sections and one horizontal section. If the width is greater than height
    * the connection contains two horizontal sections and one vertical section.
-   * 
-   * @return
-   * 
-   * @return counted position of corner points
    */
   public void calculateStandardPointsPositions() {
     // LOG.i("calculateStandardPP");
@@ -592,11 +584,11 @@ public class Connector implements Element {
   }
 
   /**
-   * Retrieve list of {@link CornerPoints} from list of {@link Section} (without {@link Connector}
+   * Retrieve list of {@link CornerPoint}'s from list of {@link Section} (without {@link Connector}
    * end points)
    * 
    * @param sectionList
-   * @return
+   * @return the list of corner points
    */
   public List<CornerPoint> getCorners(List<Section> sectionList) {
     List<CornerPoint> retList = new ArrayList<CornerPoint>();
@@ -608,10 +600,10 @@ public class Connector implements Element {
   }
 
   /**
-   * Retrieve list of {@link CornerPoints} from list of {@link Section} of this {@link Connector}
+   * Retrieve list of {@link CornerPoint}'s from list of {@link Section} of this {@link Connector}
    * (without {@link Connector}'s end points)
    * 
-   * @return
+   * @return the list of corner points
    */
   public List<CornerPoint> getCorners() {
     return getCorners(sections);
@@ -710,7 +702,6 @@ public class Connector implements Element {
    * 10)
    * 
    * @param endSection last {@link Section} of {@link Connection}
-   * @return
    */
   public boolean mergeTwoLastSections(Section endSection, List<CornerPoint> cornerPoints) {
     int connDirection = this.endEndPoint.gluedConnectionPoint.connectionDirection;
@@ -766,9 +757,6 @@ public class Connector implements Element {
    * Merges two {@link Section} on start of {@link Connector} </br> {@link Connector} sections
    * length must be greater equals 3, and first section length must be lesser than defined length
    * (default - 10)
-   * 
-   * @param endSection last {@link Section} of {@link Connection}
-   * @return
    */
   public boolean mergeTwoFirstSections(Section startSection, List<CornerPoint> cornerPoints) {
     int connDirection = this.startEndPoint.gluedConnectionPoint.connectionDirection;
@@ -877,7 +865,6 @@ public class Connector implements Element {
    * Removes short sections, and merges sections that are in one line
    * 
    * @param corners
-   * @return
    */
   public List<CornerPoint> fixLineSections(List<CornerPoint> corners) {
     if (corners.size() < 3) {
@@ -977,18 +964,13 @@ public class Connector implements Element {
 
   /**
    * If there are {@link Section}'s, that overlap some {@link Shape}, the {@link Shape} is evaded
-   * 
-   * @return
    */
   public boolean fixOverlapSections() {
-
     return fixOverlapSections(getCorners());
   }
 
   /**
    * If there are {@link Section}'s, that overlap some {@link Shape}, the {@link Shape} is evaded
-   * 
-   * @return
    */
   public boolean fixOverlapSections(List<CornerPoint> corners) {
     boolean result = false;

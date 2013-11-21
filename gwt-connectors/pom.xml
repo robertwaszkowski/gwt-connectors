@@ -18,6 +18,11 @@
 	<description>A library for drawing connections between shapes on diagrams.</description>
 	<url>https://github.com/robertwaszkowski/gwt-connectors</url>
 	
+	<issueManagement>
+		<url>https://github.com/robertwaszkowski/gwt-connectors/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+	
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -27,9 +32,9 @@
 	</licenses>
 	
 	<scm>
-		<connection>scm:git:git@github.com:robertwaszkowski/gwt-connectors.git</connection>
+		<connection>scm:git:git@github.com/robertwaszkowski/gwt-connectors.git</connection>
 		<developerConnection>scm:git:git@github.com:robertwaszkowski/gwt-connectors.git</developerConnection>
-		<url>git@github.com:robertwaszkowski/gwt-connectors.git</url>
+		<url>https://github.com/robertwaszkowski/gwt-connectors</url>
 	</scm>
 	
 	<developers>

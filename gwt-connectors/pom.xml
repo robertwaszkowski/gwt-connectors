@@ -32,8 +32,8 @@
 	</licenses>
 	
 	<scm>
-		<connection>scm:git:git@github.com/robertwaszkowski/gwt-connectors.git</connection>
-		<developerConnection>scm:git:git@github.com:robertwaszkowski/gwt-connectors.git</developerConnection>
+		<connection>scm:git:https://github.com/robertwaszkowski/gwt-connectors.git</connection>
+		<developerConnection>scm:git:https://github.com/robertwaszkowski/gwt-connectors.git</developerConnection>
 		<url>https://github.com/robertwaszkowski/gwt-connectors</url>
 	</scm>
 	
@@ -133,6 +133,9 @@
 								</goals>
 							</execution>
 						</executions>
+						<configuration>
+							<useAgent>true</useAgent>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>

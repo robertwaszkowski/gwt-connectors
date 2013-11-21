@@ -34,14 +34,19 @@
 	
 	<developers>
 		<developer>
-			<id>yuppy</id>
+			<id>kamil.kurek</id>
+			<name>Kamil Kurek</name>
+			<email>kurek@tecna.pl</email>
+		</developer>
+		<developer>
+			<id>piotr.ostrowski</id>
 			<name>Piotr Ostrowski</name>
 			<email>yuppy@avd.pl</email>
 		</developer>
 		<developer>
-			<id>kurek</id>
-			<name>Kamil Kurek</name>
-			<email>kurek@tecna.pl</email>
+			<id>robert.waszkowski</id>
+			<name>Robert Waszkowski</name>
+			<email>robert.waszkowski@gmail.com</email>
 		</developer>
 	</developers>
 

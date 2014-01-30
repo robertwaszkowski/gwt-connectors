@@ -65,7 +65,7 @@ public class Example implements EntryPoint {
 		final Diagram diagram = new Diagram(boundaryPanel);
 
 		boundaryPanel.add(new Label("Connectors example for GWT 2.4"), 10, 2);
-		Connector connector1 = new Connector(50, 80, 150, 200);
+		Connector connector1 = new Connector(50, 80, 150, 200, new SectionDecoration(DecorationType.ARROW_SOLID), new SectionDecoration(DecorationType.ARROW_SOLID));
 		connector1.showOnDiagram(diagram);
 
 		ArrayList<CornerPoint> cp = new ArrayList<CornerPoint>();
@@ -80,7 +80,7 @@ public class Example implements EntryPoint {
 		connector2.style = ConnectorStyle.DASHED;
 		connector2.showOnDiagram(diagram);
 
-		Connector connector3 = new Connector(450, 120, 500, 80);
+		Connector connector3 = new Connector(450, 120, 500, 80, new SectionDecoration(DecorationType.ARROW_SOLID), new SectionDecoration(DecorationType.ARROW_SOLID));
 		connector3.style = ConnectorStyle.DOTTED;
 		connector3.showOnDiagram(diagram);
 

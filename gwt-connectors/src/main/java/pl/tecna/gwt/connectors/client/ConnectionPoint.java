@@ -185,6 +185,8 @@ public class ConnectionPoint extends FocusPanel {
 			    (int)Math.round((double)((double)this.getOffsetHeight() / (double)2)));
 			if (connectionDirection == DIRECTION_TOP || connectionDirection == DIRECTION_LEFT || connectionDirection == DIRECTION_RIGHT) {
 			  top -= 2;
+			} else if (connectionDirection == DIRECTION_BOTTOM) {
+			  top -= 1;
 			}
 			return top;
 		} else {

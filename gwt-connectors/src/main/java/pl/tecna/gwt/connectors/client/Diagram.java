@@ -47,12 +47,11 @@ public class Diagram {
 
   private final Logger LOG = Logger.getLogger("Diagram");
 
+  final static int MIN_SELECTION_SIZE = 20; // rect 20x20
+
   /**
    * Defines weather keyboard events should be fired
    */
-
-  final static int MIN_SELECTION_SIZE = 20; // rect 20x20
-
   public boolean keyboardEnabled = true;
 
   private List<DiagramListener> listeners;
@@ -61,7 +60,7 @@ public class Diagram {
 
   public ShapePickupDragController shapeDragController;
   public EndPointDragController endPointDragController;
-  
+
   public AbsolutePanel boundaryPanel;
 
   public ArrayList<Connector> connectors;
@@ -86,14 +85,14 @@ public class Diagram {
    * Defines whether Ctrl key is currently pressed.
    */
   public boolean ctrlPressed = false;
-  
+
   public boolean altPressed = false;
-  
+
   public Diagram(AbsolutePanel boundaryPanel) {
     super();
-    
+
     addKeyboardListener();
-    
+
     this.listeners = new ArrayList<DiagramListener>();
 
     this.boundaryPanel = boundaryPanel;
@@ -105,7 +104,7 @@ public class Diagram {
     disableTextSelection(boundaryPanel.getElement(), true);
 
     setSelectionMode(false);
-    
+
     this.boundaryPanel.addDomHandler(new MouseUpHandler() {
 
       public void onMouseUp(MouseUpEvent event) {
@@ -142,19 +141,18 @@ public class Diagram {
               Diagram.this.boundaryPanel.add(selection);
             }
             int left =
-                (startSelectionPoint.getLeft() <= actualPosition.getLeft()) ? startSelectionPoint
-                    .getLeft() : actualPosition.getLeft();
+                (startSelectionPoint.getLeft() <= actualPosition.getLeft()) ? startSelectionPoint.getLeft()
+                    : actualPosition.getLeft();
 
             int top =
-                (startSelectionPoint.getTop() <= actualPosition.getTop()) ? startSelectionPoint
-                    .getTop() : actualPosition.getTop();
+                (startSelectionPoint.getTop() <= actualPosition.getTop()) ? startSelectionPoint.getTop()
+                    : actualPosition.getTop();
             int width = Math.abs(startSelectionPoint.getLeft() - actualPosition.getLeft());
             int height = Math.abs((startSelectionPoint.getTop() - actualPosition.getTop()));
             selection
                 .setHTML("<div class'gwt-HTML'"
                     + " style=\"opacity:0.1; filter: alpha(opacity=10); position:absolute; background-color:#00bfff; width: "
-                    + width + "px; height:" + height + "px; left:" + left + "px; top:" + top
-                    + "px;\">&nbsp;</div>");
+                    + width + "px; height:" + height + "px; left:" + left + "px; top:" + top + "px;\">&nbsp;</div>");
 
           }
         }
@@ -182,13 +180,13 @@ public class Diagram {
         int startY =
             Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteTop();
-        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, startX, 
-            startY, ElementDragEvent.DragEventType.DRAG_START));
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, startX, startY,
+            ElementDragEvent.DragEventType.DRAG_START));
       }
-      
+
       @Override
       public void onDragEnd(DragEndEvent event) {
-        
+
         Widget widget = event.getContext().draggable;
         if (event.getContext().vetoException != null) {
           if (event.getContext().draggable instanceof Shape) {
@@ -208,12 +206,9 @@ public class Diagram {
                     && ep.connector.endEndPoint.gluedConnectionPoint != null
                     && ep.connector.startEndPoint.gluedConnectionPoint.getParentWidget() != null
                     && ep.connector.endEndPoint.gluedConnectionPoint.getParentWidget() != null
-                    && selectedWidgets.contains(ep.connector.startEndPoint.gluedConnectionPoint
-                        .getParentWidget())
-                    && selectedWidgets.contains(ep.connector.endEndPoint.gluedConnectionPoint
-                        .getParentWidget())) {
-                  ep.connector.moveOffsetFromStartPos(shape.getTranslationX(), shape
-                      .getTranslationY());
+                    && selectedWidgets.contains(ep.connector.startEndPoint.gluedConnectionPoint.getParentWidget())
+                    && selectedWidgets.contains(ep.connector.endEndPoint.gluedConnectionPoint.getParentWidget())) {
+                  ep.connector.moveOffsetFromStartPos(shape.getTranslationX(), shape.getTranslationY());
                 } else {
                   ep.connector.updateCornerPoints();
                 }
@@ -224,12 +219,10 @@ public class Diagram {
           } else {
             fixShapePosition(shape);
             for (Connector c : shape.getConnectedConnectors()) {
-              if (c.startEndPoint.gluedConnectionPoint != null
-                  && c.endEndPoint.gluedConnectionPoint != null
+              if (c.startEndPoint.gluedConnectionPoint != null && c.endEndPoint.gluedConnectionPoint != null
                   && c.startEndPoint.gluedConnectionPoint.getParentWidget() != null
                   && c.endEndPoint.gluedConnectionPoint.getParentWidget() != null
-                  && selectedWidgets.contains(c.startEndPoint.gluedConnectionPoint
-                      .getParentWidget())
+                  && selectedWidgets.contains(c.startEndPoint.gluedConnectionPoint.getParentWidget())
                   && selectedWidgets.contains(c.endEndPoint.gluedConnectionPoint.getParentWidget())) {
                 c.moveOffsetFromStartPos(shape.getTranslationX(), shape.getTranslationY());
               } else {
@@ -248,13 +241,13 @@ public class Diagram {
         int endY =
             Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteTop();
-        
-        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, 
-            endY, ElementDragEvent.DragEventType.DRAG_END));
+
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, endY,
+            ElementDragEvent.DragEventType.DRAG_END));
       }
 
     });
-    
+
     // Create drag controller to control end point dragging
     endPointDragController = new EndPointDragController(this.boundaryPanel, true, Diagram.this);
     endPointDragController.setBehaviorConstrainedToBoundaryPanel(true);
@@ -268,29 +261,28 @@ public class Diagram {
           EndPoint ep = (EndPoint) event.getSource();
           ep.connector.select();
         }
-        
+
         int startX =
             Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteLeft();
         int startY =
             Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteTop();
-        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, startX, 
-            startY, ElementDragEvent.DragEventType.DRAG_START));
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, startX, startY,
+            ElementDragEvent.DragEventType.DRAG_START));
       }
 
       @Override
       public void onDragEnd(DragEndEvent event) {
-        
+
         endPointDragging = false;
         EndPoint endPoint = (EndPoint) event.getSource();
         endPoint.connector.fixEndSectionDirection(endPoint);
         endPoint.connector.drawSections(endPoint.connector.getCorners());
-        
+
         try {
           endPoint.connector.cornerPoints =
-              (ArrayList<CornerPoint>) endPoint.connector.fixLineSections(endPoint.connector
-                  .getCorners());
+              (ArrayList<CornerPoint>) endPoint.connector.fixLineSections(endPoint.connector.getCorners());
           endPoint.connector.drawSections();
           endPoint.connector.fixSections();
         } catch (Exception e) {
@@ -299,23 +291,23 @@ public class Diagram {
 
         Integer endX = null;
         Integer endY = null;
-        if (event.getContext().draggable.getParent() != null && 
-            Diagram.this.boundaryPanel.equals(event.getContext().draggable.getParent())) {
+        if (event.getContext().draggable.getParent() != null
+            && Diagram.this.boundaryPanel.equals(event.getContext().draggable.getParent())) {
           endX =
               Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
-              - Diagram.this.boundaryPanel.getAbsoluteLeft();
+                  - Diagram.this.boundaryPanel.getAbsoluteLeft();
           endY =
               Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
-              - Diagram.this.boundaryPanel.getAbsoluteTop();
+                  - Diagram.this.boundaryPanel.getAbsoluteTop();
         }
-        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, 
-            endY, ElementDragEvent.DragEventType.DRAG_END));
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, endY,
+            ElementDragEvent.DragEventType.DRAG_END));
       }
     });
   }
 
   private void fixLineSections(Shape shape) {
-    
+
     for (Connector conn : Diagram.this.connectors) {
       List<Section> overlapSections = shape.overlapSections(conn);
       if (overlapSections.size() != 0) {
@@ -333,18 +325,18 @@ public class Diagram {
     // Save Shapes
 
     // Save Connectors
-    //TODO Change to StringBuilder
+    // TODO Change to StringBuilder
     for (int i = 0; i < connectors.size(); i++) {
-      xmlString += "(" + connectors.get(i).startEndPoint.getLeft() + ","
-              + connectors.get(i).startEndPoint.getTop() + ")";
-      
+      xmlString +=
+          "(" + connectors.get(i).startEndPoint.getLeft() + "," + connectors.get(i).startEndPoint.getTop() + ")";
+
       for (int k = 0; k < connectors.get(k).cornerPoints.size(); k++) {
-        xmlString += "(" + connectors.get(i).cornerPoints.get(k).getLeft() + ","
+        xmlString +=
+            "(" + connectors.get(i).cornerPoints.get(k).getLeft() + ","
                 + connectors.get(i).cornerPoints.get(k).getTop() + ")";
       }
-      
-      xmlString += "(" + connectors.get(i).endEndPoint.getLeft() + ","
-              + connectors.get(i).endEndPoint.getTop() + ")\n";
+
+      xmlString += "(" + connectors.get(i).endEndPoint.getLeft() + "," + connectors.get(i).endEndPoint.getTop() + ")\n";
     }
 
     return xmlString;
@@ -398,7 +390,7 @@ public class Diagram {
   public void clearListeners() {
     listeners.clear();
   }
-    
+
   public void onDiagramAdd(DiagramAddEvent event) {
     if (isEnableEvents()) {
       for (DiagramListener listener : listeners) {
@@ -406,7 +398,7 @@ public class Diagram {
       }
     }
   }
-  
+
   public void onDiagramRemove(DiagramRemoveEvent event) {
     if (isEnableEvents()) {
       for (DiagramListener listener : listeners) {
@@ -422,7 +414,7 @@ public class Diagram {
       }
     }
   }
-  
+
   public void onElementDrag(pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent event) {
     if (isEnableEvents()) {
       for (DiagramListener listener : listeners) {
@@ -430,7 +422,7 @@ public class Diagram {
       }
     }
   }
-  
+
   public void addDiagramModeListener(DiagramModeListener listener) {
     modeListener = listener;
   }
@@ -440,18 +432,18 @@ public class Diagram {
     for (Widget widget : shapeDragController.getSelectedWidgets()) {
       removedElList.add(widget);
     }
-    
+
     List<Connector> toRemove = new ArrayList<Connector>();
     for (Connector conn : connectors) {
       if (conn.isSelected) {
         toRemove.add(conn);
       }
     }
-    
+
     removedElList.addAll(toRemove);
-    
+
     onDiagramRemove(new DiagramRemoveEvent(removedElList));
-    
+
     for (Widget widget : shapeDragController.getSelectedWidgets()) {
       if (widget instanceof Shape) {
         ((Shape) widget).removeFromDiagram(this, false);
@@ -464,13 +456,13 @@ public class Diagram {
     for (Connector conn : toRemove) {
       conn.removeFromDiagram(this, false);
     }
-    
+
     shapeDragController.clearSelection();
   }
 
   /**
-   * Changes position of dropped Shape to make last section straight (if the
-   * section before is shorter than section tolerance (default 8))
+   * Changes position of dropped Shape to make last section straight (if the section before is
+   * shorter than section tolerance (default 8))
    */
   public void fixShapePosition(Shape shape) {
 
@@ -488,8 +480,7 @@ public class Diagram {
     }
 
     /*
-     * Fill maps with sections from shape sections (sections to merge if they
-     * are short)
+     * Fill maps with sections from shape sections (sections to merge if they are short)
      */
     for (ConnectionPoint cp : shape.connectionPoints) {
       for (EndPoint ep : cp.gluedEndPoints) {
@@ -507,8 +498,7 @@ public class Diagram {
           }
 
           if (secondFromShape.isHorizontal()) {
-            sectionLength =
-                secondFromShape.endPoint.getLeft() - secondFromShape.startPoint.getLeft();
+            sectionLength = secondFromShape.endPoint.getLeft() - secondFromShape.startPoint.getLeft();
           } else {
             sectionLength = secondFromShape.endPoint.getTop() - secondFromShape.startPoint.getTop();
           }
@@ -551,28 +541,27 @@ public class Diagram {
 
     // fix section position horizontally
     if (lastHorizontalSection != null) {
-      parent.setWidgetPosition(shape, shape.getRelativeShapeLeft() - minHorizontal, shape
-          .getRelativeShapeTop());
+      parent.setWidgetPosition(shape, shape.getRelativeShapeLeft() - minHorizontal, shape.getRelativeShapeTop());
       lastHorizontalSection.connector.drawSections(lastHorizontalSection.connector
           .fixLineSections(lastHorizontalSection.connector.getCorners()));
     }
 
     // fix section position vertically
     if (lastVerticalSection != null) {
-      parent.setWidgetPosition(shape, shape.getRelativeShapeLeft(), shape.getRelativeShapeTop()
-          - minVertical);
+      parent.setWidgetPosition(shape, shape.getRelativeShapeLeft(), shape.getRelativeShapeTop() - minVertical);
       lastVerticalSection.connector.drawSections(lastVerticalSection.connector
           .fixLineSections(lastVerticalSection.connector.getCorners()));
     }
-    
+
     shape.updateConnectors();
   }
 
   /**
    * Defines whether given point is on one of selected elements.
    * 
-   * @param point
-   * @return
+   * @param point the point
+   * @param diagram the diagram
+   * @return <code>true</code>, if the point is on the selected elements;
    */
   public boolean isOnElement(Point point, Diagram diagram) {
 
@@ -598,9 +587,9 @@ public class Diagram {
   /**
    * Defines whether given point is on widget.
    * 
-   * @param point
-   * @param widget
-   * @return
+   * @param point the point
+   * @param widget the diagram
+   * @return <code>true</code>, if the point is on the widget
    */
   private boolean isOnWidget(Point point, Widget widget) {
     int widgetLeft = boundaryPanel.getWidgetLeft(widget);
@@ -608,8 +597,8 @@ public class Diagram {
     int widgetTop = boundaryPanel.getWidgetTop(widget);
     int widgetBottom = widgetTop + widget.getOffsetHeight();
 
-    if (widgetLeft <= point.getLeft() && widgetRight >= point.getLeft()
-        && widgetTop <= point.getTop() && widgetBottom >= point.getTop()) {
+    if (widgetLeft <= point.getLeft() && widgetRight >= point.getLeft() && widgetTop <= point.getTop()
+        && widgetBottom >= point.getTop()) {
       return true;
     } else {
       return false;
@@ -621,7 +610,7 @@ public class Diagram {
       conn.deselect();
     }
   }
-  
+
   public void clearSelection() {
     shapeDragController.clearSelection();
     deselectAllSections();
@@ -632,19 +621,19 @@ public class Diagram {
     disableTextSelectInternal(elem, disable);
   }
 
-  public void setSelectionMode(boolean mode){
+  public void setSelectionMode(boolean mode) {
     this.selectionMode = mode;
-    if (boundarySelectionHandler!=null){
+    if (boundarySelectionHandler != null) {
       boundarySelectionHandler.removeHandler();
     }
-    
+
     boundarySelectionHandler = this.boundaryPanel.addDomHandler(new MouseDownHandler() {
 
       public void onMouseDown(MouseDownEvent event) {
 
         int mouseLeft = event.getX();
         int mouseTop = event.getY();
-        if(!selectionMode){
+        if (!selectionMode) {
           dragModeOnClick = true;
           for (pl.tecna.gwt.connectors.client.elements.Shape shape : shapes) {
             if (shape.isOnShape(mouseLeft, mouseTop)) {
@@ -657,25 +646,21 @@ public class Diagram {
           int endTop = 0;
           // set diagram drag mode false if connector EndPoint is dragged
           for (Connector connector : connectors) {
-            startLeft =
-                connector.startEndPoint.getAbsoluteLeft() - boundaryPanel.getAbsoluteLeft();
-            startTop =
-                connector.startEndPoint.getAbsoluteTop() - boundaryPanel.getAbsoluteTop();
-            endLeft =
-                connector.endEndPoint.getAbsoluteLeft() - boundaryPanel.getAbsoluteLeft();
-            endTop =
-                connector.endEndPoint.getAbsoluteTop() - boundaryPanel.getAbsoluteTop();
+            startLeft = connector.startEndPoint.getAbsoluteLeft() - boundaryPanel.getAbsoluteLeft();
+            startTop = connector.startEndPoint.getAbsoluteTop() - boundaryPanel.getAbsoluteTop();
+            endLeft = connector.endEndPoint.getAbsoluteLeft() - boundaryPanel.getAbsoluteLeft();
+            endTop = connector.endEndPoint.getAbsoluteTop() - boundaryPanel.getAbsoluteTop();
             if (((startLeft - 10 < mouseLeft && mouseLeft < endLeft + 10) || (endLeft - 10 < mouseLeft && mouseLeft < startLeft + 10))
                 && ((startTop - 10 < mouseTop && mouseTop < endTop + 10) || (endTop - 10 < mouseTop && mouseTop < startTop + 10))) {
               dragModeOnClick = false;
             }
           }
-          
-          if(dragModeOnClick && modeListener != null){
+
+          if (dragModeOnClick && modeListener != null) {
             modeListener.onDiagramModeChanged(new DiagramEvent(new Point(event.getClientX(), event.getClientY())));
           }
         }
-          
+
         Point clickPoint = new Point(mouseLeft, mouseTop);
 
         boolean isOnElement = isOnElement(clickPoint, Diagram.this);
@@ -698,8 +683,8 @@ public class Diagram {
       }
     }, MouseDownEvent.getType());
   }
-  
-  public void setSelectedPoint(Point point){
+
+  public void setSelectedPoint(Point point) {
     boolean isOnElement = isOnElement(point, Diagram.this);
     if (!ctrlPressed && !isOnElement) {
       shapeDragController.clearSelection();
@@ -714,17 +699,20 @@ public class Diagram {
       showActivePoints(true);
     }
   }
-  
-  private native static void disableTextSelectInternal(Element e, boolean disable) /*-{ 
-    if (disable) { 
-      e.ondrag = function () { return false; }; 
-      e.onselectstart = function () { return false; }; 
-    } else { 
-      e.ondrag = null; 
-      e.onselectstart = null; 
-    } 
+
+  private native static void disableTextSelectInternal(Element e, boolean disable) /*-{
+		if (disable) {
+			e.ondrag = function() {
+				return false;
+			};
+			e.onselectstart = function() {
+				return false;
+			};
+		} else {
+			e.ondrag = null;
+			e.onselectstart = null;
+		}
   }-*/;
-  
 
   public boolean isEnableEvents() {
     return enableEvents;
@@ -733,7 +721,7 @@ public class Diagram {
   public void setEnableEvents(boolean enableEvents) {
     this.enableEvents = enableEvents;
   }
-  
+
   public void addKeyboardListener() {
     // Add keyboard listener
     Keyboard.getInstance().init();
@@ -755,7 +743,7 @@ public class Diagram {
               deleteSelectedElements();
             }
 
-          }   
+          }
           ctrlPressed = e.getCtrlKey();
           altPressed = e.getAltKey();
         }
@@ -764,17 +752,18 @@ public class Diagram {
       Keyboard.getInstance().addListener(keyboardListener);
     }
   }
-  
+
   public boolean removeKeyboardListener() {
     return Keyboard.getInstance().removeListener(keyboardListener);
   }
-  
-  public Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint, ConnectorStyle style) {
+
+  public Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint,
+      ConnectorStyle style) {
     SectionDecoration endDecoration;
     if (style == ConnectorStyle.SOLID) {
       endDecoration = new SectionDecoration(DecorationType.ARROW_SOLID);
     } else {
-      endDecoration = new SectionDecoration(DecorationType.ARROW_LINE);      
+      endDecoration = new SectionDecoration(DecorationType.ARROW_LINE);
     }
     return new Connector(startLeft, startTop, endLeft, endTop, null, endDecoration, endEndPoint, Diagram.this, style);
   }

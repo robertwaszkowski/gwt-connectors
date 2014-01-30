@@ -5,65 +5,65 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 
 public interface ConnectorsClientBundle extends ClientBundle {
-  
+
   interface ConnectorsCssResource extends CssResource {
-    
+
     @ClassName("gwt-connectors-line")
-    public String line();
-    
+    String line();
+
     @ClassName("gwt-connectors-line-vertical")
-    public String lineVertical();
-    
+    String lineVertical();
+
     @ClassName("gwt-connectors-line-horizontal")
-    public String lineHorizontal();
-    
+    String lineHorizontal();
+
     @ClassName("gwt-connectors-line-selected")
-    public String lineSelected();
-    
+    String lineSelected();
+
     @ClassName("dragdrop-positioner")
-    public String positioner();    
+    String positioner();
 
     @ClassName("dragdrop-selected")
-    public String dragdropSelected(); 
+    String dragdropSelected();
 
     @ClassName("dragdrop-dragging")
-    public String dragdropDragging(); 
+    String dragdropDragging();
 
     @ClassName("dragdrop-proxy")
-    public String dragdropProxy (); 
-    
+    String dragdropProxy();
+
     @ClassName("gwt-connectors-widget-padding-selected")
-    public String widgetPaddingSelected();
-    
+    String widgetPaddingSelected();
+
     @ClassName("gwt-connectors-widget-padding-unselected")
-    public String widgetPaddingUnselected(); 
-    
+    String widgetPaddingUnselected();
+
     @ClassName("gwt-connectors-shape-selected")
-    public String shapeSelected();  
-    
+    String shapeSelected();
+
     @ClassName("gwt-connectors-shape-unselected")
-    public String shapeUnselected();  
+    String shapeUnselected();
 
     @ClassName("gwt-connectors-selection-panel")
-    public String selectionPanel();  
+    String selectionPanel();
 
     @ClassName("x-unselectable")
-    public String xUnselectable(); 
-    
+    String xUnselectable();
+
     @ClassName("gwt-connectors-shape-connector-start")
-    public String gwtConnectorsShapeConnectorStart();
-    
+    String gwtConnectorsShapeConnectorStart();
+
     @ClassName("gwt-connectors-shape-connector-start-inner")
-    public String gwtConnectorsShapeConnectorStartInner();
-    
+    String gwtConnectorsShapeConnectorStartInner();
+
     @ClassName("gwt-connectors-image")
-    public String imageDispBlock();
+    String imageDispBlock();
 
   }
-  
+
   static final ConnectorsClientBundle INSTANCE = GWT.create(ConnectorsClientBundle.class);
-  
+
   @Source("gwt-connectors.css")
   ConnectorsCssResource css();
-  
+
 }

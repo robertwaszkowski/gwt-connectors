@@ -1,26 +1,26 @@
 .gwt-connectors-line {
-  font-size: 1px;
-  line-height:1px;
-  background-color: #b2b2b2;
+	font-size: 1px;
+	line-height: 1px;
+	background-color: #b2b2b2;
 }
 
 .gwt-connectors-line-vertical {
-  width:2px
+	width: 2px
 }
 
 .gwt-connectors-line-horizontal {
-  height:2px
+	height: 2px
 }
 
 .gwt-connectors-line-selected {
-  font-size: 1px;
-  line-height:1px;
-  background-color: #00bfff;
+	font-size: 1px;
+	line-height: 1px;
+	background-color: #00bfff;
 }
 
 .dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {
-	/* filter: alpha(opacity =     30); */
-	/* opacity: 0.3; */
+	/* filter: alpha(opacity =     30); */ /* opacity: 0.3; */
+	
 }
 
 .dragdrop-positioner {
@@ -39,7 +39,7 @@
 .gwt-connectors-shape-selected {
 	border-radius: 10px;
 	border: 3px solid #00BFFF;
-	border: 3px solid rgba(0,191,255, 0.3);
+	border: 3px solid rgba(0, 191, 255, 0.3);
 }
 
 .gwt-connectors-shape-unselected {
@@ -48,13 +48,14 @@
 
 .gwt-connectors-selection-panel {
 	border: 3px solid #DCDCDC;
-	border: 3px solid rgba(220,220,220, 0.3);
+	border: 3px solid rgba(220, 220, 220, 0.3);
 }
-.x-unselectable{
+
+.x-unselectable {
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: ignore;
-	user-select:none;
+	user-select: none;
 }
 
 .gwt-connectors-shape-connector-start {
@@ -70,4 +71,3 @@
 .gwt-connectors-image {
 	display: block;
 }
-	

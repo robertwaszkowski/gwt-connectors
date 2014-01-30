@@ -1,7 +1,5 @@
 package pl.tecna.gwt.connectors.client.drop;
 
-import java.util.logging.Logger;
-
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
@@ -13,8 +11,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DiagramWidgetDropController extends SimpleDropController {
 
-  private final Logger LOG = Logger.getLogger("DiagramWidgetDropController");
-  
   public DiagramWidgetDropController(Widget dropTarget) {
     super(dropTarget);
   }
@@ -25,9 +21,9 @@ public class DiagramWidgetDropController extends SimpleDropController {
       if (getDropTarget() instanceof Shape) {
         Shape dropTarget = (Shape) getDropTarget();
         EndPoint ep = (EndPoint) context.draggable;
-        if (ep.connector.startEndPoint.isGluedToConnectionPoint() && 
-            ep.connector.startEndPoint.gluedConnectionPoint.getParentShape().equals(dropTarget)) {
-          
+        if (ep.connector.startEndPoint.isGluedToConnectionPoint()
+            && ep.connector.startEndPoint.gluedConnectionPoint.getParentShape().equals(dropTarget)) {
+
         } else {
           dropTarget.showConnectionPoints(dropTarget.diagram);
         }
@@ -54,12 +50,12 @@ public class DiagramWidgetDropController extends SimpleDropController {
       if (getDropTarget() instanceof Shape) {
         Shape dropTarget = (Shape) getDropTarget();
         EndPoint endPoint = (EndPoint) context.draggable;
-        endPoint.glueToConnectionPoint(dropTarget.findNearestFreeConnectionPoint(endPoint.getLeft(), endPoint.getTop()));
+        endPoint
+            .glueToConnectionPoint(dropTarget.findNearestFreeConnectionPoint(endPoint.getLeft(), endPoint.getTop()));
 
         // Unglue if EndPoints are glued to the same element
         Connector conn = endPoint.connector;
-        if (conn.startEndPoint.isGluedToConnectionPoint()
-            && conn.endEndPoint.isGluedToConnectionPoint()) {
+        if (conn.startEndPoint.isGluedToConnectionPoint() && conn.endEndPoint.isGluedToConnectionPoint()) {
           if (conn.endEndPoint.gluedConnectionPoint.getParentWidget() == conn.startEndPoint.gluedConnectionPoint
               .getParentWidget()) {
             if (conn.endEndPoint == endPoint) {

@@ -1,5 +1,22 @@
 package pl.tecna.gwt.connectors.client.drag;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import com.allen_sauer.gwt.dnd.client.AbstractDragController;
+import com.allen_sauer.gwt.dnd.client.DragContext;
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.dnd.client.VetoDragException;
+import com.allen_sauer.gwt.dnd.client.drop.BoundaryDropController;
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.allen_sauer.gwt.dnd.client.util.Area;
+import com.allen_sauer.gwt.dnd.client.util.CoordinateLocation;
+import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
+import com.allen_sauer.gwt.dnd.client.util.Location;
+import com.allen_sauer.gwt.dnd.client.util.WidgetArea;
+import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -11,28 +28,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import com.allen_sauer.gwt.dnd.client.AbstractDragController;
-import com.allen_sauer.gwt.dnd.client.DragContext;
-import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.dnd.client.drop.BoundaryDropController;
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.allen_sauer.gwt.dnd.client.util.Area;
-import com.allen_sauer.gwt.dnd.client.util.CoordinateLocation;
-import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
-import com.allen_sauer.gwt.dnd.client.util.Location;
-import com.allen_sauer.gwt.dnd.client.util.WidgetArea;
-import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.logging.Logger;
-
 /**
- * DragController used for drag-and-drop operations where a draggable widget or
- * drag proxy is temporarily picked up and dragged around the boundary panel.
- * Be sure to register a {@link DropController} for each drop target.
+ * DragController used for drag-and-drop operations where a draggable widget or drag proxy is
+ * temporarily picked up and dragged around the boundary panel. Be sure to register a
+ * {@link DropController} for each drop target.
  * 
  * @see #registerDropController(DropController)
  */
@@ -104,13 +103,13 @@ public class AxisXYDragController extends AbstractDragController {
     }
 
     /**
-     * Determines which DropController represents the deepest DOM descendant
-     * drop target located at the provided location <code>(x, y)</code>.
+     * Determines which DropController represents the deepest DOM descendant drop target located at
+     * the provided location <code>(x, y)</code>.
      * 
      * @param x offset left relative to document body
      * @param y offset top relative to document body
-     * @return a drop controller for the intersecting drop target or <code>null</code> if none
-     *         are applicable
+     * @return a drop controller for the intersecting drop target or <code>null</code> if none are
+     *         applicable
      */
     DropController getIntersectDropController(int x, int y) {
       Location location = new CoordinateLocation(x, y);
@@ -125,9 +124,9 @@ public class AxisXYDragController extends AbstractDragController {
     }
 
     /**
-     * Cache a list of eligible drop controllers, sorted by relative DOM positions
-     * of their respective drop targets. Called at the beginning of each drag operation,
-     * or whenever drop target eligibility has changed while dragging.
+     * Cache a list of eligible drop controllers, sorted by relative DOM positions of their
+     * respective drop targets. Called at the beginning of each drag operation, or whenever drop
+     * target eligibility has changed while dragging.
      * 
      * @param boundaryPanel boundary area for drop target eligibility considerations
      * @param context the current drag context
@@ -152,9 +151,6 @@ public class AxisXYDragController extends AbstractDragController {
       Arrays.sort(sortedCandidates);
     }
   }
-
-
-
 
   private static class SavedWidgetInfo {
     int initialDraggableIndex;
@@ -193,9 +189,10 @@ public class AxisXYDragController extends AbstractDragController {
   @SuppressWarnings("rawtypes")
   private HashMap savedWidgetInfoMap;
 
-  //To provide XY drag feature (BEGIN)
+  // To provide XY drag feature (BEGIN)
   protected WidgetLocation initialDraggableLocation;
   private boolean allowHorizontalDragging;
+
   public boolean isAllowHorizontalDragging() {
     return allowHorizontalDragging;
   }
@@ -213,29 +210,26 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   private boolean allowVerticalDragging;
-  //To provide XY drag feature (END)
 
+  // To provide XY drag feature (END)
 
-  //To provide XY drag feature (BEGIN)
+  // To provide XY drag feature (BEGIN)
   /**
-   * Create a new pickup-and-move style drag controller. Allows widgets or a
-   * suitable proxy to be temporarily picked up and moved around the specified
-   * boundary panel.
+   * Create a new pickup-and-move style drag controller. Allows widgets or a suitable proxy to be
+   * temporarily picked up and moved around the specified boundary panel.
    * 
    * <p>
-   * Note: An implicit {@link BoundaryDropController} is created and registered
-   * automatically.
+   * Note: An implicit {@link BoundaryDropController} is created and registered automatically.
    * </p>
    * 
-   * @param boundaryPanel the desired boundary panel or <code>RootPanel.get()</code>
-   *                      if entire document body is to be the boundary
-   * @param allowDroppingOnBoundaryPanel whether or not boundary panel should
-   *            allow dropping
+   * @param boundaryPanel the desired boundary panel or <code>RootPanel.get()</code> if entire
+   *          document body is to be the boundary
+   * @param allowDroppingOnBoundaryPanel whether or not boundary panel should allow dropping
    * @param allowHorizontalDragging whether or not the Widget can be dragged horizontally
    * @param allowVerticalDragging whether or not the Widget can be dragged vertically
    */
   @SuppressWarnings("unchecked")
-  public AxisXYDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOnBoundaryPanel, 
+  public AxisXYDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOnBoundaryPanel,
       boolean allowHorizontalDragging, boolean allowVerticalDragging) {
     super(boundaryPanel);
     this.allowHorizontalDragging = allowHorizontalDragging;
@@ -247,24 +241,22 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   /**
-   * Create a new pickup-and-move style drag controller. Allows widgets or a
-   * suitable proxy to be temporarily picked up and moved around the specified
-   * boundary panel.
+   * Create a new pickup-and-move style drag controller. Allows widgets or a suitable proxy to be
+   * temporarily picked up and moved around the specified boundary panel.
    * 
    * <p>
-   * Note: An implicit {@link BoundaryDropController} is created and registered
-   * automatically.
+   * Note: An implicit {@link BoundaryDropController} is created and registered automatically.
    * </p>
    * 
-   * @param boundaryPanel the desired boundary panel or <code>RootPanel.get()</code>
-   *                      if entire document body is to be the boundary
-   * @param allowDroppingOnBoundaryPanel whether or not boundary panel should
-   *            allow dropping
+   * @param boundaryPanel the desired boundary panel or <code>RootPanel.get()</code> if entire
+   *          document body is to be the boundary
+   * @param allowDroppingOnBoundaryPanel whether or not boundary panel should allow dropping
    */
   public AxisXYDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOnBoundaryPanel) {
     this(boundaryPanel, allowDroppingOnBoundaryPanel, true, true);
   }
-  //To provide XY drag feature (END)
+
+  // To provide XY drag feature (END)
 
   public void dragEnd() {
     assert context.finalDropController == null == (context.vetoException != null);
@@ -288,23 +280,21 @@ public class AxisXYDragController extends AbstractDragController {
 
   public void dragMove() {
 
-    //To provide XY drag feature (BEGIN)
+    // To provide XY drag feature (BEGIN)
     if (allowHorizontalDragging == false) {
       context.desiredDraggableX = initialDraggableLocation.getLeft() + boundaryOffsetX;
     }
     if (allowVerticalDragging == false) {
       context.desiredDraggableY = initialDraggableLocation.getTop() + boundaryOffsetY;
     }
-    //To provide XY drag feature (END)
+    // To provide XY drag feature (END)
 
     int desiredLeft = context.desiredDraggableX - boundaryOffsetX;
     int desiredTop = context.desiredDraggableY - boundaryOffsetY;
 
     if (getBehaviorConstrainedToBoundaryPanel()) {
-      desiredLeft = Math.max(0, Math.min(desiredLeft, dropTargetClientWidth
-          - context.draggable.getOffsetWidth()));
-      desiredTop = Math.max(0, Math.min(desiredTop, dropTargetClientHeight
-          - context.draggable.getOffsetHeight()));
+      desiredLeft = Math.max(0, Math.min(desiredLeft, dropTargetClientWidth - context.draggable.getOffsetWidth()));
+      desiredTop = Math.max(0, Math.min(desiredTop, dropTargetClientHeight - context.draggable.getOffsetHeight()));
     }
 
     DOMUtil.fastSetElementPosition(movablePanel.getElement(), desiredLeft, desiredTop);
@@ -329,26 +319,22 @@ public class AxisXYDragController extends AbstractDragController {
   public void dragStart() {
     super.dragStart();
 
-    WidgetLocation currentDraggableLocation = new WidgetLocation(context.draggable,
-        context.boundaryPanel);
+    WidgetLocation currentDraggableLocation = new WidgetLocation(context.draggable, context.boundaryPanel);
 
-    //To provide XY drag feature (BEGIN)
+    // To provide XY drag feature (BEGIN)
     initialDraggableLocation = currentDraggableLocation;
-    //To provide XY drag feature (END)
+    // To provide XY drag feature (END)
 
     if (getBehaviorDragProxy()) {
       movablePanel = newDragProxy(context);
-      context.boundaryPanel.add(movablePanel, currentDraggableLocation.getLeft(),
-          currentDraggableLocation.getTop());
+      context.boundaryPanel.add(movablePanel, currentDraggableLocation.getLeft(), currentDraggableLocation.getTop());
     } else {
       saveSelectedWidgetsLocationAndStyle();
       AbsolutePanel container = new AbsolutePanel();
       DOM.setStyleAttribute(container.getElement(), "overflow", "visible");
 
-      container.setPixelSize(context.draggable.getOffsetWidth(),
-          context.draggable.getOffsetHeight());
-      context.boundaryPanel.add(container, currentDraggableLocation.getLeft(),
-          currentDraggableLocation.getTop());
+      container.setPixelSize(context.draggable.getOffsetWidth(), context.draggable.getOffsetHeight());
+      context.boundaryPanel.add(container, currentDraggableLocation.getLeft(), currentDraggableLocation.getTop());
 
       int draggableAbsoluteLeft = context.draggable.getAbsoluteLeft();
       int draggableAbsoluteTop = context.draggable.getAbsoluteTop();
@@ -367,10 +353,8 @@ public class AxisXYDragController extends AbstractDragController {
 
     // one time calculation of boundary panel location for efficiency during dragging
     Location widgetLocation = new WidgetLocation(context.boundaryPanel, null);
-    boundaryOffsetX = widgetLocation.getLeft()
-        + DOMUtil.getBorderLeft(context.boundaryPanel.getElement());
-    boundaryOffsetY = widgetLocation.getTop()
-        + DOMUtil.getBorderTop(context.boundaryPanel.getElement());
+    boundaryOffsetX = widgetLocation.getLeft() + DOMUtil.getBorderLeft(context.boundaryPanel.getElement());
+    boundaryOffsetY = widgetLocation.getTop() + DOMUtil.getBorderTop(context.boundaryPanel.getElement());
 
     dropTargetClientWidth = DOMUtil.getClientWidth(context.boundaryPanel.getElement());
     dropTargetClientHeight = DOMUtil.getClientHeight(context.boundaryPanel.getElement());
@@ -386,9 +370,9 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   /**
-   * Determine whether or not this controller automatically creates a drag proxy
-   * for each drag operation. Whether or not a drag proxy is used is ultimately
-   * determined by the return value of {@link #maybeNewDraggableProxy(Widget)}
+   * Determine whether or not this controller automatically creates a drag proxy for each drag
+   * operation. Whether or not a drag proxy is used is ultimately determined by the return value of
+   * {@link #maybeNewDraggableProxy(Widget)}
    * 
    * @return <code>true</code> if drag proxy behavior is enabled
    */
@@ -419,8 +403,7 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   /**
-   * Register a new DropController, representing a new drop target, with this
-   * drag controller.
+   * Register a new DropController, representing a new drop target, with this drag controller.
    * 
    * @see #unregisterDropController(DropController)
    * 
@@ -437,9 +420,9 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   /**
-   * Set whether or not widgets may be dropped anywhere on the boundary panel.
-   * Set to <code>false</code> when you only want explicitly registered drop
-   * controllers to accept drops. Defaults to <code>true</code>.
+   * Set whether or not widgets may be dropped anywhere on the boundary panel. Set to
+   * <code>false</code> when you only want explicitly registered drop controllers to accept drops.
+   * Defaults to <code>true</code>.
    * 
    * @param allowDroppingOnBoundaryPanel <code>true</code> to allow dropping
    */
@@ -448,9 +431,9 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   /**
-   * Set whether or not this controller should automatically create a drag proxy
-   * for each drag operation. Whether or not a drag proxy is used is ultimately
-   * determined by the return value of {@link #maybeNewDraggableProxy(Widget)}.
+   * Set whether or not this controller should automatically create a drag proxy for each drag
+   * operation. Whether or not a drag proxy is used is ultimately determined by the return value of
+   * {@link #maybeNewDraggableProxy(Widget)}.
    * 
    * @param dragProxyEnabled <code>true</code> to enable drag proxy behavior
    */
@@ -477,17 +460,18 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   /**
-   * @deprecated Use {@link #newDragProxy(DragContext)} and {@link #setBehaviorDragProxy(boolean)} instead.
+   * @deprecated Use {@link #newDragProxy(DragContext)} and {@link #setBehaviorDragProxy(boolean)}
+   *             instead.
    */
   protected final Widget maybeNewDraggableProxy(Widget draggable) {
     throw new UnsupportedOperationException();
   }
 
   /**
-   * Create a new BoundaryDropController to manage our boundary panel as a drop
-   * target. To ensure that draggable widgets can only be dropped on registered
-   * drop targets, set <code>allowDroppingOnBoundaryPanel</code> to <code>false</code>.
-   *
+   * Create a new BoundaryDropController to manage our boundary panel as a drop target. To ensure
+   * that draggable widgets can only be dropped on registered drop targets, set
+   * <code>allowDroppingOnBoundaryPanel</code> to <code>false</code>.
+   * 
    * @param boundaryPanel the panel to which our drag-and-drop operations are constrained
    * @param allowDroppingOnBoundaryPanel whether or not dropping is allowed on the boundary panel
    * @return the new BoundaryDropController
@@ -498,8 +482,8 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   /**
-   * Called by {@link PickupDragController#dragStart(Widget)} to allow subclasses to
-   * provide their own drag proxies.
+   * Called by {@link PickupDragController#dragStart()} to allow subclasses to provide their
+   * own drag proxies.
    * 
    * @param context the current drag context
    * @return a new drag proxy
@@ -516,8 +500,8 @@ public class AxisXYDragController extends AbstractDragController {
       Widget proxy = new SimplePanel();
       proxy.setPixelSize(widget.getOffsetWidth(), widget.getOffsetHeight());
       proxy.addStyleName(PRIVATE_CSS_PROXY);
-      container.add(proxy, widgetArea.getLeft() - draggableArea.getLeft(), widgetArea.getTop()
-          - draggableArea.getTop());
+      container
+          .add(proxy, widgetArea.getLeft() - draggableArea.getLeft(), widgetArea.getTop() - draggableArea.getTop());
     }
 
     return container;
@@ -525,10 +509,11 @@ public class AxisXYDragController extends AbstractDragController {
 
   /**
    * Restore the selected widgets to their original location.
+   * 
    * @see #saveSelectedWidgetsLocationAndStyle()
    * @see #restoreSelectedWidgetsStyle()
    */
-  @SuppressWarnings({ "rawtypes", "deprecation" })
+  @SuppressWarnings({"rawtypes", "deprecation"})
   protected void restoreSelectedWidgetsLocation() {
     for (Iterator iterator = context.selectedWidgets.iterator(); iterator.hasNext();) {
       Widget widget = (Widget) iterator.next();
@@ -537,8 +522,7 @@ public class AxisXYDragController extends AbstractDragController {
       // TODO simplify after enhancement for issue 1112 provides InsertPanel interface
       // http://code.google.com/p/google-web-toolkit/issues/detail?id=1112
       if (info.initialDraggableParent instanceof AbsolutePanel) {
-        ((AbsolutePanel) info.initialDraggableParent).add(widget,
-            info.initialDraggableParentLocation.getLeft(),
+        ((AbsolutePanel) info.initialDraggableParent).add(widget, info.initialDraggableParentLocation.getLeft(),
             info.initialDraggableParentLocation.getTop());
       } else if (info.initialDraggableParent instanceof HorizontalPanel) {
         ((HorizontalPanel) info.initialDraggableParent).insert(widget, info.initialDraggableIndex);
@@ -557,6 +541,7 @@ public class AxisXYDragController extends AbstractDragController {
 
   /**
    * Restore the selected widgets with their original style.
+   * 
    * @see #saveSelectedWidgetsLocationAndStyle()
    * @see #restoreSelectedWidgetsLocation()
    */
@@ -570,11 +555,12 @@ public class AxisXYDragController extends AbstractDragController {
   }
 
   /**
-   * Save the selected widgets' current location in case they much
-   * be restored due to a canceled drop.
+   * Save the selected widgets' current location in case they much be restored due to a canceled
+   * drop.
+   * 
    * @see #restoreSelectedWidgetsLocation()
    */
-  @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
+  @SuppressWarnings({"rawtypes", "deprecation", "unchecked"})
   protected void saveSelectedWidgetsLocationAndStyle() {
     savedWidgetInfoMap = new HashMap();
     for (Iterator iterator = context.selectedWidgets.iterator(); iterator.hasNext();) {
@@ -586,8 +572,7 @@ public class AxisXYDragController extends AbstractDragController {
       // TODO simplify after enhancement for issue 1112 provides InsertPanel interface
       // http://code.google.com/p/google-web-toolkit/issues/detail?id=1112
       if (info.initialDraggableParent instanceof AbsolutePanel) {
-        info.initialDraggableParentLocation = new WidgetLocation(widget,
-            info.initialDraggableParent);
+        info.initialDraggableParentLocation = new WidgetLocation(widget, info.initialDraggableParent);
       } else if (info.initialDraggableParent instanceof HorizontalPanel) {
         info.initialDraggableIndex = ((HorizontalPanel) info.initialDraggableParent).getWidgetIndex(widget);
       } else if (info.initialDraggableParent instanceof VerticalPanel) {

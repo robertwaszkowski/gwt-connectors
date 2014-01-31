@@ -1,5 +1,7 @@
 package pl.tecna.gwt.connectors.client.elements;
 
+import java.util.logging.Logger;
+
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
@@ -9,6 +11,8 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 
 public class SectionDecoration extends FocusPanel {
+  
+  private final Logger LOG = Logger.getLogger("SectionDecoration");
 
   public enum DecorationType {
     ARROW_SOLID, ARROW_LINE, USER
@@ -137,7 +141,6 @@ public class SectionDecoration extends FocusPanel {
     switch (direction) {
       case VERTICAL_UP:
         left = left - (this.getWidget().getOffsetWidth() / 2) + 1;
-        top = top - 1;
         if (center) {
           top -= this.getWidget().getOffsetHeight() / 2;
         }

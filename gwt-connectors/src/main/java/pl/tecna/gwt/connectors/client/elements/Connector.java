@@ -119,8 +119,7 @@ public class Connector implements Element {
     this.style = style;
     this.startEndPoint = new EndPoint(startLeft, startTop, this);
     this.endEndPoint = endEndPoint;
-    endEndPoint.setLeft(endLeft);
-    endEndPoint.setTop(endTop);
+    endEndPoint.initPosition(endLeft, endTop);
     this.startEndPoint.connector = this;
     this.endEndPoint.connector = this;
 
@@ -309,16 +308,12 @@ public class Connector implements Element {
     CornerPoint cp2 = new CornerPoint(0, 0);
     if (width < height) {
       // the connection contains two vertical sections and one horizontal section
-      cp1.setLeft(startEndPoint.getLeft());
-      cp1.setTop(startEndPoint.getTop() + ((endEndPoint.getTop() - startEndPoint.getTop()) / 2));
-      cp2.setLeft(endEndPoint.getLeft());
-      cp2.setTop(cp1.getTop());
+      cp1.setPosition(startEndPoint.getLeft(), startEndPoint.getTop() + ((endEndPoint.getTop() - startEndPoint.getTop()) / 2));
+      cp2.setPosition(endEndPoint.getLeft(), cp1.getTop());
     } else {
       // the connection contains two horizontal sections and one vertical section
-      cp1.setLeft(startEndPoint.getLeft() + ((endEndPoint.getLeft() - startEndPoint.getLeft()) / 2));
-      cp1.setTop(startEndPoint.getTop());
-      cp2.setLeft(cp1.getLeft());
-      cp2.setTop(endEndPoint.getTop());
+      cp1.setPosition(startEndPoint.getLeft() + ((endEndPoint.getLeft() - startEndPoint.getLeft()) / 2), startEndPoint.getTop());
+      cp2.setPosition(cp1.getLeft(), endEndPoint.getTop());
     }
     cornerPoints.add(cp1);
     cornerPoints.add(cp2);
@@ -493,20 +488,18 @@ public class Connector implements Element {
 
       // Connect element to the center of connection point
       if (last) {
-        endEndPoint.setLeft(connectionPoint.getCenterLeft());
-        endEndPoint.setTop(connectionPoint.getCenterTop());
+        endEndPoint.setPosition(connectionPoint.getCenterLeft(), connectionPoint.getCenterTop());
         if (!sectionHorizontal) {
-          cornerPoints.get(cornerPoints.size() - 1).setLeft(endEndPoint.getLeft());
+          cornerPoints.get(cornerPoints.size() - 1).setLeftPosition(endEndPoint.getLeft());
         } else {
-          cornerPoints.get(cornerPoints.size() - 1).setTop(endEndPoint.getTop());
+          cornerPoints.get(cornerPoints.size() - 1).setTopPosition(endEndPoint.getTop());
         }
       } else {
-        startEndPoint.setLeft(connectionPoint.getCenterLeft());
-        startEndPoint.setTop(connectionPoint.getCenterTop());
+        startEndPoint.setPosition(connectionPoint.getCenterLeft(), connectionPoint.getCenterTop());
         if (!sectionHorizontal) {
-          cornerPoints.get(0).setLeft(startEndPoint.getLeft());
+          cornerPoints.get(0).setLeftPosition(startEndPoint.getLeft());
         } else {
-          cornerPoints.get(0).setTop(startEndPoint.getTop());
+          cornerPoints.get(0).setTopPosition(startEndPoint.getTop());
         }
       }
 
@@ -537,9 +530,9 @@ public class Connector implements Element {
         }
 
         if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) {
-          extremeCorner.setLeft(extremeCorner.getLeft() + sectionMargin);
+          extremeCorner.setLeftPosition(extremeCorner.getLeft() + sectionMargin);
         } else {
-          extremeCorner.setLeft(extremeCorner.getLeft() - sectionMargin);
+          extremeCorner.setLeftPosition(extremeCorner.getLeft() - sectionMargin);
         }
 
         if (last) {
@@ -556,9 +549,9 @@ public class Connector implements Element {
           extremeCorner = cornerPoints.get(0);
         }
         if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM) {
-          extremeCorner.setTop(extremeCorner.getTop() + sectionMargin);
+          extremeCorner.setTopPosition(extremeCorner.getTop() + sectionMargin);
         } else {
-          extremeCorner.setTop(extremeCorner.getTop() - sectionMargin);
+          extremeCorner.setTopPosition(extremeCorner.getTop() - sectionMargin);
         }
         if (last) {
           newCornerPoint = new CornerPoint(endEndPoint.getLeft(), extremeCorner.getTop());
@@ -922,9 +915,9 @@ public class Connector implements Element {
 
             if (toRemove.get(0).getLeft().compareTo(toRemove.get(1).getLeft()) == 0) {
               // removed corners points were vertically matched
-              toChange.setTop(nextToChanged.getTop().intValue());
+              toChange.setTopPosition(nextToChanged.getTop().intValue());
             } else {
-              toChange.setLeft(nextToChanged.getLeft().intValue());
+              toChange.setLeftPosition(nextToChanged.getLeft().intValue());
             }
 
             findShortSection = false;
@@ -1306,11 +1299,10 @@ public class Connector implements Element {
       diagram.boundaryPanel.setWidgetPosition(sections.get(i), sectionTopLeft.getLeft() + xOffset, sectionTopLeft
           .getTop()
           + yOffset);
-
-      sections.get(i).startPoint.setLeft(savedSectionsData.get(i).startPoint.getLeft() + xOffset);
-      sections.get(i).startPoint.setTop(savedSectionsData.get(i).startPoint.getTop() + yOffset);
-      sections.get(i).endPoint.setLeft(savedSectionsData.get(i).endPoint.getLeft() + xOffset);
-      sections.get(i).endPoint.setTop(savedSectionsData.get(i).endPoint.getTop() + yOffset);
+      sections.get(i).startPoint.setPosition(savedSectionsData.get(i).startPoint.getLeft() + xOffset, 
+          savedSectionsData.get(i).startPoint.getTop() + yOffset);
+      sections.get(i).endPoint.setPosition(savedSectionsData.get(i).endPoint.getLeft() + xOffset, 
+          savedSectionsData.get(i).endPoint.getTop() + yOffset);
 
       if (sections.get(i).startPointDecoration != null) {
         this.startPointDecoration.update(sections.get(i).calculateStartPointDecorationDirection(),

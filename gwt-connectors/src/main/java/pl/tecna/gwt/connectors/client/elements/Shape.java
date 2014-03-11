@@ -583,8 +583,7 @@ public class Shape extends FocusPanel implements Element {
         } else {
           vertical = ep.connector.nextSectionForPoint(ep).isVertical();
         }
-        ep.setLeft(cp.getCenterLeft());
-        ep.setTop(cp.getCenterTop());
+        ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
         if (vertical) {
           ep.updateOpositeEndPointOfVerticalSection();
         } else {

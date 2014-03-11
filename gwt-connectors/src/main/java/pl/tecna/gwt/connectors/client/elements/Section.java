@@ -220,28 +220,28 @@ public class Section extends HTML {
 
           if (isAllowHorizontalDragging()) {
             if (Section.this.startPoint.getLeft() < Section.this.endPoint.getLeft()) {
-              Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft()
+              Section.this.startPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
                   - context.boundaryPanel.getAbsoluteLeft());
-              Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft()
+              Section.this.endPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
                   - context.boundaryPanel.getAbsoluteLeft() + width);
             } else {
-              Section.this.startPoint.setLeft(context.draggable.getAbsoluteLeft()
+              Section.this.startPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
                   - context.boundaryPanel.getAbsoluteLeft() + width);
-              Section.this.endPoint.setLeft(context.draggable.getAbsoluteLeft()
+              Section.this.endPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
                   - context.boundaryPanel.getAbsoluteLeft());
             }
           }
 
           if (isAllowVerticalDragging()) {
             if (Section.this.startPoint.getTop() < Section.this.endPoint.getTop()) {
-              Section.this.startPoint.setTop(context.draggable.getAbsoluteTop()
+              Section.this.startPoint.setTopPosition(context.draggable.getAbsoluteTop()
                   - context.boundaryPanel.getAbsoluteTop());
-              Section.this.endPoint.setTop(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop()
+              Section.this.endPoint.setTopPosition(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop()
                   + height);
             } else {
-              Section.this.startPoint.setTop(context.draggable.getAbsoluteTop()
+              Section.this.startPoint.setTopPosition(context.draggable.getAbsoluteTop()
                   - context.boundaryPanel.getAbsoluteTop() + height);
-              Section.this.endPoint.setTop(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop());
+              Section.this.endPoint.setTopPosition(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop());
             }
           }
 

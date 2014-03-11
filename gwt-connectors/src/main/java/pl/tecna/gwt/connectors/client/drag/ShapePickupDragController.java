@@ -125,9 +125,7 @@ public class ShapePickupDragController extends PickupDragController {
         for (ConnectionPoint cp : shape.connectionPoints) {
           for (EndPoint ep : cp.gluedEndPoints) {
             if (diagram.ctrlPressed) {
-
-              ep.setLeft(cp.getCenterLeft());
-              ep.setTop(cp.getCenterTop());
+              ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
               ep.connector.calculateStandardPointsPositions();
               ep.connector.drawSections();
 
@@ -152,8 +150,7 @@ public class ShapePickupDragController extends PickupDragController {
                 } else {
                   vertical = ep.connector.nextSectionForPoint(ep).isVertical();
                 }
-                ep.setLeft(cp.getCenterLeft());
-                ep.setTop(cp.getCenterTop());
+                ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
                 if (vertical) {
                   ep.updateOpositeEndPointOfVerticalSection();
                 } else {

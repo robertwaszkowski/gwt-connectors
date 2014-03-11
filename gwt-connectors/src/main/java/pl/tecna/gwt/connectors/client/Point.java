@@ -4,8 +4,8 @@ import com.google.gwt.user.client.ui.FocusPanel;
 
 public class Point extends FocusPanel implements Comparable<Point> {
 
-  private Integer top;
-  private Integer left;
+  protected Integer top;
+  protected Integer left;
 
   public Point(Integer left, Integer top) {
     super();
@@ -16,21 +16,31 @@ public class Point extends FocusPanel implements Comparable<Point> {
   public void showOnDiagram() {
 
   }
-
-  public Integer getTop() {
-    return top;
-  }
-
-  public void setTop(Integer top) {
+  
+  public void initPosition(Integer left, Integer top) {
+    this.left = left;
     this.top = top;
   }
 
+  public void setLeftPosition(Integer left) { 
+    setPosition(left, top);
+  }
+  
+  public void setTopPosition(Integer top) { 
+    setPosition(left, top);
+  }
+  
+  public void setPosition(Integer left, Integer top) {
+    this.left = left;
+    this.top = top;
+  }
+  
+  public Integer getTop() {
+    return top;
+  }
+  
   public Integer getLeft() {
     return left;
-  }
-
-  public void setLeft(Integer left) {
-    this.left = left;
   }
 
   public String toDebugString() {

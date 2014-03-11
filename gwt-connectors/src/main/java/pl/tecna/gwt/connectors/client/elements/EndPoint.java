@@ -18,6 +18,12 @@ public class EndPoint extends Point {
   public ConnectionPoint gluedConnectionPoint;
   public Connector connector;
   boolean gluedToConnectionPoint;
+  
+  /**
+   * {@link Shape} attached to the {@link EndPoint}. It would be moved together with
+   * end point.
+   */
+  private Shape linkedShape;
 
   // Defines size of connection point
   public static final int CP_MARGIN = 13;
@@ -105,13 +111,13 @@ public class EndPoint extends Point {
     // Update position of opposite Corner Point and update Section
     Section prevSection = this.connector.prevSectionForPoint(this);
     if (prevSection != null) {
-      prevSection.getStartPoint().setLeft(this.getLeft());
+      prevSection.getStartPoint().setLeftPosition(this.getLeft());
       this.connector.update();
     }
 
     Section nextSection = this.connector.nextSectionForPoint(this);
     if (nextSection != null) {
-      nextSection.getEndPoint().setLeft(this.getLeft());
+      nextSection.getEndPoint().setLeftPosition(this.getLeft());
       this.connector.update();
     }
 
@@ -123,13 +129,13 @@ public class EndPoint extends Point {
     // Update position of opposite Corner Point and update Section
     Section prevSection = this.connector.prevSectionForPoint(this);
     if (prevSection != null) {
-      prevSection.getStartPoint().setTop(this.getTop());
+      prevSection.getStartPoint().setTopPosition(this.getTop());
       this.connector.update();
     }
 
     Section nextSection = this.connector.nextSectionForPoint(this);
     if (nextSection != null) {
-      nextSection.getEndPoint().setTop(this.getTop());
+      nextSection.getEndPoint().setTopPosition(this.getTop());
       this.connector.update();
     }
 
@@ -148,5 +154,24 @@ public class EndPoint extends Point {
     img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
     return img;
   }
+  
+  public void linkShape(Shape shape) {
+    linkedShape = shape;
+  }
+  
+  @Override
+  public void setPosition(Integer newLeft, Integer newTop) {
+    moveLinkedShape(newLeft - this.left, newTop - this.top);
+    super.setPosition(newLeft, newTop);
+  }
 
+  public void moveLinkedShape(Integer offsetLeft, Integer offsetTop) {
+    if (linkedShape != null && linkedShape.isAttached()) {
+      linkedShape.left = linkedShape.diagram.boundaryPanel.getWidgetLeft(linkedShape) + offsetLeft;
+      linkedShape.top = linkedShape.diagram.boundaryPanel.getWidgetTop(linkedShape) + offsetTop;
+      linkedShape.diagram.boundaryPanel.setWidgetPosition(linkedShape, linkedShape.left, linkedShape.top);
+      linkedShape.updateConnectors();
+    }
+  }
+  
 }

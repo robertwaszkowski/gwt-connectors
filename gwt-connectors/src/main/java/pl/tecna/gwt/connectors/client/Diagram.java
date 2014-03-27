@@ -53,7 +53,15 @@ public class Diagram {
    * Defines weather keyboard events should be fired
    */
   public boolean keyboardEnabled = true;
+  
+  public int initialDragTolerance = 20;
 
+  /**
+   * If true, then connector in 'initializing' state would be
+   * drawn in straight lane with shape height/width tolerance
+   */
+  public boolean drawInitializingConnectorsInLine = false;
+  
   private List<DiagramListener> listeners;
   private DiagramModeListener modeListener;
   private boolean enableEvents = true;

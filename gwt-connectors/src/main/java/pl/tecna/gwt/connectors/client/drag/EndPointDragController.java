@@ -25,7 +25,7 @@ public class EndPointDragController extends PickupDragController {
     super(boundaryPanel, allowDroppingOnBoundaryPanel);
     this.diagram = diagram;
   }
-  
+
   @Override
   public void previewDragStart() throws VetoDragException {
 
@@ -34,7 +34,7 @@ public class EndPointDragController extends PickupDragController {
       diagram.clearSelection();
       ShapeConnectorStart ep = (ShapeConnectorStart) context.draggable;
       ep.setWidget(ep.createEndPointImage());
-      ep.setPosition(getDraggableCenterLeft(ep), getDraggableCenterTop(ep));
+      ep.setPosition(getEndPointCenterLeft(ep), getEndPointCenterTop(ep));
 
       if (ep.connector == null) {
         ep.shape.endPoints.remove(ep);
@@ -81,8 +81,30 @@ public class EndPointDragController extends PickupDragController {
 
     EndPoint draggedEP = (EndPoint) context.draggable;
     draggedEP.connector.select();
+    int desiredLeft = getEndPointCenterLeft(draggedEP);
+    int desiredTop = getEndPointCenterTop(draggedEP);
     // Update left and top position for dragged EndPoint
-    draggedEP.setPosition(getDraggableCenterLeft(draggedEP), getDraggableCenterTop(draggedEP));
+    if (diagram.drawInitializingConnectorsInLine && draggedEP.connector.initalizing) {
+      EndPoint connectorStartPoint = draggedEP.connector.startEndPoint;
+      switch (connectorStartPoint.gluedConnectionPoint.connectionDirection) {
+        case ConnectionPoint.DIRECTION_LEFT: 
+        case ConnectionPoint.DIRECTION_RIGHT: {
+          if (Math.abs(connectorStartPoint.getTop() - context.desiredDraggableY) < diagram.initialDragTolerance) {
+            desiredTop = connectorStartPoint.getTop();
+            context.desiredDraggableY = (int) (desiredTop - Math.floor((double) ((double)draggedEP.getOffsetHeight() / (double) 2)));
+          }
+        } break;
+        case ConnectionPoint.DIRECTION_TOP:
+        case ConnectionPoint.DIRECTION_BOTTOM: {
+          if (Math.abs(connectorStartPoint.getLeft() - context.desiredDraggableX) < diagram.initialDragTolerance) {
+            desiredLeft = connectorStartPoint.getLeft();
+            context.desiredDraggableX = (int) (desiredLeft - Math.floor((double) ((double)draggedEP.getOffsetWidth() / (double) 2)));
+          }
+        } break;
+      }
+
+    }
+    draggedEP.setPosition(desiredLeft, desiredTop);
 
     if (draggedEP.connector.sections.size() <= 3) {
       fixConnectorPath(draggedEP);
@@ -127,12 +149,12 @@ public class EndPointDragController extends PickupDragController {
     conn.drawSections();
   }
 
-  private int getDraggableCenterLeft(EndPoint w) {
+  private int getEndPointCenterLeft(EndPoint w) {
     return (w.getAbsoluteLeft() - context.boundaryPanel.getAbsoluteLeft() + (int) Math.floor((double) ((double) w
         .getOffsetWidth() / (double) 2)));
   }
 
-  private int getDraggableCenterTop(EndPoint w) {
+  private int getEndPointCenterTop(EndPoint w) {
     return (w.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop() + (int) Math.floor((double) ((double) w
         .getOffsetHeight() / (double) 2)));
   }

@@ -24,6 +24,10 @@ public class ConnectionPoint extends FocusPanel {
   Logger LOG = Logger.getLogger("ConnectionPoint");
   
 	public ArrayList<EndPoint> gluedEndPoints;
+	
+	/**
+	 * Connection point is on left/right/top/bottom edge of shape
+	 */
 	public int connectionDirection;
 	public int position;
 	public Widget parentWidget;

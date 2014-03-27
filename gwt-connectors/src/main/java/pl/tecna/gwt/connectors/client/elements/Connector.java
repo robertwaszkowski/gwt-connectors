@@ -25,7 +25,13 @@ public class Connector implements Element {
   public static final int OVERLAP_MARGIN = 5;
 
   private final Logger LOG = Logger.getLogger("Connector");
-
+  
+  /**
+   * Connector is in 'initializing' state while it is dragged from 
+   * shape
+   */
+  public boolean initalizing = false;
+  
   public ArrayList<Section> sections;
   public ArrayList<CornerPoint> cornerPoints;
 

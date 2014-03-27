@@ -131,7 +131,7 @@ public class Example implements EntryPoint {
 		shapeForTask.enableConnectionCreate(true);
 		shapeForTask.setTitle("Shape for task");
 		
-		connector3.endEndPoint.linkShape(shapeForTask);
+		connector3.endEndPoint.linkShape(shapeForLabel2);
 	}
 	
 }

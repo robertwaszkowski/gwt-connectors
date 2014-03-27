@@ -7,7 +7,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class ElementDragEvent implements ConnectorEvent {
 
   public enum DragEventType {
-
     DRAG_START, DRAG_END;
   }
 

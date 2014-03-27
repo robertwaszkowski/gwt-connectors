@@ -302,6 +302,8 @@ public class Diagram {
         }
         Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, endY,
             ElementDragEvent.DragEventType.DRAG_END));
+
+        endPoint.connector.initalizing = false;
       }
     });
   }

@@ -25,7 +25,7 @@ public class EndPointDragController extends PickupDragController {
     super(boundaryPanel, allowDroppingOnBoundaryPanel);
     this.diagram = diagram;
   }
-
+  
   @Override
   public void previewDragStart() throws VetoDragException {
 
@@ -49,6 +49,7 @@ public class EndPointDragController extends PickupDragController {
           int endTop = ep.getTop();
 
           ep.connector = diagram.createConnector(startLeft, startTop, endLeft, endTop, ep, ep.shape.connectorsStyle);
+          ep.connector.initalizing = true;
         }
         ep.connector.startEndPoint.glueToConnectionPoint(ep.getOverlapingCP());
       }

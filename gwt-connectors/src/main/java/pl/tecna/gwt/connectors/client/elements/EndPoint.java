@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class EndPoint extends Point {
 
+  public static final int SIZE = 12;
   public ConnectionPoint gluedConnectionPoint;
   public Connector connector;
   boolean gluedToConnectionPoint;
@@ -164,7 +165,7 @@ public class EndPoint extends Point {
     moveLinkedShape(newLeft - this.left, newTop - this.top);
     super.setPosition(newLeft, newTop);
   }
-
+  
   public void moveLinkedShape(Integer offsetLeft, Integer offsetTop) {
     if (linkedShape != null && linkedShape.isAttached()) {
       linkedShape.left = linkedShape.diagram.boundaryPanel.getWidgetLeft(linkedShape) + offsetLeft;

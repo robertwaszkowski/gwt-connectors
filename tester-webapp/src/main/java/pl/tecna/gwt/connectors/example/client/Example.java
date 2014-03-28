@@ -58,30 +58,30 @@ public class Example implements EntryPoint {
 		// Create boundary panel
 		AbsolutePanel boundaryPanel = new AbsolutePanel();
 		boundaryPanel.setSize("20000px", "20000px");
-		viewPanel.add(boundaryPanel, 0, 0);
+		viewPanel.add(boundaryPanel, -10000, -10000);
 		
 		RootPanel.get().add(viewPanel, 0, 0);
 		
 		final Diagram diagram = new Diagram(boundaryPanel);
 		diagram.drawInitializingConnectorsInLine = true;
 
-		boundaryPanel.add(new Label("Connectors example for GWT 2.4"), 10, 2);
-		Connector connector1 = new Connector(50, 80, 150, 200, new SectionDecoration(DecorationType.ARROW_SOLID), new SectionDecoration(DecorationType.ARROW_SOLID));
+		boundaryPanel.add(new Label("Connectors example for GWT 2.4"), 10010, 10002);
+		Connector connector1 = new Connector(10050, 10080, 10150, 10200, new SectionDecoration(DecorationType.ARROW_SOLID), new SectionDecoration(DecorationType.ARROW_SOLID));
 		connector1.showOnDiagram(diagram);
 
 		ArrayList<CornerPoint> cp = new ArrayList<CornerPoint>();
-		cp.add(new CornerPoint(370, 200));
-		cp.add(new CornerPoint(370, 120));
-		cp.add(new CornerPoint(270, 120));
+		cp.add(new CornerPoint(10370, 10200));
+		cp.add(new CornerPoint(10370, 10120));
+		cp.add(new CornerPoint(10270, 10120));
 		SectionDecoration startDecoration = new SectionDecoration(DecorationType.ARROW_LINE);
 		SectionDecoration endDecoration = new SectionDecoration(
 				new Image("http://code.google.com/images/code_sm.png"), 
 				new Image("http://code.google.com/images/code_sm.png"));
-		Connector connector2 = new Connector(350, 200, 270, 80, cp, startDecoration, endDecoration);
+		Connector connector2 = new Connector(10350, 10200, 10270, 10080, cp, startDecoration, endDecoration);
 		connector2.style = ConnectorStyle.DASHED;
 		connector2.showOnDiagram(diagram);
 
-		Connector connector3 = new Connector(450, 120, 500, 80, new SectionDecoration(DecorationType.ARROW_SOLID), new SectionDecoration(DecorationType.ARROW_SOLID));
+		Connector connector3 = new Connector(10450, 10120, 10500, 10080, new SectionDecoration(DecorationType.ARROW_SOLID), new SectionDecoration(DecorationType.ARROW_SOLID));
 		connector3.style = ConnectorStyle.DOTTED;
 		connector3.showOnDiagram(diagram);
 
@@ -89,7 +89,7 @@ public class Example implements EntryPoint {
 		Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.diamondImg()).createImage();
 		img.getElement().getStyle().setDisplay(Display.BLOCK);
 		diamond.setWidget(img);
-		boundaryPanel.add(diamond, 700, 400);
+		boundaryPanel.add(diamond, 10700, 10400);
 
 		// Add some elements that can be connected
 		final Label label = new Label("LABEL");
@@ -98,14 +98,14 @@ public class Example implements EntryPoint {
 
 		final Label label3 = new Label("LABEL_3 Test Longer Label with rectangle connection points");
 
-		image.setPixelSize(153, 55);
+		image.setPixelSize(10153, 10055);
 
 		BPMNTask task = new BPMNTask();
-		boundaryPanel.add(task, 500, 300);
+		boundaryPanel.add(task, 10500, 10300);
 		
-		boundaryPanel.add(label, 50, 250);
-		boundaryPanel.add(label2, 450, 200);
-		boundaryPanel.add(label3, 700, 500);
+		boundaryPanel.add(label, 10050, 10250);
+		boundaryPanel.add(label2, 10450, 10200);
+		boundaryPanel.add(label3, 10700, 10500);
 
 		Shape shapeForLabel = new Shape(label, CPShapeType.DIAMOND);
 		shapeForLabel.showOnDiagram(diagram);

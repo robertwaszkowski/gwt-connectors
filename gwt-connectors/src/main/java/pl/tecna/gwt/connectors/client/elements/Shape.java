@@ -64,6 +64,9 @@ public class Shape extends FocusPanel implements Element {
    * Defines size of connection point margin
    */
   public static int CP_MARGIN = 7;
+  
+  public static int CP_PADDING = 3;
+  
   /**
    * Defines tolerance in merging sections
    */
@@ -117,12 +120,10 @@ public class Shape extends FocusPanel implements Element {
     this.setPixelSize(connectedWidget.getOffsetWidth() + CP_MARGIN * 2 + offsetLeft, connectedWidget.getOffsetHeight()
         + CP_MARGIN * 2 + offsetTop);
 
-    // int padding = Integer.parseInt(this.getElement().getStyle().getPadding());
-    int padding = 3;
     ((AbsolutePanel) connectedWidget.getParent()).add(this, connectedWidget.getAbsoluteLeft()
-        - connectedWidget.getParent().getAbsoluteLeft() - CP_MARGIN - offsetLeft - padding, connectedWidget
+        - connectedWidget.getParent().getAbsoluteLeft() - CP_MARGIN - offsetLeft - CP_PADDING, connectedWidget
         .getAbsoluteTop()
-        - connectedWidget.getParent().getAbsoluteTop() - CP_MARGIN - offsetTop - padding);
+        - connectedWidget.getParent().getAbsoluteTop() - CP_MARGIN - offsetTop - CP_PADDING);
 
     // Add Absolute Panel which contains Widget in the center and ConnectionPoints on North, East,
     // South, and West

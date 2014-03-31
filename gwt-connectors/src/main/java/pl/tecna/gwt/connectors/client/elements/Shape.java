@@ -836,6 +836,7 @@ public class Shape extends FocusPanel implements Element {
     int oldWidgetWidth = connectedWidget.getOffsetWidth();
     int oldWidgetHeight = connectedWidget.getOffsetHeight();
     
+    List<ConnectionPoint> oldConnectionPoints = connectionPoints;
     boolean startPointsWereVisible = startPointsVisible;
     if (startPointsVisible) {
       hideShapeConnectorStartPionts();
@@ -857,6 +858,18 @@ public class Shape extends FocusPanel implements Element {
     if (startPointsWereVisible) {
       showShapeConnectorStartPoints();
     }
-
+    reconnectEndPoints(oldConnectionPoints, connectionPoints);
+  }
+  
+  private void reconnectEndPoints(List<ConnectionPoint> oldConnectionPoints, List<ConnectionPoint> newConnectionPoints) {
+    for (ConnectionPoint oldCp : oldConnectionPoints) {
+      if (!oldCp.gluedEndPoints.isEmpty()) {
+        for (EndPoint gluedEp : oldCp.gluedEndPoints) {
+          ConnectionPoint newCp = findNearestConnectionPoint(gluedEp.getLeft(), gluedEp.getTop());
+          gluedEp.glueToConnectionPoint(newCp);
+        }
+      }
+    }
+    updateConnectors();
   }
 }

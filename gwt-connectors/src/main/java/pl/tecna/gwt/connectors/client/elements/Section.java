@@ -405,7 +405,7 @@ public class Section extends HTML {
             connector.diagram.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - connector.diagram.boundaryPanel.getAbsoluteTop();
         connector.diagram.onElementDrag(new pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent(event
-            .getContext().draggable, startX, startY,
+            .getContext(), startX, startY,
             pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent.DragEventType.DRAG_START));
         Section.this.connector.select();
       }
@@ -445,7 +445,7 @@ public class Section extends HTML {
         // connector.diagram.boundaryPanel.getWidgetTop(event.getContext().draggable)
         // - connector.diagram.boundaryPanel.getAbsoluteTop();
 
-        connector.diagram.onElementDrag(new ElementDragEvent(event.getContext().draggable,
+        connector.diagram.onElementDrag(new ElementDragEvent(event.getContext(),
             event.getContext().desiredDraggableX, event.getContext().desiredDraggableY,
             ElementDragEvent.DragEventType.DRAG_END));
 

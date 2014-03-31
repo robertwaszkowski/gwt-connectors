@@ -188,7 +188,7 @@ public class Diagram {
         int startY =
             Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteTop();
-        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, startX, startY,
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext(), startX, startY,
             ElementDragEvent.DragEventType.DRAG_START));
       }
 
@@ -250,7 +250,7 @@ public class Diagram {
             Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteTop();
 
-        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, endY,
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext(), endX, endY,
             ElementDragEvent.DragEventType.DRAG_END));
       }
 
@@ -276,7 +276,7 @@ public class Diagram {
         int startY =
             Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteTop();
-        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, startX, startY,
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext(), startX, startY,
             ElementDragEvent.DragEventType.DRAG_START));
       }
 
@@ -308,7 +308,7 @@ public class Diagram {
               Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                   - Diagram.this.boundaryPanel.getAbsoluteTop();
         }
-        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext().draggable, endX, endY,
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext(), endX, endY,
             ElementDragEvent.DragEventType.DRAG_END));
 
         endPoint.connector.initalizing = false;

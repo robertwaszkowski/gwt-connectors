@@ -19,6 +19,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -92,7 +94,9 @@ public class Example implements EntryPoint {
 		boundaryPanel.add(diamond, 10700, 10400);
 
 		// Add some elements that can be connected
-		final Label label = new Label("LABEL");
+		final Label label = new Label("LABEL Label Label");
+        final Label labelChanged = new Label("Changed changedchangedchanged ...");
+		
 		final Label label2 = new Label("LABEL_2");
 		final Image image = new Image("http://code.google.com/images/code_sm.png");
 
@@ -107,11 +111,29 @@ public class Example implements EntryPoint {
 		boundaryPanel.add(label2, 10450, 10200);
 		boundaryPanel.add(label3, 10700, 10500);
 
-		Shape shapeForLabel = new Shape(label, CPShapeType.DIAMOND);
+		final Shape shapeForLabel = new Shape(label, CPShapeType.DIAMOND);
 		shapeForLabel.showOnDiagram(diagram);
 		shapeForLabel.setTitle("shapeForLabel");
 		shapeForLabel.enableConnectionCreate(true);
+		
+		label.addDoubleClickHandler(new DoubleClickHandler() {
+          
+          @Override
+          public void onDoubleClick(DoubleClickEvent event) {
+            shapeForLabel.cpShapeType = CPShapeType.RECTANGLE;
+            shapeForLabel.changeConnectedWidget(labelChanged);
+          }
+        });
 
+		labelChanged.addDoubleClickHandler(new DoubleClickHandler() {
+
+		  @Override
+		  public void onDoubleClick(DoubleClickEvent event) {
+		    shapeForLabel.cpShapeType = CPShapeType.DIAMOND;
+		    shapeForLabel.changeConnectedWidget(label);
+		  }
+		});
+		
 		Shape shapeForLabel2 = new Shape(label2, CPShapeType.OVAL);
 		shapeForLabel2.showOnDiagram(diagram);
 		shapeForLabel2.setTitle("shapeForLabel2");

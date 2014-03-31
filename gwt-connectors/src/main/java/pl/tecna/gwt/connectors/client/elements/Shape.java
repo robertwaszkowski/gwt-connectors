@@ -191,11 +191,6 @@ public class Shape extends FocusPanel implements Element {
     // refresh connection points positions
     int cpPanelHeight = connectionPointsPanel.getOffsetHeight();
     int cpPanelWidth = connectionPointsPanel.getOffsetWidth();
-
-    for (ConnectionPoint cp : connectionPoints) {
-      connectionPointsPanel.remove(cp);
-    }
-    
     switch (cpShapeType) {
       case OVAL:
         connectionPoints = createOvalShapeCP(connectionPointsPanel, diagram);
@@ -527,7 +522,6 @@ public class Shape extends FocusPanel implements Element {
   public void updateConnectors() {
     for (ConnectionPoint cp : connectionPoints) {
       for (EndPoint ep : cp.gluedEndPoints) {
-
         boolean vertical = false;
         if (ep.connector.prevSectionForPoint(ep) != null) {
           vertical = ep.connector.prevSectionForPoint(ep).isVertical();
@@ -863,6 +857,7 @@ public class Shape extends FocusPanel implements Element {
   
   private void reconnectEndPoints(List<ConnectionPoint> oldConnectionPoints, List<ConnectionPoint> newConnectionPoints) {
     for (ConnectionPoint oldCp : oldConnectionPoints) {
+      oldCp.removeFromParent();
       if (!oldCp.gluedEndPoints.isEmpty()) {
         for (EndPoint gluedEp : oldCp.gluedEndPoints) {
           ConnectionPoint newCp = findNearestConnectionPoint(gluedEp.getLeft(), gluedEp.getTop());

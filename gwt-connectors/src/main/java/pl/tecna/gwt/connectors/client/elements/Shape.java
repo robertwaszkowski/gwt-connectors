@@ -179,7 +179,7 @@ public class Shape extends FocusPanel implements Element {
     diagram.onDiagramAdd(new DiagramAddEvent(this, endX, endY));
   }
 
-  public void repaint(Diagram diagram) {
+  public List<ConnectionPoint> repaint(Diagram diagram) {
 
     this.setPixelSize(connectedWidget.getOffsetWidth() + CP_MARGIN * 2 + offsetLeft, connectedWidget.getOffsetHeight()
         + CP_MARGIN * 2 + offsetTop);
@@ -188,9 +188,7 @@ public class Shape extends FocusPanel implements Element {
         .getOffsetHeight()
         + CP_MARGIN * 2 + offsetTop);
 
-    // refresh connection points positions
-    int cpPanelHeight = connectionPointsPanel.getOffsetHeight();
-    int cpPanelWidth = connectionPointsPanel.getOffsetWidth();
+    List<ConnectionPoint> oldConnectionPoints = connectionPoints;
     switch (cpShapeType) {
       case OVAL:
         connectionPoints = createOvalShapeCP(connectionPointsPanel, diagram);
@@ -209,6 +207,9 @@ public class Shape extends FocusPanel implements Element {
         break;
     }
 
+    reconnectEndPoints(oldConnectionPoints, connectionPoints);
+    
+    return connectionPoints;
   }
 
   /**

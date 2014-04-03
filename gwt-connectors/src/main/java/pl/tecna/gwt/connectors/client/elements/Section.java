@@ -538,23 +538,6 @@ public class Section extends HTML {
    */
   protected void splitSection(ArrayList<CornerPoint> newCornerPoints) {
 
-    // DEBUG
-    // String str1 = "Section.splitSection: newCornerPoints: ";
-    // str1 = str1 + "s:(" + this.connector.startEndPoint.getLeft() + "," +
-    // this.connector.startEndPoint.getTop() + ")";
-    // for (int i = 0; i < newCornerPoints.size(); i++) {
-    // str1 = str1 + "n:(" + newCornerPoints.get(i).getLeft() + "," +
-    // newCornerPoints.get(i).getTop() + ")";
-    // }
-    // for (int i = 0; i < this.connector.cornerPoints.size(); i++) {
-    // str1 = str1 + "o:(" + this.connector.cornerPoints.get(i).getLeft() + "," +
-    // this.connector.cornerPoints.get(i).getTop() + ")";
-    // }
-    // str1 = str1 + "e:(" + this.connector.endEndPoint.getLeft() + "," +
-    // this.connector.endEndPoint.getTop() + ")";
-    // System.out.println(str1);
-    // END_DEBUG
-
     if (this.startPointIsGluedToConnectionPoint()) {
       // Add a new horizontal Section as the first Section in Connector and move decorations into
       // this section
@@ -593,16 +576,6 @@ public class Section extends HTML {
       this.update();
     }
 
-    // DEBUG - Display all sections in connector
-    // String str2 = "All Sections in Connector: ";
-    // for (int i = 0; i < this.connector.sections.size(); i++) {
-    // str2 = str2 + "(" + this.connector.sections.get(i).startPoint.getLeft() + "," +
-    // this.connector.sections.get(i).startPoint.getTop() + "," +
-    // this.connector.sections.get(i).endPoint.getLeft() + "," +
-    // this.connector.sections.get(i).endPoint.getTop() + ")";
-    // }
-    // System.out.println(str2);
-    // END_DEBUG
   }
 
   public boolean removeFromDiagram() {
@@ -732,7 +705,6 @@ public class Section extends HTML {
   }
 
   public boolean isVertical(List<Section> checkedSections) {
-
     checkedSections.add(this);
     if (!(this.hasNoDimensions())) {
       if (this.startPoint.getLeft().intValue() == this.endPoint.getLeft().intValue()) {

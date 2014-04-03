@@ -46,7 +46,7 @@ public class Point extends FocusPanel implements Comparable<Point> {
   public String toDebugString() {
     return "top:" + top + " left:" + left;
   }
-
+  
   /**
    * Compares two points using their left and top values. <br>
    * If values are equal 0 is returned. If values are not eqal, sumary of absolute differences

@@ -304,21 +304,28 @@ public class Connector implements Element {
    * the connection contains two horizontal sections and one vertical section.
    */
   public void calculateStandardPointsPositions() {
-    // LOG.i("calculateStandardPP");
-    cornerPoints.removeAll(cornerPoints);
+    
+    cornerPoints.clear();
 
-    int width = Math.abs(startEndPoint.getLeft() - endEndPoint.getLeft());
-    int height = Math.abs(startEndPoint.getTop() - endEndPoint.getTop());
+    int distanceX = startEndPoint.getLeft() - endEndPoint.getLeft();
+    int distanceY = startEndPoint.getTop() - endEndPoint.getTop();
+    
+    int firstSectionDirection = -1;
+    if (startEndPoint.isGluedToConnectionPoint()) {
+      firstSectionDirection = startEndPoint.gluedConnectionPoint.connectionDirection;
+    }
 
     CornerPoint cp1 = new CornerPoint(0, 0);
     CornerPoint cp2 = new CornerPoint(0, 0);
-    if (width < height) {
+    if (firstSectionDirection == ConnectionPoint.DIRECTION_TOP ||
+        firstSectionDirection == ConnectionPoint.DIRECTION_BOTTOM || (
+        firstSectionDirection == -1 && Math.abs(distanceX) < Math.abs(distanceY))) {
       // the connection contains two vertical sections and one horizontal section
-      cp1.setPosition(startEndPoint.getLeft(), startEndPoint.getTop() + ((endEndPoint.getTop() - startEndPoint.getTop()) / 2));
+      cp1.setPosition(startEndPoint.getLeft(), startEndPoint.getTop() - (distanceY / 2));
       cp2.setPosition(endEndPoint.getLeft(), cp1.getTop());
     } else {
       // the connection contains two horizontal sections and one vertical section
-      cp1.setPosition(startEndPoint.getLeft() + ((endEndPoint.getLeft() - startEndPoint.getLeft()) / 2), startEndPoint.getTop());
+      cp1.setPosition(startEndPoint.getLeft() - (distanceX / 2), startEndPoint.getTop());
       cp2.setPosition(cp1.getLeft(), endEndPoint.getTop());
     }
     cornerPoints.add(cp1);
@@ -825,39 +832,39 @@ public class Connector implements Element {
   }
 
   public void logCornerPointsData() {
-    LOG.info("Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
+    LOG.info("--- Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
 
     if (cornerPoints != null && cornerPoints.size() != 0) {
       for (CornerPoint cp : cornerPoints) {
-        LOG.info("CornerPoint top:" + cp.getTop() + " left:" + cp.getLeft());
+        LOG.info("--- CornerPoint top:" + cp.getTop() + " left:" + cp.getLeft());
       }
     }
 
-    LOG.info("End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
+    LOG.info("--- End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
   }
 
   public void logCornerPointsData(List<CornerPoint> corners) {
-    LOG.info("Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
+    LOG.info("--- Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
 
     if (corners != null && corners.size() != 0) {
       for (CornerPoint cp : corners) {
-        LOG.info("CornerPoint top:" + cp.getTop() + " left:" + cp.getLeft());
+        LOG.info("---CornerPoint top:" + cp.getTop() + " left:" + cp.getLeft());
       }
     }
 
-    LOG.info("End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
+    LOG.info("--- End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
   }
 
   public void logSectionData() {
-    LOG.info("Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
+    LOG.info("---Start end point : top:" + startEndPoint.getTop() + " left:" + startEndPoint.getLeft());
 
     if (sections != null && sections.size() != 0) {
       for (int i = 0; i < sections.size() - 1; i++) {
-        LOG.info("Section top:" + sections.get(i).endPoint.getTop() + " left:" + sections.get(i).endPoint.getLeft());
+        LOG.info("---Section top:" + sections.get(i).endPoint.getTop() + " left:" + sections.get(i).endPoint.getLeft());
       }
     }
 
-    LOG.info("End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
+    LOG.info("---End end point : top:" + endEndPoint.getTop() + " left:" + endEndPoint.getLeft());
   }
 
   /**

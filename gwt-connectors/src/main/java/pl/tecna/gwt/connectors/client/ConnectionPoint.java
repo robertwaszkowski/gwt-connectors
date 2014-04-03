@@ -29,8 +29,9 @@ public class ConnectionPoint extends FocusPanel {
 	 * Connection point is on left/right/top/bottom edge of shape
 	 */
 	public int connectionDirection;
-	public int position;
+	public int index;
 	public Widget parentWidget;
+	public Point positionOnCPPanel;
 	
 	public static final int ALL    =  0;
 	public static final int DIRECTION_TOP    =  1;
@@ -61,14 +62,14 @@ public class ConnectionPoint extends FocusPanel {
 		Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point()).createImage();
     img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
 		this.setWidget(img);
-		this.position = 1;
+		this.index = 1;
 		this.getElement().getStyle().setZIndex(2);
 	}
 	
 	public ConnectionPoint(int connectionDirection, int position, Widget w) {
 		this();
 		this.connectionDirection = connectionDirection;
-		this.position = position;
+		this.index = position;
 		this.getElement().getStyle().setZIndex(2);
 		this.parentWidget = w;
 	}

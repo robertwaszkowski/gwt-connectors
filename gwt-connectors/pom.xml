@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>pl.tecna.gwt</groupId>
 	<artifactId>gwt-connectors</artifactId>
 	<packaging>jar</packaging>
-	<version>2.4.5</version>
-	
+	<version>2.4.6</version>
+
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
 	</parent>
-	
+
 	<name>GWT Connectors</name>
 	<description>A library for drawing connections between shapes on diagrams.</description>
 	<url>https://github.com/robertwaszkowski/gwt-connectors</url>
-	
+
 	<issueManagement>
 		<url>https://github.com/robertwaszkowski/gwt-connectors/issues</url>
 		<system>GitHub Issues</system>
 	</issueManagement>
-	
+
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -29,13 +30,13 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<scm>
 		<connection>scm:git:https://github.com/robertwaszkowski/gwt-connectors.git</connection>
 		<developerConnection>scm:git:https://github.com/robertwaszkowski/gwt-connectors.git</developerConnection>
 		<url>https://github.com/robertwaszkowski/gwt-connectors</url>
 	</scm>
-	
+
 	<developers>
 		<developer>
 			<id>kamil.kurek</id>
@@ -57,7 +58,7 @@
 	<properties>
 		<gwt.version>2.5.1</gwt.version>
 		<gwt-dnd.version>3.1.2</gwt-dnd.version>
-		
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -76,7 +77,7 @@
 				</includes>
 			</resource>
 		</resources>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -116,7 +117,7 @@
 					<value>true</value>
 				</property>
 			</activation>
-			
+
 			<build>
 				<plugins>
 					<plugin>
@@ -135,6 +136,59 @@
 						<configuration>
 							<useAgent>true</useAgent>
 						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>test</id>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<version>${gwt.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<runTarget>/</runTarget>
+							<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
+							<modules>
+								<module>pl.tecna.gwt.connectors.test.Example</module>
+							</modules>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<configuration>
+							<encoding>UTF-8</encoding>
+						</configuration>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<id>copy-resources-war</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+									<resources>
+										<resource>
+											<directory>src/main/webapp/</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

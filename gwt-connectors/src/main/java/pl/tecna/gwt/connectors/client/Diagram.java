@@ -25,10 +25,12 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
+import pl.tecna.gwt.connectors.client.util.ExtendedWidgetLocation;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
+import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -270,19 +272,13 @@ public class Diagram {
           ep.connector.select();
         }
 
-        int startX =
-            Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
-                - Diagram.this.boundaryPanel.getAbsoluteLeft();
-        int startY =
-            Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
-                - Diagram.this.boundaryPanel.getAbsoluteTop();
-        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext(), startX, startY,
+        WidgetLocation location = new WidgetLocation(event.getContext().draggable, event.getContext().boundaryPanel);
+        Diagram.this.onElementDrag(new ElementDragEvent(event.getContext(), location.getLeft(), location.getTop(),
             ElementDragEvent.DragEventType.DRAG_START));
       }
 
       @Override
       public void onDragEnd(DragEndEvent event) {
-
         endPointDragging = false;
         EndPoint endPoint = (EndPoint) event.getSource();
         endPoint.connector.fixEndSectionDirection(endPoint);

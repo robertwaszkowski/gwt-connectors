@@ -6,6 +6,7 @@ import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
+import pl.tecna.gwt.connectors.client.elements.Section;
 import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.elements.ShapeConnectorStart;
 
@@ -19,8 +20,6 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 
 public class EndPointDragController extends PickupDragController {
   
-  final int VERTICAL = 0;
-  final int HORIZONTAL = 1;
   int sectionOrientation; // 0 - vertical; 1 - horizontal
   private Diagram diagram;
   private int boundaryOffsetX;
@@ -74,13 +73,13 @@ public class EndPointDragController extends PickupDragController {
         .findSectionWithThisEndPoint((EndPoint) context.draggable).isHorizontal())))
         || ((((EndPoint) context.draggable).connector.findSectionWithThisStartPoint((EndPoint) context.draggable) != null) && ((((EndPoint) context.draggable).connector
             .findSectionWithThisStartPoint((EndPoint) context.draggable).isHorizontal())))) {
-      sectionOrientation = HORIZONTAL;
+      sectionOrientation = Section.HORIZONTAL;
     }
     if (((((EndPoint) context.draggable).connector.findSectionWithThisEndPoint((EndPoint) context.draggable) != null) && ((((EndPoint) context.draggable).connector
         .findSectionWithThisEndPoint((EndPoint) context.draggable).isVertical())))
         || ((((EndPoint) context.draggable).connector.findSectionWithThisStartPoint((EndPoint) context.draggable) != null) && ((((EndPoint) context.draggable).connector
             .findSectionWithThisStartPoint((EndPoint) context.draggable).isVertical())))) {
-      sectionOrientation = VERTICAL;
+      sectionOrientation = Section.VERTICAL;
     }
     super.dragStart();
   }
@@ -122,9 +121,9 @@ public class EndPointDragController extends PickupDragController {
       if (diagram.ctrlPressed) {
         fixConnectorPath(draggedEP);
       } else {
-        if (sectionOrientation == VERTICAL) {
+        if (sectionOrientation == Section.VERTICAL) {
           draggedEP.updateOpositeEndPointOfVerticalSection();
-        } else if (sectionOrientation == HORIZONTAL) {
+        } else if (sectionOrientation == Section.HORIZONTAL) {
           draggedEP.updateOpositeEndPointOfHorizontalSection();
         }
       }

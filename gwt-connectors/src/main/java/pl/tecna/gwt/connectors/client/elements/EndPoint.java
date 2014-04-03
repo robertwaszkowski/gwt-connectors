@@ -175,4 +175,33 @@ public class EndPoint extends Point {
     }
   }
   
+  public boolean isStart() {
+    if (connector != null) {
+      if (connector.startEndPoint == this) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public boolean isEnd() {
+    if (connector != null) {
+      if (connector.endEndPoint == this) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public Point findNeighboringEndPoint() {
+    for (Section section : connector.sections) {
+      if (section.startPoint == this) { 
+        return section.endPoint;
+      } else if (section.endPoint == this) { 
+        return section.startPoint;
+      }
+    }
+    return null;
+  }
+  
 }

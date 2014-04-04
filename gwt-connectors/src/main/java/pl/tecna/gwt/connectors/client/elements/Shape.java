@@ -402,10 +402,6 @@ public class Shape extends FocusPanel implements Element {
     cp = new ConnectionPoint(ConnectionPoint.DIRECTION_LEFT, 11, connectedWidget);
     connectionPoints.add(cp);
 
-    for (ConnectionPoint connectionPoint : connectionPoints) {
-      connectionPoint.showOnDiagram(diagram);
-    }
-
     calculateRectangleCPPositions(connectionPoints, connectionPointsPanel);
     
     addConnectionPoints(connectionPoints, connectionPointsPanel);
@@ -464,10 +460,6 @@ public class Shape extends FocusPanel implements Element {
     cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
     connectionPoints.add(cp);
 
-    for (ConnectionPoint connectionPoint : connectionPoints) {
-      connectionPoint.showOnDiagram(diagram);
-    }
-
     calculateOvalCPPositions(connectionPoints, connectionPointsPanel);
     
     addConnectionPoints(connectionPoints, connectionPointsPanel);
@@ -517,10 +509,6 @@ public class Shape extends FocusPanel implements Element {
     cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
     connectionPoints.add(cp);
 
-    for (ConnectionPoint connectionPoint : connectionPoints) {
-      connectionPoint.showOnDiagram(diagram);
-    }
-
     calculateDiamondShapeCP(connectionPoints, connectionPointsPanel);
     
     addConnectionPoints(connectionPoints, connectionPointsPanel);
@@ -561,6 +549,7 @@ public class Shape extends FocusPanel implements Element {
   private void addConnectionPoints(List<ConnectionPoint> connectionPoints, AbsolutePanel connectionPointsPanel) {
     for (ConnectionPoint cp : connectionPoints) {
       connectionPointsPanel.add(cp, cp.positionOnCPPanel.getLeft(), cp.positionOnCPPanel.getTop());
+      cp.showOnDiagram(diagram);
     }
   }
   

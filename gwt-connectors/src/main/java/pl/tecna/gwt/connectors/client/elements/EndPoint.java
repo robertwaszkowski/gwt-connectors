@@ -7,6 +7,7 @@ import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
+import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -168,8 +169,9 @@ public class EndPoint extends Point {
   
   public void moveLinkedShape(Integer offsetLeft, Integer offsetTop) {
     if (linkedShape != null && linkedShape.isAttached()) {
-      linkedShape.left = linkedShape.diagram.boundaryPanel.getWidgetLeft(linkedShape) + offsetLeft;
-      linkedShape.top = linkedShape.diagram.boundaryPanel.getWidgetTop(linkedShape) + offsetTop;
+      WidgetLocation linkedShapeLocation = new WidgetLocation(linkedShape, linkedShape.diagram.boundaryPanel);
+      linkedShape.left = linkedShapeLocation.getLeft() + offsetLeft;
+      linkedShape.top = linkedShapeLocation.getTop() + offsetTop;
       linkedShape.diagram.boundaryPanel.setWidgetPosition(linkedShape, linkedShape.left, linkedShape.top);
       linkedShape.updateConnectors();
     }

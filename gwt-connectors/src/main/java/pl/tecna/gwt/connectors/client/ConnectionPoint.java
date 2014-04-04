@@ -9,6 +9,7 @@ import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
+import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -32,6 +33,7 @@ public class ConnectionPoint extends FocusPanel {
 	public int index;
 	public Widget parentWidget;
 	public Point positionOnCPPanel;
+	public Diagram diagram;
 	
 	public static final int ALL    =  0;
 	public static final int DIRECTION_TOP    =  1;
@@ -105,8 +107,8 @@ public class ConnectionPoint extends FocusPanel {
 	 * 
 	 * @author robert.waszkowski@gmail.com
 	 */
-	public void showOnDiagram(final Diagram diagram) {
-		
+	public void showOnDiagram(Diagram diagram) {
+		this.diagram = diagram;
 	}
 
 	/**
@@ -162,10 +164,10 @@ public class ConnectionPoint extends FocusPanel {
 	 * @return distance from left side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
 	 */
 	public int getCenterLeft() {
+	  WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
 		int left;
 		if (this.getParentShape().diagram != null) {
-			left = (this.getAbsoluteLeft() - this.getParentShape().diagram.boundaryPanel.getAbsoluteLeft() + 
-			    (int)Math.round((double)((double)this.getOffsetWidth() / (double)2)));
+		  left = (int) Math.round(currentLocation.getLeft() + ((double) getOffsetWidth() / 2.0));
 			if (connectionDirection == DIRECTION_TOP || connectionDirection == DIRECTION_BOTTOM) {
 			  left -= 2;
 			} else 
@@ -184,10 +186,10 @@ public class ConnectionPoint extends FocusPanel {
 	 * @return distance from top side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
 	 */
 	public int getCenterTop() {
+    WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
 		int top;
 		if (this.getParentShape().diagram != null) {
-			top = (this.getAbsoluteTop() - this.getParentShape().diagram.boundaryPanel.getAbsoluteTop() + 
-			    (int)Math.round((double)((double)this.getOffsetHeight() / (double)2)));
+		  top = (int) Math.round(currentLocation.getTop() + ((double) getOffsetHeight() / 2.0));
 			if (connectionDirection == DIRECTION_TOP || connectionDirection == DIRECTION_LEFT || connectionDirection == DIRECTION_RIGHT) {
 			  top -= 2;
 			} else if (connectionDirection == DIRECTION_BOTTOM) {

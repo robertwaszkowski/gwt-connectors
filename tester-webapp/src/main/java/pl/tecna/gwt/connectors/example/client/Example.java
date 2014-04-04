@@ -117,13 +117,13 @@ public class Example implements EntryPoint {
 		shapeForLabel.enableConnectionCreate(true);
 		
 		label.addDoubleClickHandler(new DoubleClickHandler() {
-          
-          @Override
-          public void onDoubleClick(DoubleClickEvent event) {
-            shapeForLabel.cpShapeType = CPShapeType.RECTANGLE;
-            shapeForLabel.changeConnectedWidget(labelChanged);
-          }
-        });
+
+		  @Override
+		  public void onDoubleClick(DoubleClickEvent event) {
+		    shapeForLabel.cpShapeType = CPShapeType.RECTANGLE;
+		    shapeForLabel.changeConnectedWidget(labelChanged);
+		  }
+		});
 
 		labelChanged.addDoubleClickHandler(new DoubleClickHandler() {
 

@@ -44,28 +44,38 @@ public class ShapeConnectorStart extends EndPoint {
 
   private void addHandlers() {
 
-    MouseOverHandler mouseOverHandler = new MouseOverHandler() {
+    if (outHandlerReg == null) {
+      
+      MouseOutHandler mouseOutHandler = new MouseOutHandler() {
 
-      public void onMouseOver(MouseOverEvent event) {
-        endPointsTimer.cancel();
-      }
-    };
+        public void onMouseOut(MouseOutEvent event) {
+          endPointsTimer.schedule(Shape.END_POINTS_VIS_DELAY);
+        }
+      };
 
-    MouseOutHandler mouseOutHandler = new MouseOutHandler() {
+      outHandlerReg = addMouseOutHandler(mouseOutHandler);
+    }
+    
+    if (overHandlerReg == null) {
+      
+      MouseOverHandler mouseOverHandler = new MouseOverHandler() {
 
-      public void onMouseOut(MouseOutEvent event) {
-        endPointsTimer.schedule(Shape.END_POINTS_VIS_DELAY);
-      }
-    };
-
-    outHandlerReg = addMouseOutHandler(mouseOutHandler);
-    overHandlerReg = addMouseOverHandler(mouseOverHandler);
+        public void onMouseOver(MouseOverEvent event) {
+          endPointsTimer.cancel();
+        }
+      };
+      
+      overHandlerReg = addMouseOverHandler(mouseOverHandler);
+    }
 
   }
 
   public void removeHandlers() {
     outHandlerReg.removeHandler();
     overHandlerReg.removeHandler();
+    
+    outHandlerReg = null;
+    overHandlerReg = null;
   }
 
   public ConnectionPoint getOverlapingCP() {

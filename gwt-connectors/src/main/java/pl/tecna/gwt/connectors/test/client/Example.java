@@ -140,6 +140,7 @@ public class Example implements EntryPoint {
           boundaryPanel.add(diamond, 10700, 10400);
         }
         shapeForTask.changeConnectedWidget(diamond, CPShapeType.DIAMOND);
+        shapeForTask.enableConnectionCreate(true);
       }
     });
 
@@ -148,6 +149,7 @@ public class Example implements EntryPoint {
       @Override
       public void onDoubleClick(DoubleClickEvent event) {
         shapeForTask.changeConnectedWidget(oval, CPShapeType.OVAL);
+        shapeForTask.enableConnectionCreate(false);
       }
     });
 
@@ -156,6 +158,7 @@ public class Example implements EntryPoint {
       @Override
       public void onDoubleClick(DoubleClickEvent event) {
         shapeForTask.changeConnectedWidget(task, CPShapeType.RECTANGLE);
+        shapeForTask.enableConnectionCreate(false);
       }
     });
 

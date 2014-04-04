@@ -880,33 +880,40 @@ public class Shape extends FocusPanel implements Element {
    * @param enable
    */
   public void enableConnectionCreate(boolean enable) {
+    
     if (enable) {
-      endPointsShowTimer = new Timer() {
+      if (showConnStartMouseHandler == null && hideConnStartMouseHandler == null) {
+        if (endPointsShowTimer == null) {
+          endPointsShowTimer = new Timer() {
 
-        @Override
-        public void run() {
-          hideShapeConnectorStartPionts();
+            @Override
+            public void run() {
+              hideShapeConnectorStartPionts();
+            }
+          };
         }
-      };
 
-      MouseOverHandler showConnStartMouseOver = new MouseOverHandler() {
+        MouseOverHandler showConnStartMouseOver = new MouseOverHandler() {
 
-        public void onMouseOver(MouseOverEvent event) {
-          showShapeConnectorStartPoints();
-        }
-      };
+          public void onMouseOver(MouseOverEvent event) {
+            showShapeConnectorStartPoints();
+          }
+        };
 
-      MouseOutHandler hideConnStartMouseOut = new MouseOutHandler() {
+        MouseOutHandler hideConnStartMouseOut = new MouseOutHandler() {
 
-        public void onMouseOut(MouseOutEvent event) {
-          endPointsShowTimer.schedule(END_POINTS_VIS_DELAY);
-        }
-      };
+          public void onMouseOut(MouseOutEvent event) {
+            endPointsShowTimer.schedule(END_POINTS_VIS_DELAY);
+          }
+        };
 
-      showConnStartMouseHandler = this.addMouseOverHandler(showConnStartMouseOver);
-      hideConnStartMouseHandler = this.addMouseOutHandler(hideConnStartMouseOut);
+        showConnStartMouseHandler = this.addMouseOverHandler(showConnStartMouseOver);
+        hideConnStartMouseHandler = this.addMouseOutHandler(hideConnStartMouseOut);
+      }
     } else {
-
+      if (endPointsShowTimer != null) {
+        endPointsShowTimer.cancel();
+      }
       if (showConnStartMouseHandler != null) {
         showConnStartMouseHandler.removeHandler();
       }
@@ -914,8 +921,13 @@ public class Shape extends FocusPanel implements Element {
         hideConnStartMouseHandler.removeHandler();
       }
       for (EndPoint ep : endPoints) {
+        if (ep instanceof ShapeConnectorStart) {
+          ((ShapeConnectorStart) ep).removeHandlers();
+        }
         ep.removeFromParent();
       }
+      showConnStartMouseHandler = null;
+      hideConnStartMouseHandler = null;
     }
   }
 

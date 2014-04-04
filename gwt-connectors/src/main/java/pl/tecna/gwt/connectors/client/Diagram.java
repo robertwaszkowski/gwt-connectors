@@ -433,7 +433,7 @@ public class Diagram {
     modeListener = listener;
   }
 
-  private void deleteSelectedElements() {
+  protected void deleteSelectedElements() {
     List<Object> removedElList = new ArrayList<Object>();
     for (Widget widget : shapeDragController.getSelectedWidgets()) {
       removedElList.add(widget);

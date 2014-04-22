@@ -47,10 +47,10 @@ public class EndPointDragController extends PickupDragController {
         ep.removeStyle();
         DOM.setStyleAttribute(ep.getElement(), "cursor", "crosshair");
         if (ep.connector == null) {
-          int startLeft = ep.getOverlapingCP().getCenterLeft();
-          int startTop = ep.getOverlapingCP().getCenterTop();
-          int endLeft = ep.getLeft();
-          int endTop = ep.getTop();
+          double startLeft = ep.getOverlapingCP().getCenterLeft();
+          double startTop = ep.getOverlapingCP().getCenterTop();
+          double endLeft = ep.getLeft();
+          double endTop = ep.getTop();
 
           ep.connector = diagram.createConnector(startLeft, startTop, endLeft, endTop, ep, ep.shape.connectorsStyle);
           ep.connector.initalizing = true;
@@ -89,8 +89,8 @@ public class EndPointDragController extends PickupDragController {
     EndPoint draggedEP = (EndPoint) context.draggable;
 
     draggedEP.connector.select();
-    int desiredLeft = getEndPointCenterLeft(draggedEP);
-    int desiredTop = getEndPointCenterTop(draggedEP);
+    double desiredLeft = getEndPointCenterLeft(draggedEP);
+    double desiredTop = getEndPointCenterTop(draggedEP);
     if (diagram.drawInitializingConnectorsInLine && draggedEP.connector.initalizing) {
       EndPoint connectorStartPoint = draggedEP.connector.startEndPoint;
       switch (connectorStartPoint.gluedConnectionPoint.connectionDirection) {
@@ -99,7 +99,7 @@ public class EndPointDragController extends PickupDragController {
           if (Math.abs(draggedEP.connector.startEndPoint.getTop() - 
               (context.desiredDraggableY - boundaryOffsetY)) < diagram.initialDragTolerance) {
             desiredTop = connectorStartPoint.getTop();
-            context.desiredDraggableY = (int) Math.round(desiredTop + boundaryOffsetY - EndPoint.SIZE / 2.0);
+            context.desiredDraggableY = (int) (desiredTop + boundaryOffsetY - EndPoint.SIZE / 2.0);
           }
         } break;
         case ConnectionPoint.DIRECTION_TOP:
@@ -107,7 +107,7 @@ public class EndPointDragController extends PickupDragController {
           if (Math.abs(draggedEP.connector.startEndPoint.getLeft() - 
               (context.desiredDraggableX - boundaryOffsetX)) < diagram.initialDragTolerance) {
             desiredLeft = connectorStartPoint.getLeft();
-            context.desiredDraggableX = (int) Math.round(desiredLeft + boundaryOffsetX - EndPoint.SIZE / 2.0);
+            context.desiredDraggableX = (int) (desiredLeft + boundaryOffsetX - EndPoint.SIZE / 2.0);
           }
         } break;
       }
@@ -158,14 +158,14 @@ public class EndPointDragController extends PickupDragController {
     conn.drawSections();
   }
 
-  private int getEndPointCenterLeft(EndPoint w) {
-    return (w.getAbsoluteLeft() - context.boundaryPanel.getAbsoluteLeft() + (int) Math.floor((double) ((double) w
-        .getOffsetWidth() / (double) 2)));
+  private double getEndPointCenterLeft(EndPoint w) {
+    return w.getAbsoluteLeft() - context.boundaryPanel.getAbsoluteLeft() + ((double) w
+        .getOffsetWidth() / (double) 2);
   }
 
-  private int getEndPointCenterTop(EndPoint w) {
-    return (w.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop() + (int) Math.floor((double) ((double) w
-        .getOffsetHeight() / (double) 2)));
+  private double getEndPointCenterTop(EndPoint w) {
+    return w.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop() + ((double) w
+        .getOffsetHeight() / (double) 2);
   }
 
 }

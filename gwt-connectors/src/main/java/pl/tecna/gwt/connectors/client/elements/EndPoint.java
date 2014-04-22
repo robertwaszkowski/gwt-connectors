@@ -30,6 +30,10 @@ public class EndPoint extends Point {
   // Defines size of connection point
   public static final int CP_MARGIN = 13;
 
+  public EndPoint(double left, double top) {
+    super(left, top);
+  }
+  
   /**
    * {@link Connector}s are ended with EndPoints. You can drag and drop EndPoint to change its
    * position. When EndPoint is dragging its Connector is redrawing.
@@ -37,7 +41,7 @@ public class EndPoint extends Point {
    * {@link EndPoint} is visible until the {@link Connector} is glued to {@link ConnectionPoint}.
    * EndPoints are represented by small circles.
    */
-  public EndPoint(Integer left, Integer top, Connector connector) {
+  public EndPoint(double left, double top, Connector connector) {
     super(left, top);
 
     this.connector = connector;
@@ -86,9 +90,8 @@ public class EndPoint extends Point {
 	 * 
 	 */
   public void update() {
-    ((AbsolutePanel) this.getParent()).setWidgetPosition(this, this.getLeft() - (this.getOffsetWidth() / 2), this
-        .getTop()
-        - (this.getOffsetHeight() / 2));
+    ((AbsolutePanel) this.getParent()).setWidgetPosition(this, (int) (this.getLeft() - this.getOffsetWidth() / 2.0), 
+        (int) (this.getTop() - this.getOffsetHeight() / 2.0));
 
   }
 
@@ -97,7 +100,7 @@ public class EndPoint extends Point {
    */
   public void showOnDiagram(Diagram diagram) {
     // Add EndPoint to given panel
-    diagram.boundaryPanel.add(this, this.getLeft() - CP_MARGIN / 2, this.getTop() - CP_MARGIN / 2);
+    diagram.boundaryPanel.add(this, (int) (this.getLeft() - CP_MARGIN / 2.0), (int) (this.getTop() - CP_MARGIN / 2.0));
 
     // Set EndPoint's cursor
     DOM.setStyleAttribute(this.getElement(), "cursor", "crosshair");
@@ -162,17 +165,17 @@ public class EndPoint extends Point {
   }
   
   @Override
-  public void setPosition(Integer newLeft, Integer newTop) {
+  public void setPosition(double newLeft, double newTop) {
     moveLinkedShape(newLeft - this.left, newTop - this.top);
     super.setPosition(newLeft, newTop);
   }
   
-  public void moveLinkedShape(Integer offsetLeft, Integer offsetTop) {
+  public void moveLinkedShape(double offsetLeft, double offsetTop) {
     if (linkedShape != null && linkedShape.isAttached()) {
       WidgetLocation linkedShapeLocation = new WidgetLocation(linkedShape, linkedShape.diagram.boundaryPanel);
       linkedShape.left = linkedShapeLocation.getLeft() + offsetLeft;
       linkedShape.top = linkedShapeLocation.getTop() + offsetTop;
-      linkedShape.diagram.boundaryPanel.setWidgetPosition(linkedShape, linkedShape.left, linkedShape.top);
+      linkedShape.diagram.boundaryPanel.setWidgetPosition(linkedShape, (int) linkedShape.left, (int) linkedShape.top);
       linkedShape.updateConnectors();
     }
   }

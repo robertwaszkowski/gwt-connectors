@@ -61,7 +61,7 @@ public class Connector implements Element {
    * @param endLeft a left position of the point where the Connector ends
    * @param endTop a top position of the point where the Connector ends
    */
-  public Connector(int startLeft, int startTop, int endLeft, int endTop) {
+  public Connector(double startLeft, double startTop, double endLeft, double endTop) {
     super();
     init(startLeft, startTop, endLeft, endTop, null, null, new ArrayList<CornerPoint>());
   }
@@ -76,7 +76,7 @@ public class Connector implements Element {
    * @param endTop a top position of the point where the Connector ends
    * @param cornerPoints a list of corner points of the Connector
    */
-  public Connector(int startLeft, int startTop, int endLeft, int endTop, ArrayList<CornerPoint> cornerPoints) {
+  public Connector(double startLeft, double startTop, double endLeft, double endTop, ArrayList<CornerPoint> cornerPoints) {
 
     super();
     init(startLeft, startTop, endLeft, endTop, null, null, cornerPoints);
@@ -94,7 +94,7 @@ public class Connector implements Element {
    * @param startDecoration a way the connector is decorated at its start
    * @param endDecoration a way the connector is decorated at its end
    */
-  public Connector(int startLeft, int startTop, int endLeft, int endTop, ArrayList<CornerPoint> cornerPoints,
+  public Connector(double startLeft, double startTop, double endLeft, double endTop, ArrayList<CornerPoint> cornerPoints,
       SectionDecoration startDecoration, SectionDecoration endDecoration) {
 
     super();
@@ -112,14 +112,14 @@ public class Connector implements Element {
    * @param startDecoration a way the connector is decorated at its start
    * @param endDecoration a way the connector is decorated at its end
    */
-  public Connector(int startLeft, int startTop, int endLeft, int endTop, SectionDecoration startDecoration,
+  public Connector(double startLeft, double startTop, double endLeft, double endTop, SectionDecoration startDecoration,
       SectionDecoration endDecoration) {
 
     super();
     init(startLeft, startTop, endLeft, endTop, startDecoration, endDecoration, new ArrayList<CornerPoint>());
   }
 
-  public Connector(int startLeft, int startTop, int endLeft, int endTop, SectionDecoration startDecoration,
+  public Connector(double startLeft, double startTop, double endLeft, double endTop, SectionDecoration startDecoration,
       SectionDecoration endDecoration, EndPoint endEndPoint, Diagram diagram, ConnectorStyle style) {
 
     this.style = style;
@@ -167,7 +167,7 @@ public class Connector implements Element {
 
   }
 
-  private void init(int startLeft, int startTop, int endLeft, int endTop, SectionDecoration startDecoration,
+  private void init(double startLeft, double startTop, double endLeft, double endTop, SectionDecoration startDecoration,
       SectionDecoration endDecoration, ArrayList<CornerPoint> cornerPoints) {
 
     this.startEndPoint = new EndPoint(startLeft, startTop, this);
@@ -241,8 +241,8 @@ public class Connector implements Element {
     startEndPoint.showOnDiagram(diagram);
     endEndPoint.showOnDiagram(diagram);
 
-    int connectorX = diagram.boundaryPanel.getWidgetLeft(startEndPoint) - diagram.boundaryPanel.getAbsoluteLeft();
-    int connectorY = diagram.boundaryPanel.getWidgetTop(startEndPoint) - diagram.boundaryPanel.getAbsoluteTop();
+    double connectorX = diagram.boundaryPanel.getWidgetLeft(startEndPoint) - diagram.boundaryPanel.getAbsoluteLeft();
+    double connectorY = diagram.boundaryPanel.getWidgetTop(startEndPoint) - diagram.boundaryPanel.getAbsoluteTop();
     diagram.onDiagramAdd(new DiagramAddEvent(this, connectorX, connectorY));
   }
 
@@ -292,7 +292,7 @@ public class Connector implements Element {
     endEndPoint.clear();
 
     if (fireEvent) {
-      diagram.onDiagramRemove(new DiagramRemoveEvent(this, null, null));
+      diagram.onDiagramRemove(new DiagramRemoveEvent(this, -1, -1));
     }
   }
 
@@ -307,8 +307,8 @@ public class Connector implements Element {
     
     cornerPoints.clear();
 
-    int distanceX = startEndPoint.getLeft() - endEndPoint.getLeft();
-    int distanceY = startEndPoint.getTop() - endEndPoint.getTop();
+    double distanceX = startEndPoint.getLeft() - endEndPoint.getLeft();
+    double distanceY = startEndPoint.getTop() - endEndPoint.getTop();
     
     int firstSectionDirection = -1;
     if (startEndPoint.isGluedToConnectionPoint()) {
@@ -321,7 +321,7 @@ public class Connector implements Element {
         firstSectionDirection == ConnectionPoint.DIRECTION_BOTTOM || (
         firstSectionDirection == -1 && Math.abs(distanceX) < Math.abs(distanceY))) {
       // the connection contains two vertical sections and one horizontal section
-      cp1.setPosition(startEndPoint.getLeft(), startEndPoint.getTop() - (distanceY / 2));
+      cp1.setPosition(startEndPoint.getLeft(), startEndPoint.getTop() - (distanceY / 2.0));
       cp2.setPosition(endEndPoint.getLeft(), cp1.getTop());
     } else {
       // the connection contains two horizontal sections and one vertical section
@@ -429,8 +429,8 @@ public class Connector implements Element {
    */
   public void disconnectEnd() {
     if (endEndPoint.isGluedToConnectionPoint()) {
-      int left = endEndPoint.getLeft();
-      int top = endEndPoint.getTop();
+      double left = endEndPoint.getLeft();
+      double top = endEndPoint.getTop();
       endEndPoint.unglueFromConnectionPoint();
       endEndPoint = new EndPoint(left, top, this);
       endEndPoint.showOnDiagram(diagram);
@@ -449,8 +449,8 @@ public class Connector implements Element {
    */
   public void disconnectStart() {
     if (startEndPoint.isGluedToConnectionPoint()) {
-      int left = startEndPoint.getLeft();
-      int top = startEndPoint.getTop();
+      double left = startEndPoint.getLeft();
+      double top = startEndPoint.getTop();
       startEndPoint.unglueFromConnectionPoint();
       startEndPoint = new EndPoint(left, top, this);
       startEndPoint.showOnDiagram(diagram);
@@ -885,11 +885,11 @@ public class Connector implements Element {
     List<CornerPoint> toRemove = new ArrayList<CornerPoint>();
     // fix corners that are in one exact line
     for (int i = 1; i < corners.size() - 1; i++) {
-      if (corners.get(i).getLeft().intValue() == corners.get(i + 1).getLeft()
-          && corners.get(i).getLeft().intValue() == corners.get(i - 1).getLeft()) {
+      if (corners.get(i).getLeft() == corners.get(i + 1).getLeft()
+          && corners.get(i).getLeft() == corners.get(i - 1).getLeft()) {
         toRemove.add(corners.get(i));
-      } else if (corners.get(i).getTop().intValue() == corners.get(i + 1).getTop()
-          && corners.get(i).getTop().intValue() == corners.get(i - 1).getTop()) {
+      } else if (corners.get(i).getTop() == corners.get(i + 1).getTop()
+          && corners.get(i).getTop() == corners.get(i - 1).getTop()) {
         toRemove.add(corners.get(i));
       }
     }
@@ -926,11 +926,11 @@ public class Connector implements Element {
             toRemove.add(corners.get(i - 1));
             toRemove.add(corners.get(i));
 
-            if (toRemove.get(0).getLeft().compareTo(toRemove.get(1).getLeft()) == 0) {
+            if (Double.compare(toRemove.get(0).getLeft(), toRemove.get(1).getLeft()) == 0) {
               // removed corners points were vertically matched
-              toChange.setTopPosition(nextToChanged.getTop().intValue());
+              toChange.setTopPosition(nextToChanged.getTop());
             } else {
-              toChange.setLeftPosition(nextToChanged.getLeft().intValue());
+              toChange.setLeftPosition(nextToChanged.getLeft());
             }
 
             findShortSection = false;
@@ -1003,10 +1003,10 @@ public class Connector implements Element {
       return;
     }
 
-    int shapeLeft = shape.getRelativeShapeLeft();
-    int shapeTop = shape.getRelativeShapeTop();
-    int shapeRight = shapeLeft + shape.getOffsetWidth();
-    int shapeBottom = shapeTop + shape.getOffsetHeight();
+    double shapeLeft = shape.getRelativeShapeLeft();
+    double shapeTop = shape.getRelativeShapeTop();
+    double shapeRight = shapeLeft + shape.getOffsetWidth();
+    double shapeBottom = shapeTop + shape.getOffsetHeight();
 
     Section first = null;
     Section last = null;
@@ -1094,8 +1094,8 @@ public class Connector implements Element {
       direction = 1;
     } else {
       if (first.isHorizontal() && last.isHorizontal()) {
-        int topDistance = first.endPoint.getTop() - shapeTop + last.endPoint.getTop() - shapeTop;
-        int bottomDistance = shapeBottom - first.endPoint.getTop() + shapeBottom - last.endPoint.getTop();
+        double topDistance = first.endPoint.getTop() - shapeTop + last.endPoint.getTop() - shapeTop;
+        double bottomDistance = shapeBottom - first.endPoint.getTop() + shapeBottom - last.endPoint.getTop();
         if (shapeEnterDirection == 0) {
           if (topDistance >= bottomDistance) {
             direction = 1;
@@ -1110,8 +1110,8 @@ public class Connector implements Element {
           }
         }
       } else {
-        int leftDistance = first.endPoint.getLeft() - shapeLeft + last.endPoint.getLeft() - shapeLeft;
-        int rightDistance = shapeRight - first.endPoint.getLeft() + shapeRight - last.endPoint.getLeft();
+        double leftDistance = first.endPoint.getLeft() - shapeLeft + last.endPoint.getLeft() - shapeLeft;
+        double rightDistance = shapeRight - first.endPoint.getLeft() + shapeRight - last.endPoint.getLeft();
         if (shapeEnterDirection == 1) {
           if (leftDistance >= rightDistance) {
             direction = 0;
@@ -1134,32 +1134,32 @@ public class Connector implements Element {
 
     switch (shapeEnterDirection) {
       case 0:
-        startCorner = new CornerPoint(shapeLeft, first.endPoint.getTop().intValue());
+        startCorner = new CornerPoint(shapeLeft, first.endPoint.getTop());
         break;
       case 1:
-        startCorner = new CornerPoint(first.endPoint.getLeft().intValue(), shapeTop);
+        startCorner = new CornerPoint(first.endPoint.getLeft(), shapeTop);
         break;
       case 2:
-        startCorner = new CornerPoint(shapeRight, first.endPoint.getTop().intValue());
+        startCorner = new CornerPoint(shapeRight, first.endPoint.getTop());
         break;
       case 3:
-        startCorner = new CornerPoint(first.endPoint.getLeft().intValue(), shapeBottom);
+        startCorner = new CornerPoint(first.endPoint.getLeft(), shapeBottom);
         break;
     }
 
     // Define leave connection point
     switch (shapeLeaveDirection) {
       case 0:
-        endCorner = new CornerPoint(shapeLeft, last.endPoint.getTop().intValue());
+        endCorner = new CornerPoint(shapeLeft, last.endPoint.getTop());
         break;
       case 1:
-        endCorner = new CornerPoint(last.endPoint.getLeft().intValue(), shapeTop);
+        endCorner = new CornerPoint(last.endPoint.getLeft(), shapeTop);
         break;
       case 2:
-        endCorner = new CornerPoint(shapeRight, last.endPoint.getTop().intValue());
+        endCorner = new CornerPoint(shapeRight, last.endPoint.getTop());
         break;
       case 3:
-        endCorner = new CornerPoint(last.endPoint.getLeft().intValue(), shapeBottom);
+        endCorner = new CornerPoint(last.endPoint.getLeft(), shapeBottom);
         break;
     }
 
@@ -1230,9 +1230,9 @@ public class Connector implements Element {
     List<CornerPoint> toRemove = new ArrayList<CornerPoint>();
 
     CornerPoint startEndPointCorner =
-        new CornerPoint(this.startEndPoint.getLeft().intValue(), this.startEndPoint.getTop().intValue());
+        new CornerPoint(this.startEndPoint.getLeft(), this.startEndPoint.getTop());
     CornerPoint endEndPointCorner =
-        new CornerPoint(this.endEndPoint.getLeft().intValue(), this.endEndPoint.getTop().intValue());
+        new CornerPoint(this.endEndPoint.getLeft(), this.endEndPoint.getTop());
 
     corners.add(0, startEndPointCorner);
     corners.add(endEndPointCorner);
@@ -1283,9 +1283,8 @@ public class Connector implements Element {
     savedSectionsData = new ArrayList<SectionData>();
 
     for (Section section : sections) {
-      savedSectionsData.add(new SectionData(section.startPoint.getLeft().intValue(), section.startPoint.getTop()
-          .intValue(), section.endPoint.getLeft().intValue(), section.endPoint.getTop().intValue(), section
-          .isVertical()));
+      savedSectionsData.add(new SectionData(section.startPoint.getLeft(), section.startPoint.getTop(), 
+          section.endPoint.getLeft(), section.endPoint.getTop(), section.isVertical()));
     }
   }
 
@@ -1295,7 +1294,7 @@ public class Connector implements Element {
    * @param xOffset
    * @param yOffset
    */
-  public void moveOffsetFromStartPos(int xOffset, int yOffset) {
+  public void moveOffsetFromStartPos(double xOffset, double yOffset) {
     xOffset = xOffset - diagram.boundaryPanel.getAbsoluteLeft();
     yOffset = yOffset - diagram.boundaryPanel.getAbsoluteTop();
 
@@ -1309,9 +1308,8 @@ public class Connector implements Element {
         sectionTopLeft = savedSectionsData.get(i).endPoint;
       }
 
-      diagram.boundaryPanel.setWidgetPosition(sections.get(i), sectionTopLeft.getLeft() + xOffset, sectionTopLeft
-          .getTop()
-          + yOffset);
+      diagram.boundaryPanel.setWidgetPosition(sections.get(i), (int) (sectionTopLeft.getLeft() + xOffset), 
+          (int) (sectionTopLeft.getTop() + yOffset));
       sections.get(i).startPoint.setPosition(savedSectionsData.get(i).startPoint.getLeft() + xOffset, 
           savedSectionsData.get(i).startPoint.getTop() + yOffset);
       sections.get(i).endPoint.setPosition(savedSectionsData.get(i).endPoint.getLeft() + xOffset, 

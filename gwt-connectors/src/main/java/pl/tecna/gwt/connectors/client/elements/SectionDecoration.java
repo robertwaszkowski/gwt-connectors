@@ -130,7 +130,7 @@ public class SectionDecoration extends FocusPanel {
     }
   }
 
-  public void update(DecorationDirection direction, int left, int top) {
+  public void update(DecorationDirection direction, double left, double top) {
     // Remember direction
     this.direction = direction;
 
@@ -140,34 +140,34 @@ public class SectionDecoration extends FocusPanel {
     // Set element position
     switch (direction) {
       case VERTICAL_UP:
-        left = left - (this.getWidget().getOffsetWidth() / 2) + 1;
+        left = left - (this.getWidget().getOffsetWidth() / 2.0) + 1.0;
         if (center) {
-          top -= this.getWidget().getOffsetHeight() / 2;
+          top -= this.getWidget().getOffsetHeight() / 2.0;
         }
         break;
       case VERTICAL_DOWN:
-        left = left - (this.getWidget().getOffsetWidth() / 2) + 1;
-        top = top - this.getWidget().getOffsetHeight() + 2;
+        left = left - (this.getWidget().getOffsetWidth() / 2.0) + 1.0;
+        top = top - this.getWidget().getOffsetHeight() + 2.0;
         if (center) {
-          top += this.getWidget().getOffsetHeight() / 2;
+          top += this.getWidget().getOffsetHeight() / 2.0;
         }
         break;
       case HORIZONTAL_LEFT:
-        top = top - (this.getWidget().getOffsetHeight() / 2) + 1;
+        top = top - (this.getWidget().getOffsetHeight() / 2.0) + 1.0;
         // left = left;
         if (center) {
-          left -= this.getWidget().getOffsetWidth() / 2;
+          left -= this.getWidget().getOffsetWidth() / 2.0;
         }
         break;
       case HORIZONTAL_RIGHT:
-        top = top - (this.getWidget().getOffsetHeight() / 2) + 1;
+        top = top - (this.getWidget().getOffsetHeight() / 2.0) + 1.0;
         left = left - this.getWidget().getOffsetWidth();
         if (center) {
-          left += this.getWidget().getOffsetWidth() / 2;
+          left += this.getWidget().getOffsetWidth() / 2.0;
         }
         break;
     }
-    ((AbsolutePanel) this.getParent()).setWidgetPosition(this, left, top);
+    ((AbsolutePanel) this.getParent()).setWidgetPosition(this, (int) left, (int) top);
   }
 
   private void setDecoration(boolean sel, DecorationDirection direction) {
@@ -179,17 +179,17 @@ public class SectionDecoration extends FocusPanel {
     }
   }
 
-  public void showOnDiagram(AbsolutePanel panel, DecorationDirection direction, int left, int top) {
+  public void showOnDiagram(AbsolutePanel panel, DecorationDirection direction, double left, double top) {
     // Add decoration to given panel
     if (this.isAttached()) {
       if (this.getParent().equals(panel)) {
-        panel.setWidgetPosition(this, left, top);
+        panel.setWidgetPosition(this, (int)left, (int)top);
       } else {
         this.removeFromParent();
-        panel.add(this, left, top);
+        panel.add(this, (int)left, (int)top);
       }
     } else {
-      panel.add(this, left, top);
+      panel.add(this, (int)left, (int)top);
     }
     // Update decoration's position and picture
     update(direction, left, top);

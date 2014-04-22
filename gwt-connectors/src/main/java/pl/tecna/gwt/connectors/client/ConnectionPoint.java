@@ -41,7 +41,7 @@ public class ConnectionPoint extends FocusPanel {
 	public static final int DIRECTION_BOTTOM =  3;
 	public static final int DIRECTION_LEFT   =  4;
 	
-	public static final int CPSize = 13;
+	public static final double CPSize = 13;
 	
 	/**
 	 * Any element which should be connected by {@link Connector}
@@ -163,11 +163,11 @@ public class ConnectionPoint extends FocusPanel {
 	 * Useful to define {@link Connector} end point left coordinate
 	 * @return distance from left side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
 	 */
-	public int getCenterLeft() {
+	public double getCenterLeft() {
 	  WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-		int left;
+		double left;
 		if (this.getParentShape().diagram != null) {
-		  left = (int) Math.round(currentLocation.getLeft() + ((double) getOffsetWidth() / 2.0));
+		  left = (double) currentLocation.getLeft() + (double) getOffsetWidth() / 2.0;
 			if (connectionDirection == DIRECTION_TOP || connectionDirection == DIRECTION_BOTTOM) {
 			  left -= 2;
 			} else 
@@ -185,11 +185,11 @@ public class ConnectionPoint extends FocusPanel {
 	 * Useful to define {@link Connector} end point top coordinate
 	 * @return distance from top side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
 	 */
-	public int getCenterTop() {
+	public double getCenterTop() {
     WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-		int top;
+		double top;
 		if (this.getParentShape().diagram != null) {
-		  top = (int) Math.round(currentLocation.getTop() + ((double) getOffsetHeight() / 2.0));
+		  top = (double) currentLocation.getTop() + (double) getOffsetHeight() / 2.0;
 			if (connectionDirection == DIRECTION_TOP || connectionDirection == DIRECTION_LEFT || connectionDirection == DIRECTION_RIGHT) {
 			  top -= 2;
 			} else if (connectionDirection == DIRECTION_BOTTOM) {

@@ -11,16 +11,16 @@ public class DiagramRemoveEvent implements ConnectorEvent {
   private Widget removedEl;
   private Connector removedConn;
   private List<Object> removedList;
-  private Integer top;
-  private Integer left;
+  private double top;
+  private double left;
 
-  public DiagramRemoveEvent(Widget removedEl, Integer top, Integer left) {
+  public DiagramRemoveEvent(Widget removedEl, double top, double left) {
     this.removedEl = removedEl;
     this.top = top;
     this.left = left;
   }
 
-  public DiagramRemoveEvent(Connector removeConn, Integer top, Integer left) {
+  public DiagramRemoveEvent(Connector removeConn, double top, double left) {
     this.removedConn = removeConn;
     this.top = top;
     this.left = left;
@@ -38,11 +38,11 @@ public class DiagramRemoveEvent implements ConnectorEvent {
     return removedConn;
   }
 
-  public Integer getTop() {
+  public double getTop() {
     return top;
   }
 
-  public Integer getLeft() {
+  public double getLeft() {
     return left;
   }
 

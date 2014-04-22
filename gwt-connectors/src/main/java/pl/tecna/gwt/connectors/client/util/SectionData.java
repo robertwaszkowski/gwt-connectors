@@ -8,7 +8,7 @@ public class SectionData {
   public Point endPoint;
   public boolean vertical;
 
-  public SectionData(int startX, int startY, int endX, int endY, boolean vertical) {
+  public SectionData(double startX, double startY, double endX, double endY, boolean vertical) {
 
     this.startPoint = new Point(startX, startY);
     this.endPoint = new Point(endX, endY);

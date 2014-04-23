@@ -15,6 +15,7 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
+import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -584,7 +585,7 @@ public class Shape extends FocusPanel implements Element {
    */
   public double getRelativeShapeLeft() {
     if (this.diagram != null) {
-      return this.getAbsoluteLeft() - this.diagram.boundaryPanel.getAbsoluteLeft();
+      return new WidgetLocation(this, diagram.boundaryPanel).getLeft();
     } else {
       LOG.severe("getRelativeShapeLeft -> -1");
       return -1;
@@ -598,7 +599,7 @@ public class Shape extends FocusPanel implements Element {
    */
   public double getRelativeShapeTop() {
     if (this.diagram != null) {
-      return this.getAbsoluteTop() - this.diagram.boundaryPanel.getAbsoluteTop();
+      return new WidgetLocation(this, diagram.boundaryPanel).getTop();
     } else {
       LOG.severe("getRelativeShapeLeft -> -1");
       return -1;
@@ -846,16 +847,12 @@ public class Shape extends FocusPanel implements Element {
     startPointsVisible = true;
     endPointsShowTimer.cancel();
     if (endPoints.isEmpty()) {
-      LOG.info("11");
       AbsolutePanel boundaryPanel = diagram.boundaryPanel;
       for (ConnectionPoint cp : connectionPoints) {
-        LOG.info("CP CP CP");
         if (cp.gluedEndPoints.size() == 0) {
-          LOG.info("no glued points");
           Point cpPoint = getCPPosition(cp);
           ShapeConnectorStart ep =
               new ShapeConnectorStart(cpPoint.getLeft(), cpPoint.getTop(), Shape.this, endPointsShowTimer, cp);
-          LOG.info("Add to boundary panel " + cpPoint.getLeft() + " " + cpPoint.getTop());
           boundaryPanel.add(ep, (int) cpPoint.getLeft(), (int) cpPoint.getTop());
           diagram.endPointDragController.makeDraggable(ep);
           endPoints.add(ep);
@@ -870,11 +867,8 @@ public class Shape extends FocusPanel implements Element {
    * @param enable
    */
   public void enableConnectionCreate(boolean enable) {
-    
     if (enable) {
-      LOG.info("@@@@@@ enable connection create @@@@@@ ");
       if (showConnStartMouseHandler == null && hideConnStartMouseHandler == null) {
-        LOG.info("@@@@@@ enable connection create  11111 @@@@@@ ");
         if (endPointsShowTimer == null) {
           endPointsShowTimer = new Timer() {
 
@@ -888,7 +882,6 @@ public class Shape extends FocusPanel implements Element {
         MouseOverHandler showConnStartMouseOver = new MouseOverHandler() {
 
           public void onMouseOver(MouseOverEvent event) {
-            LOG.info("---------- mounse over ");
             showShapeConnectorStartPoints();
           }
         };
@@ -896,8 +889,7 @@ public class Shape extends FocusPanel implements Element {
         MouseOutHandler hideConnStartMouseOut = new MouseOutHandler() {
 
           public void onMouseOut(MouseOutEvent event) {
-            LOG.info("---------- mounse out ");
-//            endPointsShowTimer.schedule(END_POINTS_VIS_DELAY);
+            endPointsShowTimer.schedule(END_POINTS_VIS_DELAY);
           }
         };
 

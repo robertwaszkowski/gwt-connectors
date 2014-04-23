@@ -16,7 +16,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class EndPoint extends Point {
 
-  public static final int SIZE = 12;
+  //Defines size of connection point
+  public static final int CP_MARGIN = 13;
+  public static final int CENTER_OFFSET = (int) Math.floor(CP_MARGIN / 2.0);
+  
   public ConnectionPoint gluedConnectionPoint;
   public Connector connector;
   boolean gluedToConnectionPoint;
@@ -27,13 +30,6 @@ public class EndPoint extends Point {
    */
   private Shape linkedShape;
 
-  // Defines size of connection point
-  public static final int CP_MARGIN = 13;
-
-  public EndPoint(double left, double top) {
-    super(left, top);
-  }
-  
   /**
    * {@link Connector}s are ended with EndPoints. You can drag and drop EndPoint to change its
    * position. When EndPoint is dragging its Connector is redrawing.
@@ -53,7 +49,7 @@ public class EndPoint extends Point {
     this.getElement().getStyle().setZIndex(3);
   }
 
-  public EndPoint(Integer left, Integer top) {
+  public EndPoint(double left, double top) {
     super(left, top);
     this.setGluedToConnectionPoint(false);
     Widget img = createImage();
@@ -90,9 +86,7 @@ public class EndPoint extends Point {
 	 * 
 	 */
   public void update() {
-    ((AbsolutePanel) this.getParent()).setWidgetPosition(this, (int) (this.getLeft() - this.getOffsetWidth() / 2.0), 
-        (int) (this.getTop() - this.getOffsetHeight() / 2.0));
-
+    ((AbsolutePanel) this.getParent()).setWidgetPosition(this, getDataCenterLeft(), getDataCenterTop());
   }
 
   /**
@@ -100,7 +94,7 @@ public class EndPoint extends Point {
    */
   public void showOnDiagram(Diagram diagram) {
     // Add EndPoint to given panel
-    diagram.boundaryPanel.add(this, (int) (this.getLeft() - CP_MARGIN / 2.0), (int) (this.getTop() - CP_MARGIN / 2.0));
+    diagram.boundaryPanel.add(this, getDataCenterLeft(), getDataCenterTop());
 
     // Set EndPoint's cursor
     DOM.setStyleAttribute(this.getElement(), "cursor", "crosshair");
@@ -207,6 +201,30 @@ public class EndPoint extends Point {
       }
     }
     return null;
+  }
+  
+  public int getDataCenterLeft() {
+    return (int) Math.ceil(getLeft() - getCenterOffset());
+  }
+  
+  public int getDataCenterTop() {
+    return (int) Math.ceil(getTop() - getCenterOffset());
+  }
+  
+  public int getCurrentCenterLeft() {
+    return (int) Math.ceil(getWidgetLocation().getLeft() - getCenterOffset());
+  }
+  
+  public int getCurrentCenterTop() {
+    return (int) Math.ceil(getWidgetLocation().getTop() - getCenterOffset());
+  }
+  
+  private double getCenterOffset() {
+    return (double) CP_MARGIN / 2.0;
+  }
+  
+  private WidgetLocation getWidgetLocation() {
+    return new WidgetLocation(this, connector.diagram.boundaryPanel);
   }
   
 }

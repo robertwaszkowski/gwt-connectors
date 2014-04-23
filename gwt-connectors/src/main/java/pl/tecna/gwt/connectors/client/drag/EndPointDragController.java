@@ -99,7 +99,7 @@ public class EndPointDragController extends PickupDragController {
           if (Math.abs(draggedEP.connector.startEndPoint.getTop() - 
               (context.desiredDraggableY - boundaryOffsetY)) < diagram.initialDragTolerance) {
             desiredTop = connectorStartPoint.getTop();
-            context.desiredDraggableY = (int) (desiredTop + boundaryOffsetY - EndPoint.SIZE / 2.0);
+            context.desiredDraggableY = (int) (desiredTop + boundaryOffsetY - EndPoint.CENTER_OFFSET);
           }
         } break;
         case ConnectionPoint.DIRECTION_TOP:
@@ -107,7 +107,7 @@ public class EndPointDragController extends PickupDragController {
           if (Math.abs(draggedEP.connector.startEndPoint.getLeft() - 
               (context.desiredDraggableX - boundaryOffsetX)) < diagram.initialDragTolerance) {
             desiredLeft = connectorStartPoint.getLeft();
-            context.desiredDraggableX = (int) (desiredLeft + boundaryOffsetX - EndPoint.SIZE / 2.0);
+            context.desiredDraggableX = (int) (desiredLeft + boundaryOffsetX - EndPoint.CENTER_OFFSET);
           }
         } break;
       }

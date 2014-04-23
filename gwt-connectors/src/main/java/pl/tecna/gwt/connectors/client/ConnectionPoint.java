@@ -168,13 +168,16 @@ public class ConnectionPoint extends FocusPanel {
 		double left;
 		if (this.getParentShape().diagram != null) {
 		  left = (double) currentLocation.getLeft() + (double) getOffsetWidth() / 2.0;
-			if (connectionDirection == DIRECTION_TOP || connectionDirection == DIRECTION_BOTTOM) {
-			  left -= 2;
-			} else 
-			  if (connectionDirection == DIRECTION_RIGHT) {
-			  left -= 1;
-			}
-			return left;
+		  //			if (connectionDirection == DIRECTION_TOP || connectionDirection == DIRECTION_BOTTOM) {
+		  //			  left -= 2;
+		  //			} else 
+		  //			  if (connectionDirection == DIRECTION_RIGHT) {
+		  //			  left -= 1;
+		  //			}
+		  if (connectionDirection == DIRECTION_LEFT) {
+		    left += 1;
+		  }
+		  return left;
 		} else {
 			return -1;
 		}
@@ -190,11 +193,11 @@ public class ConnectionPoint extends FocusPanel {
 		double top;
 		if (this.getParentShape().diagram != null) {
 		  top = (double) currentLocation.getTop() + (double) getOffsetHeight() / 2.0;
-			if (connectionDirection == DIRECTION_TOP || connectionDirection == DIRECTION_LEFT || connectionDirection == DIRECTION_RIGHT) {
-			  top -= 2;
-			} else if (connectionDirection == DIRECTION_BOTTOM) {
-			  top -= 1;
-			}
+//			if (connectionDirection == DIRECTION_TOP || connectionDirection == DIRECTION_LEFT || connectionDirection == DIRECTION_RIGHT) {
+//			  top -= 2;
+//			} else if (connectionDirection == DIRECTION_BOTTOM) {
+//			  top -= 1;
+//			}
 			return top;
 		} else {
 			return -1;

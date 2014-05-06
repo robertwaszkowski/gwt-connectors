@@ -4,10 +4,10 @@ import com.google.gwt.user.client.ui.FocusPanel;
 
 public class Point extends FocusPanel implements Comparable<Point> {
 
-  protected double top;
-  protected double left;
+  protected Integer top;
+  protected Integer left;
 
-  public Point(double left, double top) {
+  public Point(Integer left, Integer top) {
     super();
     this.left = left;
     this.top = top;
@@ -17,29 +17,29 @@ public class Point extends FocusPanel implements Comparable<Point> {
 
   }
   
-  public void initPosition(double left, double top) {
+  public void initPosition(Integer left, Integer top) {
     this.left = left;
     this.top = top;
   }
 
-  public void setLeftPosition(double left) { 
+  public void setLeftPosition(Integer left) { 
     setPosition(left, top);
   }
   
-  public void setTopPosition(double top) { 
+  public void setTopPosition(Integer top) { 
     setPosition(left, top);
   }
   
-  public void setPosition(double left, double top) {
+  public void setPosition(Integer left, Integer top) {
     this.left = left;
     this.top = top;
   }
   
-  public double getTop() {
+  public Integer getTop() {
     return top;
   }
   
-  public double getLeft() {
+  public Integer getLeft() {
     return left;
   }
 
@@ -53,8 +53,8 @@ public class Point extends FocusPanel implements Comparable<Point> {
    * between points is returned.
    */
   public int compareTo(Point o) {
-    int leftCompare = Double.compare(o.getLeft(), this.getLeft());
-    int topCompare = Double.compare(o.getTop(), this.getTop());
+    int leftCompare = o.getLeft().compareTo(this.getLeft());
+    int topCompare = o.getTop().compareTo(this.getTop());
     if (leftCompare == 0 && topCompare == 0) {
       return 0;
     } else {

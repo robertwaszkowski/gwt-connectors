@@ -2,8 +2,8 @@ package pl.tecna.gwt.connectors.client.util;
 
 public class Position {
 
-  private double left;
-  private double top;
+  private int left;
+  private int top;
 
   public Position() {
 
@@ -11,25 +11,25 @@ public class Position {
     this.top = -1;
   }
 
-  public Position(double left, double top) {
+  public Position(int left, int top) {
 
     this.left = left;
     this.top = top;
   }
 
-  public void setLeft(double left) {
+  public void setLeft(int left) {
     this.left = left;
   }
 
-  public double getLeft() {
+  public int getLeft() {
     return left;
   }
 
-  public void setTop(double top) {
+  public void setTop(int top) {
     this.top = top;
   }
 
-  public double getTop() {
+  public int getTop() {
     return top;
   }
 

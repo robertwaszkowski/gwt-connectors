@@ -24,7 +24,7 @@ public class ShapeConnectorStart extends EndPoint {
   private HandlerRegistration outHandlerReg;
   private ConnectionPoint overlapingCP;
 
-  public ShapeConnectorStart(double left, double top, Shape shape, Timer endPointsTimer, ConnectionPoint overlapingCP) {
+  public ShapeConnectorStart(Integer left, Integer top, Shape shape, Timer endPointsTimer, ConnectionPoint overlapingCP) {
     super(left, top);
     this.shape = shape;
     this.endPointsTimer = endPointsTimer;

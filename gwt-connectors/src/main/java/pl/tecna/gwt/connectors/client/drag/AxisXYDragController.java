@@ -289,15 +289,15 @@ public class AxisXYDragController extends AbstractDragController {
     }
     // To provide XY drag feature (END)
 
-    double desiredLeft = context.desiredDraggableX - boundaryOffsetX;
-    double desiredTop = context.desiredDraggableY - boundaryOffsetY;
+    int desiredLeft = context.desiredDraggableX - boundaryOffsetX;
+    int desiredTop = context.desiredDraggableY - boundaryOffsetY;
 
     if (getBehaviorConstrainedToBoundaryPanel()) {
       desiredLeft = Math.max(0, Math.min(desiredLeft, dropTargetClientWidth - context.draggable.getOffsetWidth()));
       desiredTop = Math.max(0, Math.min(desiredTop, dropTargetClientHeight - context.draggable.getOffsetHeight()));
     }
 
-    DOMUtil.fastSetElementPosition(movablePanel.getElement(), (int) desiredLeft, (int) desiredTop);
+    DOMUtil.fastSetElementPosition(movablePanel.getElement(), desiredLeft, desiredTop);
 
     DropController newDropController = getIntersectDropController(context.mouseX, context.mouseY);
     if (context.dropController != newDropController) {

@@ -120,8 +120,8 @@ public class Diagram {
         Point endSelectionPoint = new Point(event.getX(), event.getY());
         if (startSelectionPoint != null) {
 
-          if (((startSelectionPoint.getLeft() - endSelectionPoint.getLeft()) > MIN_SELECTION_SIZE)
-              && (startSelectionPoint.getTop() - endSelectionPoint.getTop()) > MIN_SELECTION_SIZE) {
+          if (((Math.abs(startSelectionPoint.getLeft() - endSelectionPoint.getLeft())) > MIN_SELECTION_SIZE)
+              && (Math.abs((startSelectionPoint.getTop() - endSelectionPoint.getTop()))) > MIN_SELECTION_SIZE) {
             for (Shape s : Diagram.this.shapes) {
               if (s.isInRect(startSelectionPoint, endSelectionPoint)) {
                 Diagram.this.shapeDragController.toggleSelection(s);
@@ -143,21 +143,21 @@ public class Diagram {
       public void onMouseMove(MouseMoveEvent event) {
         Point actualPosition = new Point(event.getX(), event.getY());
         if (startSelectionPoint != null) {
-          if (((startSelectionPoint.getLeft() - actualPosition.getLeft()) > MIN_SELECTION_SIZE)
-              && (startSelectionPoint.getTop() - actualPosition.getTop()) > MIN_SELECTION_SIZE) {
+          if (((Math.abs(startSelectionPoint.getLeft() - actualPosition.getLeft())) > MIN_SELECTION_SIZE)
+              && (Math.abs((startSelectionPoint.getTop() - actualPosition.getTop()))) > MIN_SELECTION_SIZE) {
             if (selection == null) {
               selection = new HTML();
               Diagram.this.boundaryPanel.add(selection);
             }
-            double left =
+            int left =
                 (startSelectionPoint.getLeft() <= actualPosition.getLeft()) ? startSelectionPoint.getLeft()
                     : actualPosition.getLeft();
 
-                double top =
+            int top =
                 (startSelectionPoint.getTop() <= actualPosition.getTop()) ? startSelectionPoint.getTop()
                     : actualPosition.getTop();
-                double width = startSelectionPoint.getLeft() - actualPosition.getLeft();
-                double height = startSelectionPoint.getTop() - actualPosition.getTop();
+            int width = Math.abs(startSelectionPoint.getLeft() - actualPosition.getLeft());
+            int height = Math.abs((startSelectionPoint.getTop() - actualPosition.getTop()));
             selection
                 .setHTML("<div class'gwt-HTML'"
                     + " style=\"opacity:0.1; filter: alpha(opacity=10); position:absolute; background-color:#00bfff; width: "
@@ -183,10 +183,10 @@ public class Diagram {
 
       @Override
       public void onDragStart(DragStartEvent event) {
-        double startX =
+        int startX =
             Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteLeft();
-        double startY =
+        int startY =
             Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteTop();
         Diagram.this.onElementDrag(new ElementDragEvent(event.getContext(), startX, startY,
@@ -243,10 +243,10 @@ public class Diagram {
           }
         }
 
-        double endX =
+        int endX =
             Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteLeft();
-        double endY =
+        int endY =
             Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
                 - Diagram.this.boundaryPanel.getAbsoluteTop();
 
@@ -291,8 +291,8 @@ public class Diagram {
           LOG.log(Level.SEVERE, "Unexpected exception", e);
         }
 
-        double endX = 0;
-        double endY = 0;
+        Integer endX = null;
+        Integer endY = null;
         if (event.getContext().draggable.getParent() != null
             && Diagram.this.boundaryPanel.equals(event.getContext().draggable.getParent())) {
           endX =
@@ -368,9 +368,9 @@ public class Diagram {
         HTML marker = new HTML();
         marker
             .setHTML("<div class='marker' style='opacity:0.7;position:absolute; background-color:#f00; width:4px; height:4px; left:"
-                + (s.getRelativeShapeLeft() + (double) s.getOffsetWidth() / 2 - 2)
+                + (s.getRelativeShapeLeft() + s.getOffsetWidth() / 2 - 2)
                 + "px; top:"
-                + (s.getRelativeShapeTop() + (double) s.getOffsetHeight() / 2 - 2) + "px'></div>");
+                + (s.getRelativeShapeTop() + s.getOffsetHeight() / 2 - 2) + "px'></div>");
         markers.add(marker);
         Diagram.this.boundaryPanel.add(marker);
         // Log.info("Showing active point at shape: "+s.getTitle());
@@ -475,9 +475,9 @@ public class Diagram {
     // section with
     // least length is choose
     // horizontal sections map
-    Map<Double, Section> horizontalSectionsMap = new HashMap<Double, Section>();
+    Map<Integer, Section> horizontalSectionsMap = new HashMap<Integer, Section>();
     // vertical sections map
-    Map<Double, Section> verticalSectionsMap = new HashMap<Double, Section>();
+    Map<Integer, Section> verticalSectionsMap = new HashMap<Integer, Section>();
     if (shape.getParent() == null) {
       LOG.severe("Shape parent is null");
       return;
@@ -491,7 +491,7 @@ public class Diagram {
         Connector conn = ep.connector;
         if (conn.sections.size() > 1) {
           Section secondFromShape = null;
-          double sectionLength;
+          int sectionLength;
           boolean start = false;
           if (conn.endEndPoint.equals(ep)) {
             secondFromShape = conn.sections.get(conn.sections.size() - 2);
@@ -521,19 +521,19 @@ public class Diagram {
       }
     }
 
-    double minHorizontal = Integer.MAX_VALUE;
-    double minVertical = Integer.MAX_VALUE;
+    Integer minHorizontal = Integer.MAX_VALUE;
+    Integer minVertical = Integer.MAX_VALUE;
     Section lastHorizontalSection = null;
     Section lastVerticalSection = null;
 
-    for (Double length : horizontalSectionsMap.keySet()) {
+    for (Integer length : horizontalSectionsMap.keySet()) {
       if (Math.abs(length) < Math.abs(minHorizontal)) {
         minHorizontal = length;
         lastHorizontalSection = horizontalSectionsMap.get(length);
       }
     }
 
-    for (Double length : verticalSectionsMap.keySet()) {
+    for (Integer length : verticalSectionsMap.keySet()) {
       if (Math.abs(length) < Math.abs(minVertical)) {
         minVertical = length;
         lastVerticalSection = verticalSectionsMap.get(length);
@@ -544,14 +544,14 @@ public class Diagram {
 
     // fix section position horizontally
     if (lastHorizontalSection != null) {
-      parent.setWidgetPosition(shape, (int) (shape.getRelativeShapeLeft() - minHorizontal), (int) shape.getRelativeShapeTop());
+      parent.setWidgetPosition(shape, shape.getRelativeShapeLeft() - minHorizontal, shape.getRelativeShapeTop());
       lastHorizontalSection.connector.drawSections(lastHorizontalSection.connector
           .fixLineSections(lastHorizontalSection.connector.getCorners()));
     }
 
     // fix section position vertically
     if (lastVerticalSection != null) {
-      parent.setWidgetPosition(shape, (int) shape.getRelativeShapeLeft(), (int) (shape.getRelativeShapeTop() - minVertical));
+      parent.setWidgetPosition(shape, shape.getRelativeShapeLeft(), shape.getRelativeShapeTop() - minVertical);
       lastVerticalSection.connector.drawSections(lastVerticalSection.connector
           .fixLineSections(lastVerticalSection.connector.getCorners()));
     }
@@ -595,10 +595,10 @@ public class Diagram {
    * @return <code>true</code>, if the point is on the widget
    */
   private boolean isOnWidget(Point point, Widget widget) {
-    double widgetLeft = boundaryPanel.getWidgetLeft(widget);
-    double widgetRight = widgetLeft + widget.getOffsetWidth();
-    double widgetTop = boundaryPanel.getWidgetTop(widget);
-    double widgetBottom = widgetTop + widget.getOffsetHeight();
+    int widgetLeft = boundaryPanel.getWidgetLeft(widget);
+    int widgetRight = widgetLeft + widget.getOffsetWidth();
+    int widgetTop = boundaryPanel.getWidgetTop(widget);
+    int widgetBottom = widgetTop + widget.getOffsetHeight();
 
     if (widgetLeft <= point.getLeft() && widgetRight >= point.getLeft() && widgetTop <= point.getTop()
         && widgetBottom >= point.getTop()) {
@@ -634,8 +634,8 @@ public class Diagram {
 
       public void onMouseDown(MouseDownEvent event) {
 
-        double mouseLeft = event.getX();
-        double mouseTop = event.getY();
+        int mouseLeft = event.getX();
+        int mouseTop = event.getY();
         if (!selectionMode) {
           dragModeOnClick = true;
           for (pl.tecna.gwt.connectors.client.elements.Shape shape : shapes) {
@@ -643,10 +643,10 @@ public class Diagram {
               dragModeOnClick = false;
             }
           }
-          double startLeft = 0;
-          double startTop = 0;
-          double endLeft = 0;
-          double endTop = 0;
+          int startLeft = 0;
+          int startTop = 0;
+          int endLeft = 0;
+          int endTop = 0;
           // set diagram drag mode false if connector EndPoint is dragged
           for (Connector connector : connectors) {
             startLeft = connector.startEndPoint.getAbsoluteLeft() - boundaryPanel.getAbsoluteLeft();
@@ -760,7 +760,7 @@ public class Diagram {
     return Keyboard.getInstance().removeListener(keyboardListener);
   }
 
-  public Connector createConnector(double startLeft, double startTop, double endLeft, double endTop, EndPoint endEndPoint,
+  public Connector createConnector(int startLeft, int startTop, int endLeft, int endTop, EndPoint endEndPoint,
       ConnectorStyle style) {
     SectionDecoration endDecoration;
     if (style == ConnectorStyle.SOLID) {

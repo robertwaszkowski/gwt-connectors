@@ -5,8 +5,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ExtendedWidgetLocation extends WidgetLocation {
 
-  protected double height;
-  protected double width;
+  protected int height;
+  protected int width;
   
   public ExtendedWidgetLocation(Widget widget, Widget reference) {
     super(widget, reference);
@@ -14,11 +14,11 @@ public class ExtendedWidgetLocation extends WidgetLocation {
     width = widget.getOffsetWidth();
   }
   
-  public double getCenterLeft() {
-    return (double) getLeft() + width / 2.0;
+  public int getCenterLeft() {
+    return getLeft() + (int) Math.round(((double) width) / 2.0);
   }
 
-  public double getCenterTop() {
-    return (double) getTop() + height / 2.0;
+  public int getCenterTop() {
+    return getTop() + (int) Math.round(((double) height) / 2.0);
   }
 }

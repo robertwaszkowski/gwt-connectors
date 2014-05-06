@@ -8,16 +8,16 @@ public class DiagramAddEvent implements ConnectorEvent {
 
   private Widget addedEl;
   private Connector addedConn;
-  private double top;
-  private double left;
+  private Integer top;
+  private Integer left;
 
-  public DiagramAddEvent(Widget addedEl, double top, double left) {
+  public DiagramAddEvent(Widget addedEl, Integer top, Integer left) {
     this.addedEl = addedEl;
     this.top = top;
     this.left = left;
   }
 
-  public DiagramAddEvent(Connector addedConn, double top, double left) {
+  public DiagramAddEvent(Connector addedConn, Integer top, Integer left) {
     this.addedConn = addedConn;
     this.top = top;
     this.left = left;
@@ -31,11 +31,11 @@ public class DiagramAddEvent implements ConnectorEvent {
     return addedConn;
   }
 
-  public double getTop() {
+  public Integer getTop() {
     return top;
   }
 
-  public double getLeft() {
+  public Integer getLeft() {
     return left;
   }
 

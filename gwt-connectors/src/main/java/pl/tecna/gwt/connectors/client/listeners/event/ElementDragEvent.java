@@ -13,18 +13,18 @@ public class ElementDragEvent implements ConnectorEvent {
 
   private DragContext dragContext;
   private List<Widget> draggedList;
-  private double dragLeft;
-  private double dragTop;
+  private Integer dragLeft;
+  private Integer dragTop;
   private DragEventType type;
 
-  public ElementDragEvent(DragContext dragContext, double dragLeft, double dragTop, DragEventType type) {
+  public ElementDragEvent(DragContext dragContext, Integer dragLeft, Integer dragTop, DragEventType type) {
     this.dragContext = dragContext;
     this.dragLeft = dragLeft;
     this.dragTop = dragTop;
     this.type = type;
   }
 
-  public ElementDragEvent(List<Widget> draggedList, double dragLeft, double dragTop, DragEventType type) {
+  public ElementDragEvent(List<Widget> draggedList, Integer dragLeft, Integer dragTop, DragEventType type) {
     this.draggedList = draggedList;
     this.dragLeft = dragLeft;
     this.dragTop = dragTop;
@@ -35,11 +35,11 @@ public class ElementDragEvent implements ConnectorEvent {
     return dragContext;
   }
 
-  public double getDragLeft() {
+  public Integer getDragLeft() {
     return dragLeft;
   }
 
-  public double getDragTop() {
+  public Integer getDragTop() {
     return dragTop;
   }
 

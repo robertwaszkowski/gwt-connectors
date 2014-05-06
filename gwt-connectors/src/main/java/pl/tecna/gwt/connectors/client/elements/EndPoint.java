@@ -37,7 +37,7 @@ public class EndPoint extends Point {
    * {@link EndPoint} is visible until the {@link Connector} is glued to {@link ConnectionPoint}.
    * EndPoints are represented by small circles.
    */
-  public EndPoint(double left, double top, Connector connector) {
+  public EndPoint(Integer left, Integer top, Connector connector) {
     super(left, top);
 
     this.connector = connector;
@@ -49,7 +49,7 @@ public class EndPoint extends Point {
     this.getElement().getStyle().setZIndex(3);
   }
 
-  public EndPoint(double left, double top) {
+  public EndPoint(Integer left, Integer top) {
     super(left, top);
     this.setGluedToConnectionPoint(false);
     Widget img = createImage();
@@ -159,17 +159,17 @@ public class EndPoint extends Point {
   }
   
   @Override
-  public void setPosition(double newLeft, double newTop) {
+  public void setPosition(Integer newLeft, Integer newTop) {
     moveLinkedShape(newLeft - this.left, newTop - this.top);
     super.setPosition(newLeft, newTop);
   }
   
-  public void moveLinkedShape(double offsetLeft, double offsetTop) {
+  public void moveLinkedShape(Integer offsetLeft, Integer offsetTop) {
     if (linkedShape != null && linkedShape.isAttached()) {
       WidgetLocation linkedShapeLocation = new WidgetLocation(linkedShape, linkedShape.diagram.boundaryPanel);
       linkedShape.left = linkedShapeLocation.getLeft() + offsetLeft;
       linkedShape.top = linkedShapeLocation.getTop() + offsetTop;
-      linkedShape.diagram.boundaryPanel.setWidgetPosition(linkedShape, (int) linkedShape.left, (int) linkedShape.top);
+      linkedShape.diagram.boundaryPanel.setWidgetPosition(linkedShape, linkedShape.left, linkedShape.top);
       linkedShape.updateConnectors();
     }
   }

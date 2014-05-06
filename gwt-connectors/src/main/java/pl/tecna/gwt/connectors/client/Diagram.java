@@ -240,6 +240,7 @@ public class Diagram {
                 c.drawSections();
               }
             }
+            fixShapePosition(shape);
           }
         }
 

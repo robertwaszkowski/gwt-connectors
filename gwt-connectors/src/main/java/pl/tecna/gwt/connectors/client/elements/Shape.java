@@ -986,4 +986,15 @@ public class Shape extends FocusPanel implements Element {
       toReconnect.connector.drawSections();
     }
   }
+  
+  public int getCenterLeft() {
+    WidgetLocation location = new WidgetLocation(this, diagram.boundaryPanel);
+    return location.getLeft() + getOffsetWidth() / 2;
+  }
+  
+  public int getCenterTop() {
+    WidgetLocation location = new WidgetLocation(this, diagram.boundaryPanel);
+    return location.getTop() + getOffsetHeight() / 2;
+  }
+  
 }

@@ -64,7 +64,9 @@ public class EndPoint extends Point {
    * @param connectionPoint
    */
   public void glueToConnectionPoint(ConnectionPoint connectionPoint) {
-
+    if (isGluedToConnectionPoint()) {
+      unglueFromConnectionPoint();
+    }
     this.gluedConnectionPoint = connectionPoint;
     connectionPoint.glueToEndPoint(this);
     this.setGluedToConnectionPoint(true);

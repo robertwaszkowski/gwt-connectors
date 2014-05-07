@@ -148,7 +148,6 @@ public class EndPointDragController extends PickupDragController {
         ConnectionPoint nearestCP =
             shape.findNearestConnectionPoint(dragEndPoint.getLeft(), dragEndPoint.getTop(), excluded);
         if (nearestCP != null && nearestCP != conn.startEndPoint.gluedConnectionPoint) {
-          conn.startEndPoint.unglueFromConnectionPoint();
           conn.startEndPoint.glueToConnectionPoint(nearestCP);
           conn.startEndPoint.setPosition(nearestCP.getCenterLeft(), nearestCP.getCenterTop());
         }

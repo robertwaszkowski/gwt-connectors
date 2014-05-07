@@ -2,13 +2,17 @@ package pl.tecna.gwt.connectors.client.drag;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
+import pl.tecna.gwt.connectors.client.Point;
+import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
+import pl.tecna.gwt.connectors.client.util.Position;
 
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
@@ -122,13 +126,15 @@ public class ShapePickupDragController extends PickupDragController {
         Shape shape = (Shape) widget;
         shape.setTranslationX(context.desiredDraggableX - startX - diagram.boundaryPanel.getAbsoluteLeft());
         shape.setTranslationY(context.desiredDraggableY - startY - diagram.boundaryPanel.getAbsoluteTop());
+        List<Connector> toRecreate = new LinkedList<Connector>();
         for (ConnectionPoint cp : shape.connectionPoints) {
           for (EndPoint ep : cp.gluedEndPoints) {
             if (diagram.ctrlPressed) {
+              toRecreate.add(ep.connector);
+            } else if (ep.connector.sections.size() <= 3) {
               ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
               ep.connector.calculateStandardPointsPositions();
               ep.connector.drawSections();
-
             } else {
               // moving multiple selected elements
               if (ep.connector.startEndPoint.isGluedToConnectionPoint()
@@ -160,6 +166,12 @@ public class ShapePickupDragController extends PickupDragController {
             }
           }
         }
+        
+        if (toRecreate.size() > 0) {
+          for (Connector conn : toRecreate) {
+            recreateConnectios(conn);
+          }
+        }
       }
     }
 
@@ -183,4 +195,42 @@ public class ShapePickupDragController extends PickupDragController {
     super.makeNotDraggable(draggable);
   }
 
+  private void recreateConnectios(Connector conn) {
+    Position startPosition;
+    Position endPosition;
+    if (conn.startEndPoint.isGluedToConnectionPoint()) {
+      startPosition = new Position(conn.startEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
+          conn.startEndPoint.gluedConnectionPoint.getParentShape().getCenterTop());
+    } else {
+      startPosition = new Position(conn.startEndPoint.getLeft(), conn.startEndPoint.getTop());
+    }
+
+    if (conn.endEndPoint.isGluedToConnectionPoint()) {
+      endPosition = new Position(conn.endEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
+          conn.endEndPoint.gluedConnectionPoint.getParentShape().getCenterTop());
+    } else {
+      endPosition = new Position(conn.endEndPoint.getLeft(), conn.endEndPoint.getTop());
+    }
+
+    if (conn.endEndPoint.isGluedToConnectionPoint()) {
+      ConnectionPoint nearestCP = conn.endEndPoint.gluedConnectionPoint.getParentShape().
+          findNearestConnectionPoint(startPosition.getLeft(), startPosition.getTop());
+      conn.endEndPoint.glueToConnectionPoint(nearestCP, false);
+      conn.endEndPoint.setLeftPosition(nearestCP.getCenterLeft());
+      conn.endEndPoint.setTopPosition(nearestCP.getCenterTop());
+      
+      endPosition.setLeft(conn.endEndPoint.getLeft());
+      endPosition.setTop(conn.endEndPoint.getTop());
+    }
+    if (conn.startEndPoint.isGluedToConnectionPoint()) {
+      ConnectionPoint nearestCP = conn.startEndPoint.gluedConnectionPoint.getParentShape().
+          findNearestConnectionPoint(endPosition.getLeft(), endPosition.getTop());
+      conn.startEndPoint.glueToConnectionPoint(nearestCP, false);
+      conn.startEndPoint.setLeftPosition(nearestCP.getCenterLeft());
+      conn.startEndPoint.setTopPosition(nearestCP.getCenterTop());
+    }
+    conn.calculateStandardPointsPositions();
+    conn.drawSections();
+  }
+  
 }

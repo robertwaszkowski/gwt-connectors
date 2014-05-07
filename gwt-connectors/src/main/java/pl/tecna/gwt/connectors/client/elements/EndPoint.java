@@ -59,18 +59,23 @@ public class EndPoint extends Point {
     this.getElement().getStyle().setZIndex(3);
   }
 
-  /**
-   * 
-   * @param connectionPoint
-   */
-  public void glueToConnectionPoint(ConnectionPoint connectionPoint) {
 
+  public void glueToConnectionPoint(ConnectionPoint connectionPoint) {
+    glueToConnectionPoint(connectionPoint, true);
+  }
+  
+  public void glueToConnectionPoint(ConnectionPoint connectionPoint, boolean fireEvent) {
+    if (isGluedToConnectionPoint()) {
+      unglueFromConnectionPoint();
+    }
     this.gluedConnectionPoint = connectionPoint;
     connectionPoint.glueToEndPoint(this);
     this.setGluedToConnectionPoint(true);
     this.clear();
 
-    connector.diagram.onElementConnect(new ElementConnectEvent(connectionPoint.parentWidget, connector, this));
+    if (fireEvent) {
+      connector.diagram.onElementConnect(new ElementConnectEvent(connectionPoint.parentWidget, connector, this));
+    }
   }
 
   /**

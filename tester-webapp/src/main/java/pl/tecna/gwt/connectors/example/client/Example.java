@@ -120,8 +120,7 @@ public class Example implements EntryPoint {
 
 		  @Override
 		  public void onDoubleClick(DoubleClickEvent event) {
-		    shapeForLabel.cpShapeType = CPShapeType.RECTANGLE;
-		    shapeForLabel.changeConnectedWidget(labelChanged);
+		    shapeForLabel.changeConnectedWidget(labelChanged, CPShapeType.RECTANGLE);
 		  }
 		});
 
@@ -129,8 +128,7 @@ public class Example implements EntryPoint {
 
 		  @Override
 		  public void onDoubleClick(DoubleClickEvent event) {
-		    shapeForLabel.cpShapeType = CPShapeType.DIAMOND;
-		    shapeForLabel.changeConnectedWidget(label);
+		    shapeForLabel.changeConnectedWidget(label, CPShapeType.DIAMOND);
 		  }
 		});
 		

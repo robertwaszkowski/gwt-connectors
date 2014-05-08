@@ -15,10 +15,10 @@ public class ExtendedWidgetLocation extends WidgetLocation {
   }
   
   public int getCenterLeft() {
-    return getLeft() + (int) Math.round(((double) width) / 2);
+    return getLeft() + (int) Math.round(((double) width) / 2.0);
   }
 
   public int getCenterTop() {
-    return getTop() + (int) Math.round(((double) height) / 2);
+    return getTop() + (int) Math.round(((double) height) / 2.0);
   }
 }

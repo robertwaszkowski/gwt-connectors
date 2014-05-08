@@ -15,6 +15,7 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
+import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -587,7 +588,7 @@ public class Shape extends FocusPanel implements Element {
    */
   public int getRelativeShapeLeft() {
     if (this.diagram != null) {
-      return this.getAbsoluteLeft() - this.diagram.boundaryPanel.getAbsoluteLeft();
+      return new WidgetLocation(this, diagram.boundaryPanel).getLeft();
     } else {
       LOG.severe("getRelativeShapeLeft -> -1");
       return -1;
@@ -601,7 +602,7 @@ public class Shape extends FocusPanel implements Element {
    */
   public int getRelativeShapeTop() {
     if (this.diagram != null) {
-      return this.getAbsoluteTop() - this.diagram.boundaryPanel.getAbsoluteTop();
+      return new WidgetLocation(this, diagram.boundaryPanel).getTop();
     } else {
       LOG.severe("getRelativeShapeLeft -> -1");
       return -1;
@@ -855,7 +856,7 @@ public class Shape extends FocusPanel implements Element {
           Point cpPoint = getCPPosition(cp);
           ShapeConnectorStart ep =
               new ShapeConnectorStart(cpPoint.getLeft(), cpPoint.getTop(), Shape.this, endPointsShowTimer, cp);
-          boundaryPanel.add(ep, cpPoint.getLeft(), cpPoint.getTop());
+          boundaryPanel.add(ep, (int) cpPoint.getLeft(), (int) cpPoint.getTop());
           diagram.endPointDragController.makeDraggable(ep);
           endPoints.add(ep);
         }
@@ -869,7 +870,6 @@ public class Shape extends FocusPanel implements Element {
    * @param enable
    */
   public void enableConnectionCreate(boolean enable) {
-    
     if (enable) {
       if (showConnStartMouseHandler == null && hideConnStartMouseHandler == null) {
         if (endPointsShowTimer == null) {
@@ -986,4 +986,15 @@ public class Shape extends FocusPanel implements Element {
       toReconnect.connector.drawSections();
     }
   }
+  
+  public int getCenterLeft() {
+    WidgetLocation location = new WidgetLocation(this, diagram.boundaryPanel);
+    return location.getLeft() + getOffsetWidth() / 2;
+  }
+  
+  public int getCenterTop() {
+    WidgetLocation location = new WidgetLocation(this, diagram.boundaryPanel);
+    return location.getTop() + getOffsetHeight() / 2;
+  }
+  
 }

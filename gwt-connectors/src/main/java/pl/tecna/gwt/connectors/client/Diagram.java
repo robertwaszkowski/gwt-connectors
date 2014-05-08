@@ -25,7 +25,6 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
-import pl.tecna.gwt.connectors.client.util.ExtendedWidgetLocation;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
@@ -208,7 +207,6 @@ public class Diagram {
           Shape shape = (Shape) event.getContext().draggable;
           if (!ctrlPressed) {
             fixShapePosition(shape);
-
             for (ConnectionPoint cp : shape.connectionPoints) {
               for (EndPoint ep : cp.gluedEndPoints) {
                 // connector between two dragged shapes
@@ -242,6 +240,7 @@ public class Diagram {
                 c.drawSections();
               }
             }
+            fixShapePosition(shape);
           }
         }
 
@@ -477,9 +476,9 @@ public class Diagram {
     // section with
     // least length is choose
     // horizontal sections map
-    Map<Integer, Section> horSectionsMap = new HashMap<Integer, Section>();
+    Map<Integer, Section> horizontalSectionsMap = new HashMap<Integer, Section>();
     // vertical sections map
-    Map<Integer, Section> vertSectionsMap = new HashMap<Integer, Section>();
+    Map<Integer, Section> verticalSectionsMap = new HashMap<Integer, Section>();
     if (shape.getParent() == null) {
       LOG.severe("Shape parent is null");
       return;
@@ -497,7 +496,6 @@ public class Diagram {
           boolean start = false;
           if (conn.endEndPoint.equals(ep)) {
             secondFromShape = conn.sections.get(conn.sections.size() - 2);
-
           } else if (conn.startEndPoint.equals(ep)) {
             start = true;
             secondFromShape = conn.sections.get(1);
@@ -515,9 +513,9 @@ public class Diagram {
 
           if (Math.abs(sectionLength) < Shape.SECTION_TOLERANCE) {
             if (secondFromShape.isHorizontal()) {
-              horSectionsMap.put(sectionLength, secondFromShape);
+              horizontalSectionsMap.put(sectionLength, secondFromShape);
             } else {
-              vertSectionsMap.put(sectionLength, secondFromShape);
+              verticalSectionsMap.put(sectionLength, secondFromShape);
             }
           }
         }
@@ -529,17 +527,17 @@ public class Diagram {
     Section lastHorizontalSection = null;
     Section lastVerticalSection = null;
 
-    for (Integer length : horSectionsMap.keySet()) {
-      if (length < minHorizontal) {
+    for (Integer length : horizontalSectionsMap.keySet()) {
+      if (Math.abs(length) < Math.abs(minHorizontal)) {
         minHorizontal = length;
-        lastHorizontalSection = horSectionsMap.get(length);
+        lastHorizontalSection = horizontalSectionsMap.get(length);
       }
     }
 
-    for (Integer length : vertSectionsMap.keySet()) {
-      if (length < minVertical) {
+    for (Integer length : verticalSectionsMap.keySet()) {
+      if (Math.abs(length) < Math.abs(minVertical)) {
         minVertical = length;
-        lastVerticalSection = vertSectionsMap.get(length);
+        lastVerticalSection = verticalSectionsMap.get(length);
       }
     }
 

@@ -99,7 +99,7 @@ public class EndPointDragController extends PickupDragController {
           if (Math.abs(draggedEP.connector.startEndPoint.getTop() - 
               (context.desiredDraggableY - boundaryOffsetY)) < diagram.initialDragTolerance) {
             desiredTop = connectorStartPoint.getTop();
-            context.desiredDraggableY = (int) Math.round(desiredTop + boundaryOffsetY - EndPoint.SIZE / 2.0);
+            context.desiredDraggableY = (int) Math.round(desiredTop + boundaryOffsetY - EndPoint.CP_MARGIN / 2.0);
           }
         } break;
         case ConnectionPoint.DIRECTION_TOP:
@@ -107,7 +107,7 @@ public class EndPointDragController extends PickupDragController {
           if (Math.abs(draggedEP.connector.startEndPoint.getLeft() - 
               (context.desiredDraggableX - boundaryOffsetX)) < diagram.initialDragTolerance) {
             desiredLeft = connectorStartPoint.getLeft();
-            context.desiredDraggableX = (int) Math.round(desiredLeft + boundaryOffsetX - EndPoint.SIZE / 2.0);
+            context.desiredDraggableX = (int) Math.round(desiredLeft + boundaryOffsetX - EndPoint.CP_MARGIN / 2.0);
           }
         } break;
       }
@@ -148,7 +148,6 @@ public class EndPointDragController extends PickupDragController {
         ConnectionPoint nearestCP =
             shape.findNearestConnectionPoint(dragEndPoint.getLeft(), dragEndPoint.getTop(), excluded);
         if (nearestCP != null && nearestCP != conn.startEndPoint.gluedConnectionPoint) {
-          conn.startEndPoint.unglueFromConnectionPoint();
           conn.startEndPoint.glueToConnectionPoint(nearestCP);
           conn.startEndPoint.setPosition(nearestCP.getCenterLeft(), nearestCP.getCenterTop());
         }

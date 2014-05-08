@@ -7,7 +7,6 @@ import java.util.List;
 
 import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
-import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
@@ -131,7 +130,7 @@ public class ShapePickupDragController extends PickupDragController {
           for (EndPoint ep : cp.gluedEndPoints) {
             if (diagram.ctrlPressed) {
               toRecreate.add(ep.connector);
-            } else if (ep.connector.sections.size() <= 3) {
+            } else if (ep.connector.sections.size() == 3) {
               ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
               ep.connector.calculateStandardPointsPositions();
               ep.connector.drawSections();

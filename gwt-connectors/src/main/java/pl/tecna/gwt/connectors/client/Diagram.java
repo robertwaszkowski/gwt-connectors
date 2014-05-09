@@ -25,6 +25,7 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
@@ -240,7 +241,6 @@ public class Diagram {
                 c.drawSections();
               }
             }
-            fixShapePosition(shape);
           }
         }
 
@@ -541,18 +541,16 @@ public class Diagram {
       }
     }
 
-    AbsolutePanel parent = (AbsolutePanel) shape.getParent();
-
     // fix section position horizontally
     if (lastHorizontalSection != null) {
-      parent.setWidgetPosition(shape, shape.getRelativeShapeLeft() - minHorizontal, shape.getRelativeShapeTop());
+      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, shape.getRelativeShapeLeft() - minHorizontal, shape.getRelativeShapeTop());
       lastHorizontalSection.connector.drawSections(lastHorizontalSection.connector
           .fixLineSections(lastHorizontalSection.connector.getCorners()));
     }
 
     // fix section position vertically
     if (lastVerticalSection != null) {
-      parent.setWidgetPosition(shape, shape.getRelativeShapeLeft(), shape.getRelativeShapeTop() - minVertical);
+      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, shape.getRelativeShapeLeft(), shape.getRelativeShapeTop() - minVertical);
       lastVerticalSection.connector.drawSections(lastVerticalSection.connector
           .fixLineSections(lastVerticalSection.connector.getCorners()));
     }

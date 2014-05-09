@@ -12,6 +12,7 @@
 
 	<properties>
 		<gwt.version>2.5.1</gwt.version>
+		<gwt.connectors.version>2.5.2</gwt.connectors.version>
 
 		<plugin.gwt.version>2.5.1</plugin.gwt.version>
 

@@ -756,8 +756,7 @@ public class Shape extends FocusPanel implements Element {
 
   public int getConnectedWidgetLeft() {
     if (this.isAttached()) {
-      AbsolutePanel boundary = (AbsolutePanel) this.getParent();
-      return connectedWidget.getAbsoluteLeft() - boundary.getAbsoluteLeft();
+      return new WidgetLocation(connectedWidget, diagram.boundaryPanel).getLeft();
     } else {
       return -1;
     }
@@ -765,8 +764,7 @@ public class Shape extends FocusPanel implements Element {
 
   public int getConnectedWidgetTop() {
     if (this.isAttached()) {
-      AbsolutePanel boundary = (AbsolutePanel) this.getParent();
-      return connectedWidget.getAbsoluteTop() - boundary.getAbsoluteTop();
+      return new WidgetLocation(connectedWidget, diagram.boundaryPanel).getTop();
     } else {
       return -1;
     }
@@ -970,6 +968,8 @@ public class Shape extends FocusPanel implements Element {
     if (startPointsWereVisible) {
       showShapeConnectorStartPoints();
     }
+    
+    diagram.fixShapePosition(this);
   }
   
   private void reconnectEndPoints(List<EndPoint> endPointsToReconnect, List<ConnectionPoint> newConnectionPoints) {

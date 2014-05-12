@@ -194,10 +194,6 @@ public class Connector implements Element {
       cornerPoints.remove(removed);
     }
 
-    if (toRemove.size() > 0) {
-      logCornerPointsData(cornerPoints);
-    }
-
     this.cornerPoints = cornerPoints;
   }
 

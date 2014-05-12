@@ -17,6 +17,7 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.SectionData;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -1305,7 +1306,7 @@ public class Connector implements Element {
         sectionTopLeft = savedSectionsData.get(i).endPoint;
       }
 
-      diagram.boundaryPanel.setWidgetPosition(sections.get(i), sectionTopLeft.getLeft() + xOffset, sectionTopLeft
+      WidgetUtils.setWidgetPosition(diagram.boundaryPanel, sections.get(i), sectionTopLeft.getLeft() + xOffset, sectionTopLeft
           .getTop()
           + yOffset);
       sections.get(i).startPoint.setPosition(savedSectionsData.get(i).startPoint.getLeft() + xOffset, 

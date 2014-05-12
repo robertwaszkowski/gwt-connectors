@@ -14,6 +14,7 @@ import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ConnectorDoubleClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
@@ -373,8 +374,8 @@ public class Section extends HTML {
     };
 
     // Add line to given panel
-    panel.add(this, Math.min(this.startPoint.getLeft(), this.endPoint.getLeft()), Math.min(this.startPoint.getTop(),
-        this.endPoint.getTop()));
+    WidgetUtils.addWidget(panel, this, Math.min(this.startPoint.getLeft(), this.endPoint.getLeft()), 
+        Math.min(this.startPoint.getTop(),this.endPoint.getTop()));
     this.sectionDragController.makeDraggable(this);
     this.sectionDragController.setBehaviorDragStartSensitivity(5);
 
@@ -621,7 +622,7 @@ public class Section extends HTML {
         sectionDragController.setAllowHorizontalDragging(true);
         sectionDragController.setAllowVerticalDragging(false);
 
-        ((AbsolutePanel) this.getParent()).setWidgetPosition(this, this.startPoint.getLeft(), Math.min(this.startPoint
+        WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, this.startPoint.getLeft(), Math.min(this.startPoint
             .getTop(), this.endPoint.getTop()));
 
       } else if (isHorizontal()) {
@@ -634,7 +635,7 @@ public class Section extends HTML {
         sectionDragController.setAllowHorizontalDragging(false);
         sectionDragController.setAllowVerticalDragging(true);
 
-        ((AbsolutePanel) this.getParent()).setWidgetPosition(this, Math.min(this.startPoint.getLeft(), this.endPoint
+        WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, Math.min(this.startPoint.getLeft(), this.endPoint
             .getLeft()), this.endPoint.getTop());
       }
 

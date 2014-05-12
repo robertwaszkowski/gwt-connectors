@@ -14,6 +14,7 @@ import pl.tecna.gwt.connectors.client.elements.Shape.CPShapeType;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 
+import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
@@ -109,6 +110,9 @@ public class Example implements EntryPoint {
 
     final BPMNTask task = new BPMNTask();
     boundaryPanel.add(task, 10500, 10300);
+    LOG.info("@@@@ TASK position set: " + 10500 + " " + 10300);
+    WidgetLocation taskLocation = new WidgetLocation(task, boundaryPanel);
+    LOG.info("@@@@ Actual task position : " + taskLocation.getLeft() + " " + taskLocation.getTop());
 
     boundaryPanel.add(label, 10050, 10250);
     boundaryPanel.add(label2, 10450, 10200);

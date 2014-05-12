@@ -6,6 +6,7 @@ import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.user.client.DOM;
@@ -91,7 +92,7 @@ public class EndPoint extends Point {
 	 * 
 	 */
   public void update() {
-    ((AbsolutePanel) this.getParent()).setWidgetPosition(this, getDataCenterLeft(), getDataCenterTop());
+    WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, getDataCenterLeft(), getDataCenterTop());
   }
 
   /**
@@ -99,7 +100,7 @@ public class EndPoint extends Point {
    */
   public void showOnDiagram(Diagram diagram) {
     // Add EndPoint to given panel
-    diagram.boundaryPanel.add(this, getDataCenterLeft(), getDataCenterTop());
+    WidgetUtils.addWidget(diagram.boundaryPanel, this, getDataCenterLeft(), getDataCenterTop());
 
     // Set EndPoint's cursor
     DOM.setStyleAttribute(this.getElement(), "cursor", "crosshair");
@@ -174,7 +175,7 @@ public class EndPoint extends Point {
       WidgetLocation linkedShapeLocation = new WidgetLocation(linkedShape, linkedShape.diagram.boundaryPanel);
       linkedShape.left = linkedShapeLocation.getLeft() + offsetLeft;
       linkedShape.top = linkedShapeLocation.getTop() + offsetTop;
-      linkedShape.diagram.boundaryPanel.setWidgetPosition(linkedShape, linkedShape.left, linkedShape.top);
+      WidgetUtils.setWidgetPosition(linkedShape.diagram.boundaryPanel, linkedShape, linkedShape.left, linkedShape.top);
       linkedShape.updateConnectors();
     }
   }

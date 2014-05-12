@@ -14,8 +14,30 @@ public class WidgetUtils {
     parent.setWidgetPosition(widget, left, top);
     WidgetLocation location = new WidgetLocation(widget, parent);
     if (location.getLeft() != left || location.getTop() != top) {
-      LOG.warning("Widget position wrong set (offset left: " + (left - location.getLeft()) + 
-          " offset top: " + (top - location.getTop()) + ")");
+//      if (location.getLeft() != left) {
+//        LOG.warning("Moved widget to wrong LEFT location (current: " + location.getLeft() + 
+//            " should be: " + location.getLeft() + ")");
+//      }
+//      if (location.getTop() != top) {
+//        LOG.warning("Moved widget to wrong TOP location (current: " + location.getTop() + 
+//            " should be: " + location.getTop() + ")");
+//      }
+      parent.setWidgetPosition(widget, left + (left - location.getLeft()), top + (top - location.getTop()));
+    }
+  }
+
+  public static void addWidget(AbsolutePanel parent, Widget widget, int left, int top) {
+    parent.add(widget, left, top);
+    WidgetLocation location = new WidgetLocation(widget, parent);
+    if (location.getLeft() != left || location.getTop() != top) {
+//      if (location.getLeft() != left) {
+//        LOG.warning("Added widget to wrong LEFT location (current: " + location.getLeft() + 
+//            " should be: " + location.getLeft() + ")");
+//      }
+//      if (location.getTop() != top) {
+//        LOG.warning("Added widget to wrong TOP location (current: " + location.getTop() + 
+//            " should be: " + location.getTop() + ")");
+//      }
       parent.setWidgetPosition(widget, left + (left - location.getLeft()), top + (top - location.getTop()));
     }
   }

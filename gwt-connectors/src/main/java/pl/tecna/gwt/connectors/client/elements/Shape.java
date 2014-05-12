@@ -14,6 +14,7 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -124,7 +125,7 @@ public class Shape extends FocusPanel implements Element {
     this.setPixelSize(connectedWidget.getOffsetWidth() + CP_MARGIN * 2 + offsetLeft, connectedWidget.getOffsetHeight()
         + CP_MARGIN * 2 + offsetTop);
 
-    ((AbsolutePanel) connectedWidget.getParent()).add(this, connectedWidget.getAbsoluteLeft()
+    WidgetUtils.addWidget(((AbsolutePanel) connectedWidget.getParent()), this, connectedWidget.getAbsoluteLeft()
         - connectedWidget.getParent().getAbsoluteLeft() - CP_MARGIN - offsetLeft - CP_PADDING, connectedWidget
         .getAbsoluteTop()
         - connectedWidget.getParent().getAbsoluteTop() - CP_MARGIN - offsetTop - CP_PADDING);
@@ -142,7 +143,7 @@ public class Shape extends FocusPanel implements Element {
     connectionPointsPanel.setPixelSize(connectedWidget.getOffsetWidth() + CP_MARGIN * 2 + offsetLeft, connectedWidget
         .getOffsetHeight()
         + CP_MARGIN * 2 + offsetTop);
-    connectionPointsPanel.add(connectedWidget, CP_MARGIN + offsetLeft, CP_MARGIN + offsetTop);
+    WidgetUtils.addWidget(connectionPointsPanel, connectedWidget, CP_MARGIN + offsetLeft, CP_MARGIN + offsetTop);
 
     // Add connection points to the absolute panel
     switch (cpShapeType) {
@@ -549,14 +550,14 @@ public class Shape extends FocusPanel implements Element {
 
   private void addConnectionPoints(List<ConnectionPoint> connectionPoints, AbsolutePanel connectionPointsPanel) {
     for (ConnectionPoint cp : connectionPoints) {
-      connectionPointsPanel.add(cp, cp.positionOnCPPanel.getLeft(), cp.positionOnCPPanel.getTop());
+      WidgetUtils.addWidget(connectionPointsPanel, cp, cp.positionOnCPPanel.getLeft(), cp.positionOnCPPanel.getTop());
       cp.showOnDiagram(diagram);
     }
   }
   
   private void updateConnectionPointsPositions(List<ConnectionPoint> connectionPoints, AbsolutePanel connectionPointsPanel) {
     for (ConnectionPoint cp : connectionPoints) {
-      connectionPointsPanel.setWidgetPosition(cp, cp.positionOnCPPanel.getLeft(), cp.positionOnCPPanel.getTop());
+      WidgetUtils.setWidgetPosition(connectionPointsPanel, cp, cp.positionOnCPPanel.getLeft(), cp.positionOnCPPanel.getTop());
     }
   }
   
@@ -854,7 +855,7 @@ public class Shape extends FocusPanel implements Element {
           Point cpPoint = getCPPosition(cp);
           ShapeConnectorStart ep =
               new ShapeConnectorStart(cpPoint.getLeft(), cpPoint.getTop(), Shape.this, endPointsShowTimer, cp);
-          boundaryPanel.add(ep, (int) cpPoint.getLeft(), (int) cpPoint.getTop());
+          WidgetUtils.addWidget(boundaryPanel, ep, (int) cpPoint.getLeft(), (int) cpPoint.getTop());
           diagram.endPointDragController.makeDraggable(ep);
           endPoints.add(ep);
         }
@@ -954,12 +955,12 @@ public class Shape extends FocusPanel implements Element {
     }
     connectionPointsPanel.remove(connectedWidget);
     connectedWidget = newConnectedWidget;
-    connectionPointsPanel.add(newConnectedWidget, CP_MARGIN + offsetLeft, CP_MARGIN + offsetTop);
+    WidgetUtils.addWidget(connectionPointsPanel, newConnectedWidget, CP_MARGIN + offsetLeft, CP_MARGIN + offsetTop);
     
     int newWidgetWidth = newConnectedWidget.getOffsetWidth();
     int newWidgetHeight = newConnectedWidget.getOffsetHeight();
     
-    diagram.boundaryPanel.setWidgetPosition(this, 
+    WidgetUtils.setWidgetPosition(diagram.boundaryPanel, this, 
         diagram.boundaryPanel.getWidgetLeft(this) - (newWidgetWidth - oldWidgetWidth) / 2, 
         diagram.boundaryPanel.getWidgetTop(this) - (newWidgetHeight - oldWidgetHeight) / 2);
 

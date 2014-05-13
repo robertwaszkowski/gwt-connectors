@@ -119,7 +119,6 @@ public class ShapePickupDragController extends PickupDragController {
     // Update all glued connectors while dragging shape
     // Update glued end points positions and update connector
     // TODO
-    diagram.selectedWidgets = context.selectedWidgets;
     for (Widget widget : context.selectedWidgets) {
       if (widget instanceof Shape) {
         Shape shape = (Shape) widget;

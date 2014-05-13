@@ -2,7 +2,6 @@ package pl.tecna.gwt.connectors.client.util;
 
 import java.util.logging.Logger;
 
-import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -15,16 +14,8 @@ public class WidgetUtils {
     parent.setWidgetPosition(widget, left, top);
     WidgetLocation location = new WidgetLocation(widget, parent);
     if (location.getLeft() != left || location.getTop() != top) {
-//      if (location.getLeft() != left) {
-//        LOG.warning("Moved widget to wrong LEFT location (current: " + location.getLeft() + 
-//            " should be: " + location.getLeft() + ")");
-//      }
-//      if (location.getTop() != top) {
-//        LOG.warning("Moved widget to wrong TOP location (current: " + location.getTop() + 
-//            " should be: " + location.getTop() + ")");
-//      }
-      DOMUtil.fastSetElementPosition(widget.getElement(), left + (left - location.getLeft()), top + (top - location.getTop()));
-//      parent.setWidgetPosition(widget, left + (left - location.getLeft()), top + (top - location.getTop()));
+      parent.setWidgetPosition(widget, left + (left - location.getLeft()), top + (top - location.getTop()));
+      location = new WidgetLocation(widget, parent);
       if (location.getLeft() != left || location.getTop() != top) {
       if (location.getLeft() != left) {
         LOG.warning("Moved widget to wrong LEFT location (current: " + location.getLeft() + 
@@ -42,23 +33,15 @@ public class WidgetUtils {
     parent.add(widget, left, top);
     WidgetLocation location = new WidgetLocation(widget, parent);
     if (location.getLeft() != left || location.getTop() != top) {
-//      if (location.getLeft() != left) {
-//        LOG.warning("Added widget to wrong LEFT location (current: " + location.getLeft() + 
-//            " should be: " + location.getLeft() + ")");
-//      }
-//      if (location.getTop() != top) {
-//        LOG.warning("Added widget to wrong TOP location (current: " + location.getTop() + 
-//            " should be: " + location.getTop() + ")");
-//      }
-//      parent.setWidgetPosition(widget, left + (left - location.getLeft()), top + (top - location.getTop()));
-      DOMUtil.fastSetElementPosition(widget.getElement(), left + (left - location.getLeft()), top + (top - location.getTop()));
+      parent.setWidgetPosition(widget, left + (left - location.getLeft()), top + (top - location.getTop()));
+      location = new WidgetLocation(widget, parent);
       if (location.getLeft() != left || location.getTop() != top) {
         if (location.getLeft() != left) {
-          LOG.warning("Moved widget to wrong LEFT location (current: " + location.getLeft() + 
+          LOG.warning("Added widget to wrong LEFT location (current: " + location.getLeft() + 
               " should be: " + left + ")");
         }
         if (location.getTop() != top) {
-          LOG.warning("Moved widget to wrong TOP location (current: " + location.getTop() + 
+          LOG.warning("Added widget to wrong TOP location (current: " + location.getTop() + 
               " should be: " + top + ")");
         }
       }

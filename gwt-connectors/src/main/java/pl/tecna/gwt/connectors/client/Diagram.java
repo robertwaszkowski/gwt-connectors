@@ -87,11 +87,6 @@ public class Diagram {
   private ArrayList<HTML> markers = new ArrayList<HTML>();
 
   /**
-   * Helper list, contains list of selected Widgets
-   */
-  public List<Widget> selectedWidgets = new ArrayList<Widget>();
-
-  /**
    * Defines whether Ctrl key is currently pressed.
    */
   public boolean ctrlPressed = false;
@@ -179,7 +174,6 @@ public class Diagram {
     shapeDragController.setBehaviorDragStartSensitivity(2);
     shapeDragController.setBehaviorConstrainedToBoundaryPanel(true);
     shapeDragController.setBehaviorMultipleSelection(true);
-
     shapeDragController.addDragHandler(new DragHandlerAdapter() {
 
       @Override
@@ -215,8 +209,8 @@ public class Diagram {
                     && ep.connector.endEndPoint.gluedConnectionPoint != null
                     && ep.connector.startEndPoint.gluedConnectionPoint.getParentWidget() != null
                     && ep.connector.endEndPoint.gluedConnectionPoint.getParentWidget() != null
-                    && selectedWidgets.contains(ep.connector.startEndPoint.gluedConnectionPoint.getParentWidget())
-                    && selectedWidgets.contains(ep.connector.endEndPoint.gluedConnectionPoint.getParentWidget())) {
+                    && event.getContext().selectedWidgets.contains(ep.connector.startEndPoint.gluedConnectionPoint.getParentWidget())
+                    && event.getContext().selectedWidgets.contains(ep.connector.endEndPoint.gluedConnectionPoint.getParentWidget())) {
                   ep.connector.moveOffsetFromStartPos(shape.getTranslationX(), shape.getTranslationY());
                 } else {
                   ep.connector.updateCornerPoints();
@@ -231,8 +225,8 @@ public class Diagram {
               if (c.startEndPoint.gluedConnectionPoint != null && c.endEndPoint.gluedConnectionPoint != null
                   && c.startEndPoint.gluedConnectionPoint.getParentWidget() != null
                   && c.endEndPoint.gluedConnectionPoint.getParentWidget() != null
-                  && selectedWidgets.contains(c.startEndPoint.gluedConnectionPoint.getParentWidget())
-                  && selectedWidgets.contains(c.endEndPoint.gluedConnectionPoint.getParentWidget())) {
+                  && event.getContext().selectedWidgets.contains(c.startEndPoint.gluedConnectionPoint.getParentWidget())
+                  && event.getContext().selectedWidgets.contains(c.endEndPoint.gluedConnectionPoint.getParentWidget())) {
                 c.moveOffsetFromStartPos(shape.getTranslationX(), shape.getTranslationY());
               } else {
                 c.fixEndSectionDirection(c.endEndPoint);

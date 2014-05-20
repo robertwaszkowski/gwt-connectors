@@ -25,7 +25,7 @@ public class DiagramWidgetDropController extends SimpleDropController {
             && ep.connector.startEndPoint.gluedConnectionPoint.getParentShape().equals(dropTarget)) {
 
         } else {
-          dropTarget.showConnectionPoints(dropTarget.diagram);
+          dropTarget.showConnectionPoints();
         }
       }
     }
@@ -37,7 +37,7 @@ public class DiagramWidgetDropController extends SimpleDropController {
     if (context.draggable instanceof EndPoint) {
       if (getDropTarget() instanceof Shape) {
         Shape dropTarget = (Shape) getDropTarget();
-        dropTarget.hideConnectionPoints(dropTarget.diagram);
+        dropTarget.hideConnectionPoints();
       }
     }
     super.onLeave(context);

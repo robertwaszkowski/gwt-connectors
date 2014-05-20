@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
+import pl.tecna.gwt.connectors.client.elements.WidgetDiagramElement;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
@@ -20,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author robert.waszkowski@gmail.com
  *
  */
-public class ConnectionPoint extends FocusPanel {
+public class ConnectionPoint extends WidgetDiagramElement {
 
   Logger LOG = Logger.getLogger("ConnectionPoint");
   
@@ -33,7 +34,6 @@ public class ConnectionPoint extends FocusPanel {
 	public int index;
 	public Widget parentWidget;
 	public Point positionOnCPPanel;
-	public Diagram diagram;
 	
 	public static final int ALL    =  0;
 	public static final int DIRECTION_TOP    =  1;
@@ -107,8 +107,8 @@ public class ConnectionPoint extends FocusPanel {
 	 * 
 	 * @author robert.waszkowski@gmail.com
 	 */
-	public void showOnDiagram(Diagram diagram) {
-		this.diagram = diagram;
+	@Override
+	public void showOnDiagram() {
 	}
 
 	/**
@@ -165,16 +165,11 @@ public class ConnectionPoint extends FocusPanel {
 	 */
 	public int getCenterLeft() {
 	  WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-		int left;
-		if (this.getParentShape().diagram != null) {
-		  left = (int) Math.floor(currentLocation.getLeft() + ((double) getOffsetWidth() / 2.0));
-		  if (connectionDirection == DIRECTION_LEFT) {
-		    left += 1;
-		  }
-		  return left;
-		} else {
-			return -1;
-		}
+	  int left = (int) Math.floor(currentLocation.getLeft() + ((double) getOffsetWidth() / 2.0));
+	  if (connectionDirection == DIRECTION_LEFT) {
+	    left += 1;
+	  }
+	  return left;
 	}
 	
 	/**
@@ -184,13 +179,7 @@ public class ConnectionPoint extends FocusPanel {
 	 */
 	public int getCenterTop() {
     WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-		int top;
-		if (this.getParentShape().diagram != null) {
-		  top = (int) Math.floor(currentLocation.getTop() + ((double) getOffsetHeight() / 2.0));
-			return top;
-		} else {
-			return -1;
-		}
+		return (int) Math.floor(currentLocation.getTop() + ((double) getOffsetHeight() / 2.0));
 	}
 	
 	/**

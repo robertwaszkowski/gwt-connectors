@@ -7,12 +7,12 @@ import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.CornerPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
-import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.drag.AxisXYDragController;
 import pl.tecna.gwt.connectors.client.elements.SectionDecoration.DecorationDirection;
 import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ConnectorDoubleClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
+import pl.tecna.gwt.connectors.client.util.BaseCoordinates;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
@@ -33,8 +33,8 @@ public class Section extends HTML {
 
   private final Logger LOG = Logger.getLogger("Section");
 
-  public Point startPoint;
-  public Point endPoint;
+  public EndPoint startCoordinates;
+  public EndPoint endCoordinates;
   public Connector connector;
 
   public SectionDecoration startPointDecoration;
@@ -64,7 +64,7 @@ public class Section extends HTML {
    * @param startPoint a {@link CornerPoint} or {@link EndPoint} where the Section starts
    * @param endPoint a {@link CornerPoint} or {@link EndPoint} where the Section ends
    */
-  public Section(Point startPoint, Point endPoint, Connector connector) throws IllegalArgumentException {
+  public Section(EndPoint startPoint, EndPoint endPoint, Connector connector) throws IllegalArgumentException {
     super();
 
     // this.sinkEvents(Event.ONMOUSEDOWN);
@@ -73,8 +73,8 @@ public class Section extends HTML {
 
     this.connector = connector;
 
-    this.startPoint = startPoint;
-    this.endPoint = endPoint;
+    this.startCoordinates = startPoint;
+    this.endCoordinates = endPoint;
 
     if ((isHorizontal() == false) && (isVertical() == false)) {
       throw new IllegalArgumentException("Sections must be horizontal or vertical! " + "Start :" + startPoint.getLeft()
@@ -189,9 +189,9 @@ public class Section extends HTML {
         try {
           if (Section.this.startPointIsGluedToConnectionPoint() || Section.this.endPointIsGluedToConnectionPoint()) {
             // Calculate new CornerPoints
-            ArrayList<CornerPoint> newCornerPoints = new ArrayList<CornerPoint>();
-            Point sp = Section.this.startPoint;
-            Point ep = Section.this.endPoint;
+            ArrayList<BaseCoordinates> newCornerPoints = new ArrayList<BaseCoordinates>();
+            EndPoint sp = Section.this.startCoordinates;
+            EndPoint ep = Section.this.endCoordinates;
             CornerPoint cp1 =
                 new CornerPoint(sp.getLeft() + (ep.getLeft() - sp.getLeft()) / 2, sp.getTop()
                     + (ep.getTop() - sp.getTop()) / 2);
@@ -220,29 +220,29 @@ public class Section extends HTML {
         try {
 
           if (isAllowHorizontalDragging()) {
-            if (Section.this.startPoint.getLeft() < Section.this.endPoint.getLeft()) {
-              Section.this.startPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
+            if (Section.this.startCoordinates.getLeft() < Section.this.endCoordinates.getLeft()) {
+              Section.this.startCoordinates.setLeft(context.draggable.getAbsoluteLeft()
                   - context.boundaryPanel.getAbsoluteLeft());
-              Section.this.endPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
+              Section.this.endCoordinates.setLeft(context.draggable.getAbsoluteLeft()
                   - context.boundaryPanel.getAbsoluteLeft() + width);
             } else {
-              Section.this.startPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
+              Section.this.startCoordinates.setLeft(context.draggable.getAbsoluteLeft()
                   - context.boundaryPanel.getAbsoluteLeft() + width);
-              Section.this.endPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
+              Section.this.endCoordinates.setLeft(context.draggable.getAbsoluteLeft()
                   - context.boundaryPanel.getAbsoluteLeft());
             }
           }
 
           if (isAllowVerticalDragging()) {
-            if (Section.this.startPoint.getTop() < Section.this.endPoint.getTop()) {
-              Section.this.startPoint.setTopPosition(context.draggable.getAbsoluteTop()
+            if (Section.this.startCoordinates.getTop() < Section.this.endCoordinates.getTop()) {
+              Section.this.startCoordinates.setTop(context.draggable.getAbsoluteTop()
                   - context.boundaryPanel.getAbsoluteTop());
-              Section.this.endPoint.setTopPosition(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop()
+              Section.this.endCoordinates.setTop(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop()
                   + height);
             } else {
-              Section.this.startPoint.setTopPosition(context.draggable.getAbsoluteTop()
+              Section.this.startCoordinates.setTop(context.draggable.getAbsoluteTop()
                   - context.boundaryPanel.getAbsoluteTop() + height);
-              Section.this.endPoint.setTopPosition(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop());
+              Section.this.endCoordinates.setTop(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop());
             }
           }
 
@@ -257,11 +257,11 @@ public class Section extends HTML {
           Section.this.connector.startEndPoint.update();
 
           if (startPointDecoration != null) {
-            startPointDecoration.update(calculateStartPointDecorationDirection(), startPoint.getLeft(), startPoint
+            startPointDecoration.update(calculateStartPointDecorationDirection(), startCoordinates.getLeft(), startCoordinates
                 .getTop());
           }
           if (endPointDecoration != null) {
-            endPointDecoration.update(calculateEndPointDecorationDirection(), endPoint.getLeft(), endPoint.getTop());
+            endPointDecoration.update(calculateEndPointDecorationDirection(), endCoordinates.getLeft(), endCoordinates.getTop());
           }
         } catch (Exception e) {
           LOG.info("Section drag move error " + e.getMessage());
@@ -291,17 +291,17 @@ public class Section extends HTML {
           }
 
           if (isAllowHorizontalDragging()) {
-            if (startPoint.getTop().intValue() > endPoint.getTop().intValue()) {
-              desiredTop = endPoint.getTop();
+            if (startCoordinates.getTop() > endCoordinates.getTop()) {
+              desiredTop = endCoordinates.getTop();
             } else {
-              desiredTop = startPoint.getTop();
+              desiredTop = startCoordinates.getTop();
             }
           }
           if (isAllowVerticalDragging()) {
-            if (startPoint.getLeft().intValue() > endPoint.getLeft().intValue()) {
-              desiredLeft = endPoint.getLeft();
+            if (startCoordinates.getLeft() > endCoordinates.getLeft()) {
+              desiredLeft = endCoordinates.getLeft();
             } else {
-              desiredLeft = startPoint.getLeft();
+              desiredLeft = startCoordinates.getLeft();
             }
           }
 
@@ -340,7 +340,7 @@ public class Section extends HTML {
             // Loop 2 times to remove two preceding Sections
             try {
               for (int i = 0; i < 2; i++) {
-                Section.this.startPoint = Section.this.connector.getPrevSection(Section.this).startPoint;
+                Section.this.startCoordinates = Section.this.connector.getPrevSection(Section.this).startCoordinates;
                 Section.this.startPointDecoration =
                     Section.this.connector.getPrevSection(Section.this).startPointDecoration;
                 Section.this.connector.getPrevSection(Section.this).removeFromDiagram();
@@ -356,7 +356,7 @@ public class Section extends HTML {
             // Loop 2 times to remove two succeeding Sections
             for (int i = 0; i < 2; i++) {
               try {
-                Section.this.endPoint = Section.this.connector.getNextSection(Section.this).endPoint;
+                Section.this.endCoordinates = Section.this.connector.getNextSection(Section.this).endCoordinates;
                 Section.this.endPointDecoration =
                     Section.this.connector.getNextSection(Section.this).endPointDecoration;
                 Section.this.connector.getNextSection(Section.this).removeFromDiagram();
@@ -374,8 +374,8 @@ public class Section extends HTML {
     };
 
     // Add line to given panel
-    WidgetUtils.addWidget(panel, this, Math.min(this.startPoint.getLeft(), this.endPoint.getLeft()), 
-        Math.min(this.startPoint.getTop(),this.endPoint.getTop()));
+    WidgetUtils.addWidget(panel, this, Math.min(this.startCoordinates.getLeft(), this.endCoordinates.getLeft()), 
+        Math.min(this.startCoordinates.getTop(),this.endCoordinates.getTop()));
     this.sectionDragController.makeDraggable(this);
     this.sectionDragController.setBehaviorDragStartSensitivity(5);
 
@@ -455,24 +455,24 @@ public class Section extends HTML {
 
     // Calculate decoration's direction and add SectionDecorations to diagram
     if (startPointDecoration != null) {
-      this.startPointDecoration.showOnDiagram(panel, calculateStartPointDecorationDirection(), startPoint.getLeft(),
-          startPoint.getTop());
+      this.startPointDecoration.showOnDiagram(panel, calculateStartPointDecorationDirection(), startCoordinates.getLeft(),
+          startCoordinates.getTop());
     }
     if (endPointDecoration != null) {
-      this.endPointDecoration.showOnDiagram(panel, calculateEndPointDecorationDirection(), endPoint.getLeft(), endPoint
+      this.endPointDecoration.showOnDiagram(panel, calculateEndPointDecorationDirection(), endCoordinates.getLeft(), endCoordinates
           .getTop());
     }
   }
 
   public DecorationDirection calculateEndPointDecorationDirection() {
     if (isHorizontal()) {
-      if (this.endPoint.getLeft() < this.startPoint.getLeft()) {
+      if (this.endCoordinates.getLeft() < this.startCoordinates.getLeft()) {
         return DecorationDirection.HORIZONTAL_LEFT;
       } else {
         return DecorationDirection.HORIZONTAL_RIGHT;
       }
     } else if (isVertical()) {
-      if (this.endPoint.getTop() < this.startPoint.getTop()) {
+      if (this.endCoordinates.getTop() < this.startCoordinates.getTop()) {
         return DecorationDirection.VERTICAL_UP;
       } else {
         return DecorationDirection.VERTICAL_DOWN;
@@ -483,13 +483,13 @@ public class Section extends HTML {
 
   public DecorationDirection calculateStartPointDecorationDirection() {
     if (isHorizontal()) {
-      if (this.startPoint.getLeft() < this.endPoint.getLeft()) {
+      if (this.startCoordinates.getLeft() < this.endCoordinates.getLeft()) {
         return DecorationDirection.HORIZONTAL_LEFT;
       } else {
         return DecorationDirection.HORIZONTAL_RIGHT;
       }
     } else if (isVertical()) {
-      if (this.startPoint.getTop() < this.endPoint.getTop()) {
+      if (this.startCoordinates.getTop() < this.endCoordinates.getTop()) {
         return DecorationDirection.VERTICAL_UP;
       } else {
         return DecorationDirection.VERTICAL_DOWN;
@@ -505,8 +505,8 @@ public class Section extends HTML {
    * @return true if Section has no dimensions false if Section has dimensions
    */
   protected boolean hasNoDimensions() {
-    if ((this.startPoint.getLeft().intValue() == this.endPoint.getLeft().intValue())
-        && (this.startPoint.getTop().intValue() == this.endPoint.getTop().intValue())) {
+    if ((this.startCoordinates.getLeft() == this.endCoordinates.getLeft())
+        && (this.startCoordinates.getTop() == this.endCoordinates.getTop())) {
       return true;
     } else {
       return false;
@@ -514,8 +514,8 @@ public class Section extends HTML {
   }
 
   protected boolean startPointIsGluedToConnectionPoint() {
-    if (Section.this.startPoint instanceof EndPoint) {
-      if (((EndPoint) Section.this.startPoint).isGluedToConnectionPoint()) {
+    if (Section.this.startCoordinates instanceof EndPoint) {
+      if (((EndPoint) Section.this.startCoordinates).isGluedToConnectionPoint()) {
         return true;
       }
     }
@@ -523,8 +523,8 @@ public class Section extends HTML {
   }
 
   protected boolean endPointIsGluedToConnectionPoint() {
-    if (Section.this.endPoint instanceof EndPoint) {
-      if (((EndPoint) Section.this.endPoint).isGluedToConnectionPoint()) {
+    if (Section.this.endCoordinates instanceof EndPoint) {
+      if (((EndPoint) Section.this.endCoordinates).isGluedToConnectionPoint()) {
         return true;
       }
     }
@@ -537,12 +537,12 @@ public class Section extends HTML {
    * @param newCornerPoints an array of CornerPoints that determines a new shape of Section split up
    *          into few new Sections.
    */
-  protected void splitSection(ArrayList<CornerPoint> newCornerPoints) {
+  protected void splitSection(ArrayList<BaseCoordinates> newCornerPoints) {
 
     if (this.startPointIsGluedToConnectionPoint()) {
       // Add a new horizontal Section as the first Section in Connector and move decorations into
       // this section
-      Section s1 = new Section(this.startPoint, newCornerPoints.get(0), this.connector);
+      Section s1 = new Section(this.startCoordinates, newCornerPoints.get(0), this.connector);
       s1.setStartPointDecoration(this.startPointDecoration);
       this.startPointDecoration = null;
       s1.showOnDiagram(this.connector.diagram);
@@ -554,7 +554,7 @@ public class Section extends HTML {
       this.connector.sections.add(1, s2);
 
       // Reconnect dragged Section to the second CornerPoint
-      this.startPoint = newCornerPoints.get(1);
+      this.startCoordinates = newCornerPoints.get(1);
       this.update();
     }
 
@@ -566,14 +566,14 @@ public class Section extends HTML {
 
       // Add a new horizontal section as the last in Connector and move decorations into this
       // section
-      Section s2 = new Section(newCornerPoints.get(1), this.endPoint, this.connector);
+      Section s2 = new Section(newCornerPoints.get(1), this.endCoordinates, this.connector);
       s2.setEndPointDecoration(this.endPointDecoration);
       this.endPointDecoration = null;
       s2.showOnDiagram(this.connector.diagram);
       this.connector.sections.add(s2);
 
       // Reconnect dragged Section to the first CornerPoint
-      this.endPoint = newCornerPoints.get(0);
+      this.endCoordinates = newCornerPoints.get(0);
       this.update();
     }
 
@@ -612,8 +612,8 @@ public class Section extends HTML {
   public void update() {
     try {
 
-      this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
-      this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());
+      this.height = Math.abs(endCoordinates.getTop() - startCoordinates.getTop());
+      this.width = Math.abs(endCoordinates.getLeft() - startCoordinates.getLeft());
 
       if (isVertical()) {
 
@@ -622,8 +622,8 @@ public class Section extends HTML {
         sectionDragController.setAllowHorizontalDragging(true);
         sectionDragController.setAllowVerticalDragging(false);
 
-        WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, this.startPoint.getLeft(), Math.min(this.startPoint
-            .getTop(), this.endPoint.getTop()));
+        WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, this.startCoordinates.getLeft(), Math.min(this.startCoordinates
+            .getTop(), this.endCoordinates.getTop()));
 
       } else if (isHorizontal()) {
         if (this.connector.isSelected) {
@@ -635,17 +635,17 @@ public class Section extends HTML {
         sectionDragController.setAllowHorizontalDragging(false);
         sectionDragController.setAllowVerticalDragging(true);
 
-        WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, Math.min(this.startPoint.getLeft(), this.endPoint
-            .getLeft()), this.endPoint.getTop());
+        WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, Math.min(this.startCoordinates.getLeft(), this.endCoordinates
+            .getLeft()), this.endCoordinates.getTop());
       }
 
       // Calculate decoration's direction and update decorations
       if (startPointDecoration != null) {
-        this.startPointDecoration.update(calculateStartPointDecorationDirection(), startPoint.getLeft(), startPoint
+        this.startPointDecoration.update(calculateStartPointDecorationDirection(), startCoordinates.getLeft(), startCoordinates
             .getTop());
       }
       if (endPointDecoration != null) {
-        this.endPointDecoration.update(calculateEndPointDecorationDirection(), endPoint.getLeft(), endPoint.getTop());
+        this.endPointDecoration.update(calculateEndPointDecorationDirection(), endCoordinates.getLeft(), endCoordinates.getTop());
       }
     } catch (Exception e) {
       LOG.log(Level.SEVERE, "Error updating section", e);
@@ -685,20 +685,20 @@ public class Section extends HTML {
     }
   }
 
-  public Point getStartPoint() {
-    return startPoint;
+  public EndPoint getStartPoint() {
+    return startCoordinates;
   }
 
-  public void setStartPoint(Point startPoint) {
-    this.startPoint = startPoint;
+  public void setStartPoint(EndPoint startPoint) {
+    this.startCoordinates = startPoint;
   }
 
-  public Point getEndPoint() {
-    return endPoint;
+  public EndPoint getEndPoint() {
+    return endCoordinates;
   }
 
-  public void setEndPoint(Point endPoint) {
-    this.endPoint = endPoint;
+  public void setEndPoint(EndPoint endPoint) {
+    this.endCoordinates = endPoint;
   }
 
   public boolean isVertical() {
@@ -708,7 +708,7 @@ public class Section extends HTML {
   public boolean isVertical(List<Section> checkedSections) {
     checkedSections.add(this);
     if (!(this.hasNoDimensions())) {
-      if (this.startPoint.getLeft().intValue() == this.endPoint.getLeft().intValue()) {
+      if (this.startCoordinates.getLeft().intValue() == this.endCoordinates.getLeft().intValue()) {
         return true;
       }
     } else {
@@ -738,7 +738,7 @@ public class Section extends HTML {
   public boolean isHorizontal(List<Section> checkedSections) {
     checkedSections.add(this);
     if (!(this.hasNoDimensions())) {
-      if (this.startPoint.getTop().intValue() == this.endPoint.getTop().intValue()) {
+      if (this.startCoordinates.getTop().intValue() == this.endCoordinates.getTop().intValue()) {
         return true;
       }
     } else {
@@ -777,9 +777,9 @@ public class Section extends HTML {
 
   public int getLength() {
     if (isVertical()) {
-      return Math.abs(startPoint.getTop() - endPoint.getTop());
+      return Math.abs(startCoordinates.getTop() - endCoordinates.getTop());
     } else {
-      return Math.abs(startPoint.getLeft() - endPoint.getLeft());
+      return Math.abs(startCoordinates.getLeft() - endCoordinates.getLeft());
     }
   }
 
@@ -793,14 +793,14 @@ public class Section extends HTML {
     StringBuilder builder = new StringBuilder();
     builder.append("Start : ");
     builder.append("top-");
-    builder.append(startPoint.getTop());
+    builder.append(startCoordinates.getTop());
     builder.append(" left-");
-    builder.append(startPoint.getLeft());
+    builder.append(startCoordinates.getLeft());
     builder.append(" End : ");
     builder.append("top-");
-    builder.append(endPoint.getTop());
+    builder.append(endCoordinates.getTop());
     builder.append(" left-");
-    builder.append(endPoint.getLeft());
+    builder.append(endCoordinates.getLeft());
     builder.append(" isHorizontal-");
     builder.append(isHorizontal());
     return builder.toString();

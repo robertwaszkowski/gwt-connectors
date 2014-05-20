@@ -14,6 +14,7 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
+import pl.tecna.gwt.connectors.client.util.Coordinate;
 import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
@@ -25,13 +26,12 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Kamil Kurek
  */
-public class Shape extends FocusPanel implements Element {
+public class Shape extends WidgetDiagramElement implements Coordinate {
  
   /**
    * Enum with values defining Shape object connection points positioning type
@@ -58,8 +58,6 @@ public class Shape extends FocusPanel implements Element {
 
   private boolean enableOverlap = false;
 
-  public Diagram diagram;
-  
   public boolean startPointsVisible = false;
 
   public int left = 0;
@@ -112,9 +110,7 @@ public class Shape extends FocusPanel implements Element {
     this.setStylePrimaryName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
   }
 
-  public void showOnDiagram(final Diagram diagram) {
-
-    this.diagram = diagram;
+  public void showOnDiagram() {
 
     sinkEvents(Event.ONDBLCLICK);
 
@@ -551,7 +547,7 @@ public class Shape extends FocusPanel implements Element {
   private void addConnectionPoints(List<ConnectionPoint> connectionPoints, AbsolutePanel connectionPointsPanel) {
     for (ConnectionPoint cp : connectionPoints) {
       WidgetUtils.addWidget(connectionPointsPanel, cp, cp.positionOnCPPanel.getLeft(), cp.positionOnCPPanel.getTop());
-      cp.showOnDiagram(diagram);
+      cp.showOnDiagram();
     }
   }
   
@@ -561,13 +557,13 @@ public class Shape extends FocusPanel implements Element {
     }
   }
   
-  public void hideConnectionPoints(Diagram diagram) {
+  public void hideConnectionPoints() {
     for (int i = 0; i < connectionPoints.size(); i++) {
       connectionPoints.get(i).setUnfocused();
     }
   }
 
-  public void showConnectionPoints(Diagram diagram) {
+  public void showConnectionPoints() {
     for (int i = 0; i < connectionPoints.size(); i++) {
       connectionPoints.get(i).setSelected();
     }
@@ -587,7 +583,8 @@ public class Shape extends FocusPanel implements Element {
    * 
    * @return widget left position on parent panel {@link AbsolutePanel}
    */
-  public int getRelativeShapeLeft() {
+  @Override
+  public int getLeft() {
     if (this.diagram != null) {
       return new WidgetLocation(this, diagram.boundaryPanel).getLeft();
     } else {
@@ -601,7 +598,8 @@ public class Shape extends FocusPanel implements Element {
    * 
    * @return widget top position on parent panel {@link AbsolutePanel}
    */
-  public int getRelativeShapeTop() {
+  @Override
+  public int getTop() {
     if (this.diagram != null) {
       return new WidgetLocation(this, diagram.boundaryPanel).getTop();
     } else {
@@ -691,8 +689,8 @@ public class Shape extends FocusPanel implements Element {
    * @return <code>true</code>, if section is on current shape
    */
   public boolean isOnThisShape(Section section) {
-    Point startPoint = section.startPoint;
-    Point endPoint = section.endPoint;
+    Point startPoint = section.startCoordinates;
+    Point endPoint = section.endCoordinates;
 
     int direction;
     if (section.isHorizontal()) {
@@ -706,8 +704,8 @@ public class Shape extends FocusPanel implements Element {
 
     if (this.getParent() != null) {
 
-      int shapeLeft = this.getRelativeShapeLeft();
-      int shapeTop = this.getRelativeShapeTop();
+      int shapeLeft = this.getLeft();
+      int shapeTop = this.getTop();
       int shapeRight = shapeLeft + this.getOffsetWidth();
       int shapeBottom = shapeTop + this.getOffsetHeight();
 
@@ -744,8 +742,8 @@ public class Shape extends FocusPanel implements Element {
    */
   public boolean isOnShape(int x, int y) {
     if (this.getParent() != null) {
-      int shapeLeft = this.getRelativeShapeLeft();
-      int shapeTop = this.getRelativeShapeTop();
+      int shapeLeft = this.getLeft();
+      int shapeTop = this.getTop();
       int shapeRight = shapeLeft + this.getOffsetWidth();
       int shapeBottom = shapeTop + this.getOffsetHeight();
       if ((shapeLeft <= x && shapeRight >= x) && (shapeTop <= y && shapeBottom >= y)) {
@@ -782,10 +780,10 @@ public class Shape extends FocusPanel implements Element {
     boolean xBetween = false;
     boolean yBetween = false;
     xBetween =
-        isNumberBetween(startSelectionPoint.getLeft(), endSelectionPoint.getLeft(), getRelativeShapeLeft()
+        isNumberBetween(startSelectionPoint.getLeft(), endSelectionPoint.getLeft(), getLeft()
             + getOffsetWidth() / 2);
     yBetween =
-        isNumberBetween(startSelectionPoint.getTop(), endSelectionPoint.getTop(), getRelativeShapeTop()
+        isNumberBetween(startSelectionPoint.getTop(), endSelectionPoint.getTop(), getTop()
             + getOffsetHeight() / 2);
     return (xBetween && yBetween);
   }

@@ -6,6 +6,8 @@ import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
+import pl.tecna.gwt.connectors.client.util.Coordinate;
+import pl.tecna.gwt.connectors.client.util.CoordinatesUtils;
 import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
@@ -15,7 +17,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
-public class EndPoint extends Point {
+public class EndPoint extends WidgetDiagramElement implements Coordinate {
 
   //Defines size of connection point
   public static final int CP_MARGIN = 13;
@@ -24,6 +26,9 @@ public class EndPoint extends Point {
   public ConnectionPoint gluedConnectionPoint;
   public Connector connector;
   boolean gluedToConnectionPoint;
+  
+  protected int left;
+  protected int top;
   
   /**
    * {@link Shape} attached to the {@link EndPoint}. It would be moved together with
@@ -39,7 +44,8 @@ public class EndPoint extends Point {
    * EndPoints are represented by small circles.
    */
   public EndPoint(Integer left, Integer top, Connector connector) {
-    super(left, top);
+    this.left = left;
+    this.top = top;
 
     this.connector = connector;
     this.setGluedToConnectionPoint(false);
@@ -51,7 +57,8 @@ public class EndPoint extends Point {
   }
 
   public EndPoint(Integer left, Integer top) {
-    super(left, top);
+    this.left = left;
+    this.top = top;
     this.setGluedToConnectionPoint(false);
     Widget img = createImage();
     if (img != null) {
@@ -98,7 +105,7 @@ public class EndPoint extends Point {
   /**
    * @param diagram
    */
-  public void showOnDiagram(Diagram diagram) {
+  public void showOnDiagram() {
     // Add EndPoint to given panel
     WidgetUtils.addWidget(diagram.boundaryPanel, this, getDataCenterLeft(), getDataCenterTop());
 
@@ -200,10 +207,10 @@ public class EndPoint extends Point {
   
   public Point findNeighboringEndPoint() {
     for (Section section : connector.sections) {
-      if (section.startPoint == this) { 
-        return section.endPoint;
-      } else if (section.endPoint == this) { 
-        return section.startPoint;
+      if (section.startCoordinates == this) { 
+        return section.endCoordinates;
+      } else if (section.endCoordinates == this) { 
+        return section.startCoordinates;
       }
     }
     return null;
@@ -231,6 +238,35 @@ public class EndPoint extends Point {
   
   private WidgetLocation getWidgetLocation() {
     return new WidgetLocation(this, connector.diagram.boundaryPanel);
+  }
+  
+  public void setLeft(int left) {
+    this.left = left;
+  }
+  
+  public void setTop(int top) {
+    this.top = top;
+  }
+
+  @Override
+  public int getLeft() {
+    return left;
+  }
+
+  @Override
+  public int getTop() {
+    return top;
+  }
+
+  @Override
+  public int compareTo(Coordinate coordinate) {
+    return CoordinatesUtils.compare(this, coordinate);
+  }
+
+  @Override
+  public void set(int left, int top) {
+    this.left = left;
+    this.top = top;
   }
   
 }

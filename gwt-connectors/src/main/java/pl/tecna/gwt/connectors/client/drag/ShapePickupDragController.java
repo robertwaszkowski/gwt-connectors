@@ -11,7 +11,7 @@ import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
-import pl.tecna.gwt.connectors.client.util.Position;
+import pl.tecna.gwt.connectors.client.util.BaseCoordinates;
 
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
@@ -194,20 +194,20 @@ public class ShapePickupDragController extends PickupDragController {
   }
 
   private void recreateConnectios(Connector conn) {
-    Position startPosition;
-    Position endPosition;
+    BaseCoordinates startPosition;
+    BaseCoordinates endPosition;
     if (conn.startEndPoint.isGluedToConnectionPoint()) {
-      startPosition = new Position(conn.startEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
+      startPosition = new BaseCoordinates(conn.startEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
           conn.startEndPoint.gluedConnectionPoint.getParentShape().getCenterTop());
     } else {
-      startPosition = new Position(conn.startEndPoint.getLeft(), conn.startEndPoint.getTop());
+      startPosition = new BaseCoordinates(conn.startEndPoint.getLeft(), conn.startEndPoint.getTop());
     }
 
     if (conn.endEndPoint.isGluedToConnectionPoint()) {
-      endPosition = new Position(conn.endEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
+      endPosition = new BaseCoordinates(conn.endEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
           conn.endEndPoint.gluedConnectionPoint.getParentShape().getCenterTop());
     } else {
-      endPosition = new Position(conn.endEndPoint.getLeft(), conn.endEndPoint.getTop());
+      endPosition = new BaseCoordinates(conn.endEndPoint.getLeft(), conn.endEndPoint.getTop());
     }
 
     if (conn.endEndPoint.isGluedToConnectionPoint()) {

@@ -70,7 +70,8 @@ public class Example implements EntryPoint {
 
     boundaryPanel.add(new Label("Connectors example for GWT 2.4"), 10010, 10002);
     Connector connector1 = new Connector(10050, 10080, 10150, 10200, new SectionDecoration(DecorationType.ARROW_SOLID), new SectionDecoration(DecorationType.ARROW_SOLID));
-    connector1.showOnDiagram(diagram);
+    connector1.setDiagram(diagram);
+    connector1.showOnDiagram();
 
     ArrayList<CornerPoint> cp = new ArrayList<CornerPoint>();
     cp.add(new CornerPoint(10370, 10200));
@@ -81,12 +82,14 @@ public class Example implements EntryPoint {
         new Image("http://code.google.com/images/code_sm.png"), 
         new Image("http://code.google.com/images/code_sm.png"));
     Connector connector2 = new Connector(10350, 10200, 10270, 10080, cp, startDecoration, endDecoration);
+    connector2.setDiagram(diagram);
     connector2.style = ConnectorStyle.DASHED;
-    connector2.showOnDiagram(diagram);
+    connector2.showOnDiagram();
 
     Connector connector3 = new Connector(10450, 10120, 10500, 10080, new SectionDecoration(DecorationType.ARROW_SOLID), new SectionDecoration(DecorationType.ARROW_SOLID));
+    connector3.setDiagram(diagram);
     connector3.style = ConnectorStyle.DOTTED;
-    connector3.showOnDiagram(diagram);
+    connector3.showOnDiagram();
 
     final FocusPanel diamond = new FocusPanel();
     Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.diamondImg()).createImage();
@@ -119,33 +122,39 @@ public class Example implements EntryPoint {
     boundaryPanel.add(label3, 10300, 10500);
 
     Shape shapeForLabel = new Shape(label, CPShapeType.DIAMOND);
-    shapeForLabel.showOnDiagram(diagram);
+    shapeForLabel.setDiagram(diagram);
+    shapeForLabel.showOnDiagram();
     shapeForLabel.setTitle("shapeForLabel");
     shapeForLabel.enableConnectionCreate(true);
 
     Shape shapeForLabel2 = new Shape(label2, CPShapeType.OVAL);
-    shapeForLabel2.showOnDiagram(diagram);
+    shapeForLabel2.setDiagram(diagram);
+    shapeForLabel2.showOnDiagram();
     shapeForLabel2.setTitle("shapeForLabel2");
 
     Shape shapeForLabel3 = new Shape(label3, CPShapeType.RECTANGLE);
-    shapeForLabel3.showOnDiagram(diagram);
+    shapeForLabel3.setDiagram(diagram);
+    shapeForLabel3.showOnDiagram();
     shapeForLabel3.setTitle("shapeForLabel");
     shapeForLabel3.enableConnectionCreate(true);
 
     final Shape shapeForTask = new Shape(task, CPShapeType.RECTANGLE);
     shapeForTask.connectorsStyle = ConnectorStyle.SOLID;
-    shapeForTask.showOnDiagram(diagram);
+    shapeForTask.setDiagram(diagram);
+    shapeForTask.showOnDiagram();
     shapeForTask.enableConnectionCreate(true);
     shapeForTask.setTitle("Shape for task");
     
     Shape shapeForOval = new Shape(oval, CPShapeType.OVAL);
+    shapeForOval.setDiagram(diagram);
     shapeForOval.connectorsStyle = ConnectorStyle.SOLID;
-    shapeForOval.showOnDiagram(diagram);
+    shapeForOval.showOnDiagram();
     shapeForOval.enableConnectionCreate(true);
     
     Shape shapeForDiamond = new Shape(diamond, CPShapeType.DIAMOND);
     shapeForDiamond.connectorsStyle = ConnectorStyle.SOLID;
-    shapeForDiamond.showOnDiagram(diagram);
+    shapeForDiamond.setDiagram(diagram);
+    shapeForDiamond.showOnDiagram();
     shapeForDiamond.enableConnectionCreate(true);
 
 //    task.addDoubleClickHandler(new DoubleClickHandler() {

@@ -1,14 +1,13 @@
 package pl.tecna.gwt.connectors.client;
 
-public class CornerPoint extends Point {
+import pl.tecna.gwt.connectors.client.util.BaseCoordinates;
 
-  public CornerPoint(Integer left, Integer top) {
+public class CornerPoint extends BaseCoordinates {
+
+  public CornerPoint() {}
+  
+  public CornerPoint(int left, int top) {
     super(left, top);
-  }
-
-  @Override
-  public void showOnDiagram() {
-    // TODO: write code
   }
 
 }

@@ -363,9 +363,9 @@ public class Diagram {
         HTML marker = new HTML();
         marker
             .setHTML("<div class='marker' style='opacity:0.7;position:absolute; background-color:#f00; width:4px; height:4px; left:"
-                + (s.getRelativeShapeLeft() + s.getOffsetWidth() / 2 - 2)
+                + (s.getLeft() + s.getOffsetWidth() / 2 - 2)
                 + "px; top:"
-                + (s.getRelativeShapeTop() + s.getOffsetHeight() / 2 - 2) + "px'></div>");
+                + (s.getTop() + s.getOffsetHeight() / 2 - 2) + "px'></div>");
         markers.add(marker);
         Diagram.this.boundaryPanel.add(marker);
         // Log.info("Showing active point at shape: "+s.getTitle());
@@ -496,9 +496,9 @@ public class Diagram {
           }
 
           if (secondFromShape.isHorizontal()) {
-            sectionLength = secondFromShape.endPoint.getLeft() - secondFromShape.startPoint.getLeft();
+            sectionLength = secondFromShape.endCoordinates.getLeft() - secondFromShape.startCoordinates.getLeft();
           } else {
-            sectionLength = secondFromShape.endPoint.getTop() - secondFromShape.startPoint.getTop();
+            sectionLength = secondFromShape.endCoordinates.getTop() - secondFromShape.startCoordinates.getTop();
           }
 
           if (start) {
@@ -537,14 +537,14 @@ public class Diagram {
 
     // fix section position horizontally
     if (lastHorizontalSection != null) {
-      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, shape.getRelativeShapeLeft() - minHorizontal, shape.getRelativeShapeTop());
+      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, shape.getLeft() - minHorizontal, shape.getTop());
       lastHorizontalSection.connector.drawSections(lastHorizontalSection.connector
           .fixLineSections(lastHorizontalSection.connector.getCorners()));
     }
 
     // fix section position vertically
     if (lastVerticalSection != null) {
-      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, shape.getRelativeShapeLeft(), shape.getRelativeShapeTop() - minVertical);
+      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, shape.getLeft(), shape.getTop() - minVertical);
       lastVerticalSection.connector.drawSections(lastVerticalSection.connector
           .fixLineSections(lastVerticalSection.connector.getCorners()));
     }

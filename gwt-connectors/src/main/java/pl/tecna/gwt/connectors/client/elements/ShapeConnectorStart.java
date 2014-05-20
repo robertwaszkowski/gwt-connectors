@@ -23,7 +23,7 @@ public class ShapeConnectorStart extends EndPoint {
   private HandlerRegistration overHandlerReg;
   private HandlerRegistration outHandlerReg;
   private ConnectionPoint overlapingCP;
-
+  
   public ShapeConnectorStart(Integer left, Integer top, Shape shape, Timer endPointsTimer, ConnectionPoint overlapingCP) {
     super(left, top);
     this.shape = shape;
@@ -35,11 +35,11 @@ public class ShapeConnectorStart extends EndPoint {
   }
 
   protected void setStyle() {
-    setStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorStart());
+    setStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnector());
   }
 
   public void removeStyle() {
-    removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorStart());
+    removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnector());
   }
 
   private void addHandlers() {
@@ -89,7 +89,7 @@ public class ShapeConnectorStart extends EndPoint {
   @Override
   protected Widget createImage() {
     Widget w = new AbsolutePanel();
-    w.addStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorStartInner());
+    w.addStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInner());
     return w;
   }
 

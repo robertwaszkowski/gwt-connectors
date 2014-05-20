@@ -49,13 +49,19 @@ public interface ConnectorsClientBundle extends ClientBundle {
 
     @ClassName("x-unselectable")
     String xUnselectable();
+    
+    @ClassName("gwt-connectors-shape-connector-transparent")
+    String gwtConnectorsShapeConnectorTransparent();
 
-    @ClassName("gwt-connectors-shape-connector-start")
-    String gwtConnectorsShapeConnectorStart();
+    @ClassName("gwt-connectors-shape-connector")
+    String gwtConnectorsShapeConnector();
 
-    @ClassName("gwt-connectors-shape-connector-start-inner")
-    String gwtConnectorsShapeConnectorStartInner();
-
+    @ClassName("gwt-connectors-shape-connector-inner")
+    String gwtConnectorsShapeConnectorInner();
+    
+    @ClassName("gwt-connectors-shape-connector-inner-drop-over")
+    String gwtConnectorsShapeConnectorInnerDropOver();
+    
     @ClassName("gwt-connectors-image")
     String imageDispBlock();
 

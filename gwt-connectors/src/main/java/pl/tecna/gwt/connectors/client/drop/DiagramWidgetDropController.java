@@ -23,7 +23,6 @@ public class DiagramWidgetDropController extends SimpleDropController {
         EndPoint ep = (EndPoint) context.draggable;
         if (ep.connector.startEndPoint.isGluedToConnectionPoint()
             && ep.connector.startEndPoint.gluedConnectionPoint.getParentShape().equals(dropTarget)) {
-
         } else {
           dropTarget.showConnectionPoints(dropTarget.diagram);
         }

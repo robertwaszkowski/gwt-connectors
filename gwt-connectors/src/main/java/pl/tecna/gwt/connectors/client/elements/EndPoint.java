@@ -16,10 +16,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 public class EndPoint extends Point {
-
-  //Defines size of connection point
-  public static final int CP_MARGIN = 13;
-  public static final int CENTER_OFFSET = (int) Math.floor(CP_MARGIN / 2.0);
   
   public ConnectionPoint gluedConnectionPoint;
   public Connector connector;
@@ -210,23 +206,19 @@ public class EndPoint extends Point {
   }
   
   public int getDataCenterLeft() {
-    return (int) Math.ceil(getLeft() - getCenterOffset());
+    return (int) Math.ceil(getLeft() - ConnectionPoint.RADIUS);
   }
   
   public int getDataCenterTop() {
-    return (int) Math.ceil(getTop() - getCenterOffset());
+    return (int) Math.ceil(getTop() - ConnectionPoint.RADIUS);
   }
   
   public int getCurrentCenterLeft() {
-    return (int) Math.ceil(getWidgetLocation().getLeft() - getCenterOffset());
+    return (int) Math.ceil(getWidgetLocation().getLeft() - ConnectionPoint.RADIUS);
   }
   
   public int getCurrentCenterTop() {
-    return (int) Math.ceil(getWidgetLocation().getTop() - getCenterOffset());
-  }
-  
-  private double getCenterOffset() {
-    return (double) CP_MARGIN / 2.0;
+    return (int) Math.ceil(getWidgetLocation().getTop() - ConnectionPoint.RADIUS);
   }
   
   private WidgetLocation getWidgetLocation() {

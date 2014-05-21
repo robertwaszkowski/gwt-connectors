@@ -301,7 +301,6 @@ public class Connector implements Element {
    * the connection contains two horizontal sections and one vertical section.
    */
   public void calculateStandardPointsPositions() {
-    
     cornerPoints.clear();
 
     int distanceX = startEndPoint.getLeft() - endEndPoint.getLeft();
@@ -331,7 +330,6 @@ public class Connector implements Element {
   }
 
   public void updateCornerPoints() {
-    // Log.info("updateCornerPoints - Connector - 275");
     this.cornerPoints = (ArrayList<CornerPoint>) getCorners(sections);
   }
 
@@ -642,10 +640,8 @@ public class Connector implements Element {
   public void drawSections(List<CornerPoint> cp, boolean isSelected) {
     this.cornerPoints = (ArrayList<CornerPoint>) cp;
     // logCornerPointsData();
-
     try {
       for (Section section : sections) {
-        // LOG.i(section.toDebugString());
         section.removeFromDiagram();
       }
 

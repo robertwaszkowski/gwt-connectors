@@ -35,11 +35,11 @@ public class ShapeConnectorStart extends EndPoint {
   }
 
   protected void setStyle() {
-    setStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnector());
+//    setStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnector());
   }
 
   public void removeStyle() {
-    removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnector());
+//    removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnector());
   }
 
   private void addHandlers() {

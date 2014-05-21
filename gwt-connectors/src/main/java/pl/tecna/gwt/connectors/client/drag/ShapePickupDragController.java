@@ -145,9 +145,6 @@ public class ShapePickupDragController extends PickupDragController {
                     - diagram.boundaryPanel.getAbsoluteTop());
               } else {
                 // one element selected
-
-                // if (!shape.isOnThisShape(lastSection)) {
-                // LOG.d("Section is not on shape");
                 boolean vertical = false;
                 if (ep.connector.prevSectionForPoint(ep) != null) {
                   vertical = ep.connector.prevSectionForPoint(ep).isVertical();

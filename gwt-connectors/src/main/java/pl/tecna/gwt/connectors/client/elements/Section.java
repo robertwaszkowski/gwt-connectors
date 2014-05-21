@@ -204,13 +204,13 @@ public class Section extends HTML {
             Section.this.splitSection(newCornerPoints);
           }
         } catch (Exception e) {
-          LOG.info("Section drag start error " + e.getMessage());
+          LOG.severe("Section drag start error " + e.getMessage());
           e.printStackTrace();
         }
         try {
           super.dragStart();
         } catch (Exception e) {
-          LOG.info("Section (super) drag start error " + e.getMessage());
+          LOG.severe("Section (super) drag start error " + e.getMessage());
           e.printStackTrace();
         }
       }
@@ -264,7 +264,7 @@ public class Section extends HTML {
             endPointDecoration.update(calculateEndPointDecorationDirection(), endPoint.getLeft(), endPoint.getTop());
           }
         } catch (Exception e) {
-          LOG.info("Section drag move error " + e.getMessage());
+          LOG.severe("Section drag move error " + e.getMessage());
           e.printStackTrace();
         }
 
@@ -323,7 +323,7 @@ public class Section extends HTML {
           }
 
         } catch (Exception e) {
-          LOG.info("Section (super) drag move error " + e.getMessage());
+          LOG.severe("Section (super) drag move error " + e.getMessage());
           e.printStackTrace();
         }
       }
@@ -611,7 +611,6 @@ public class Section extends HTML {
    */
   public void update() {
     try {
-
       this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
       this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());
 

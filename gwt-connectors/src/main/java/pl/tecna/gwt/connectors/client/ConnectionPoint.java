@@ -22,6 +22,9 @@ public class ConnectionPoint extends FocusPanel {
 
   Logger LOG = Logger.getLogger("ConnectionPoint");
   
+  public static final int SIZE = 11;
+  public static final int RADIUS = (int) Math.floor(SIZE / 2);
+  
 	public ArrayList<EndPoint> gluedEndPoints;
 	
 	/**
@@ -39,8 +42,6 @@ public class ConnectionPoint extends FocusPanel {
 	public static final int DIRECTION_RIGHT  =  2;
 	public static final int DIRECTION_BOTTOM =  3;
 	public static final int DIRECTION_LEFT   =  4;
-	
-	public static final int CPSize = 11;
 	
 	/**
 	 * Any element which should be connected by {@link Connector}
@@ -138,12 +139,12 @@ public class ConnectionPoint extends FocusPanel {
 
 	public int getCurrentLeft() {
 	  WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-	  return currentLocation.getLeft() - CPSize / 2;
+	  return currentLocation.getLeft();
 	}
 	
 	public int getCurrentTop() {
     WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-    return currentLocation.getTop() - CPSize / 2;
+    return currentLocation.getTop();
   }
 	
 	/**
@@ -155,7 +156,7 @@ public class ConnectionPoint extends FocusPanel {
 	  WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
 		int left;
 		if (this.getParentShape().diagram != null) {
-		  left = (int) Math.floor(currentLocation.getLeft() + ((double) CPSize / 2.0));
+		  left = (int) Math.floor(currentLocation.getLeft() + RADIUS);
 		  if (connectionDirection == DIRECTION_LEFT) {
 		    left += 1;
 		  }
@@ -174,7 +175,7 @@ public class ConnectionPoint extends FocusPanel {
     WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
 		int top;
 		if (this.getParentShape().diagram != null) {
-		  top = (int) Math.floor(currentLocation.getTop() + ((double) CPSize / 2.0));
+		  top = (int) Math.floor(currentLocation.getTop() + RADIUS);
 			return top;
 		} else {
 			return -1;

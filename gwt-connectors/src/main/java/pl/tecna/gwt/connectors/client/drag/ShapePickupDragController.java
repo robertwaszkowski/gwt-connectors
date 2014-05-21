@@ -128,11 +128,11 @@ public class ShapePickupDragController extends PickupDragController {
         for (ConnectionPoint cp : shape.connectionPoints) {
           for (EndPoint ep : cp.gluedEndPoints) {
             if (diagram.ctrlPressed) {
-              toRecreate.add(ep.connector);
-            } else if (ep.connector.sections.size() == 3) {
               ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
               ep.connector.calculateStandardPointsPositions();
               ep.connector.drawSections();
+            } else if (ep.connector.sections.size() == 3) {
+              toRecreate.add(ep.connector);
             } else {
               // moving multiple selected elements
               if (ep.connector.startEndPoint.isGluedToConnectionPoint()

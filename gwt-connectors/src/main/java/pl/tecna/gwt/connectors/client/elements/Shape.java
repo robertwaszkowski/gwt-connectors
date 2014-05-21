@@ -242,7 +242,7 @@ public class Shape extends FocusPanel implements Element {
       }
     } else if (connectionPoints.size() < newCpSize) {
       for (int i = connectionPoints.size() ; i < newCpSize ; i++) {
-        ConnectionPoint cp = new ConnectionPoint(ConnectionPoint.DIRECTION_LEFT, i, connectedWidget);
+        ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, i, connectedWidget);
         connectionPoints.add(cp);
         connectionPointsPanel.add(cp);
       }
@@ -315,6 +315,10 @@ public class Shape extends FocusPanel implements Element {
       }
 
       enableConnectionCreate(false);
+      
+      for (ConnectionPoint cp : connectionPoints) {
+        cp.unregisterDropController();
+      }
 
       // Remove Shape from Diagram
       diagram.endPointDragController.unregisterDropController(shapeDropController);
@@ -323,7 +327,7 @@ public class Shape extends FocusPanel implements Element {
 
       diagram.shapes.remove(this);
       diagram.boundaryPanel.remove(this);
-
+      
       List<Connector> connectors = getConnectedConnectors();
       for (Connector conn : connectors) {
         conn.removeFromDiagram(diagram, false);
@@ -369,29 +373,29 @@ public class Shape extends FocusPanel implements Element {
   private List<ConnectionPoint> createRectangleShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
     List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 
-    ConnectionPoint cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 0, connectedWidget);
+    ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 0, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 1, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 1, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 2, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 2, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_RIGHT, 3, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 3, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_RIGHT, 4, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 4, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_RIGHT, 5, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 5, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 6, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 6, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 8, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 8, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_LEFT, 9, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 9, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_LEFT, 10, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 10, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_LEFT, 11, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 11, connectedWidget);
     connectionPoints.add(cp);
 
     calculateRectangleCPPositions(connectionPoints, connectionPointsPanel);
@@ -435,21 +439,21 @@ public class Shape extends FocusPanel implements Element {
   private List<ConnectionPoint> createOvalShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
     List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 
-    ConnectionPoint cp = new ConnectionPoint(ConnectionPoint.DIRECTION_LEFT, 0, connectedWidget);
+    ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 0, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 1, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 1, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 2, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 2, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 3, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 3, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_RIGHT, 4, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 4, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 5, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 5, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 6, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 6, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
     connectionPoints.add(cp);
 
     calculateOvalCPPositions(connectionPoints, connectionPointsPanel);
@@ -482,21 +486,21 @@ public class Shape extends FocusPanel implements Element {
   private List<ConnectionPoint> createDiamondShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
     List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 
-    ConnectionPoint cp = new ConnectionPoint(ConnectionPoint.DIRECTION_LEFT, 0, connectedWidget);
+    ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 0, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 1, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 1, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 2, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 2, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_TOP, 3, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 3, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_RIGHT, 4, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 4, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 5, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 5, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 6, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 6, connectedWidget);
     connectionPoints.add(cp);
-    cp = new ConnectionPoint(ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
+    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
     connectionPoints.add(cp);
 
     calculateDiamondShapeCP(connectionPoints, connectionPointsPanel);
@@ -539,7 +543,7 @@ public class Shape extends FocusPanel implements Element {
   private void addConnectionPoints(List<ConnectionPoint> connectionPoints, AbsolutePanel connectionPointsPanel) {
     for (ConnectionPoint cp : connectionPoints) {
       WidgetUtils.addWidget(connectionPointsPanel, cp, cp.positionOnCPPanel.getLeft(), cp.positionOnCPPanel.getTop());
-      cp.showOnDiagram(diagram);
+      cp.showOnDiagram();
     }
   }
   

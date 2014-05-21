@@ -3,6 +3,7 @@ package pl.tecna.gwt.connectors.client;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import pl.tecna.gwt.connectors.client.drop.ConnectionPointDropController;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
@@ -31,6 +32,7 @@ public class ConnectionPoint extends FocusPanel {
 	public Widget parentWidget;
 	public Point positionOnCPPanel;
 	public Diagram diagram;
+	private ConnectionPointDropController dropController;
 	
 	public static final int ALL    =  0;
 	public static final int DIRECTION_TOP    =  1;
@@ -53,17 +55,20 @@ public class ConnectionPoint extends FocusPanel {
 	 * Connection Point have its own Drop Controller to allow dropping {@link EndPoint}
 	 * on it to make it glued.
 	 */
-	public ConnectionPoint() {
+	public ConnectionPoint(Diagram diagram) {
 		super();
+		this.diagram = diagram;
 		gluedEndPoints = new ArrayList<EndPoint>();
 		connectionDirection = ConnectionPoint.ALL;
 		setTransparent();
 		this.index = 1;
 		this.getElement().getStyle().setZIndex(2);
+		dropController = new ConnectionPointDropController(this);
+		diagram.endPointDragController.registerDropController(dropController);
 	}
 	
-	public ConnectionPoint(int connectionDirection, int position, Widget w) {
-		this();
+	public ConnectionPoint(Diagram diagram, int connectionDirection, int position, Widget w) {
+		this(diagram);
 		this.connectionDirection = connectionDirection;
 		this.index = position;
 		this.parentWidget = w;
@@ -100,8 +105,7 @@ public class ConnectionPoint extends FocusPanel {
 	 * 
 	 * @author robert.waszkowski@gmail.com
 	 */
-	public void showOnDiagram(Diagram diagram) {
-		this.diagram = diagram;
+	public void showOnDiagram() {
 	}
 
 	/**
@@ -187,6 +191,10 @@ public class ConnectionPoint extends FocusPanel {
 	
 	public Widget getParentWidget() {
 	  return parentWidget;
+	}
+	
+	public void unregisterDropController() {
+    diagram.endPointDragController.unregisterDropController(dropController);
 	}
 
 }

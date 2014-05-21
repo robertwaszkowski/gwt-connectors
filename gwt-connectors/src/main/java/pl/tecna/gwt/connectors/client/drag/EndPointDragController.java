@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
+import pl.tecna.gwt.connectors.client.drop.ConnectionPointDropController;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Section;
@@ -87,6 +88,7 @@ public class EndPointDragController extends PickupDragController {
   @Override
   public void dragMove() {
     EndPoint draggedEP = (EndPoint) context.draggable;
+    System.out.println("@@@@@@@@@@@@ drop controller : " + context.dropController);
 
     draggedEP.connector.select();
     int desiredLeft = getEndPointCenterLeft(draggedEP);
@@ -116,7 +118,18 @@ public class EndPointDragController extends PickupDragController {
     draggedEP.setPosition(desiredLeft, desiredTop);
 
     if (draggedEP.connector.sections.size() <= 3) {
-      fixConnectorPath(draggedEP);
+      if (draggedEP.connector.startEndPoint.isGluedToConnectionPoint() && 
+          context.dropController instanceof ConnectionPointDropController) {
+        ConnectionPoint target = ((ConnectionPointDropController) context.dropController).targetConnectionPoint;
+        draggedEP.gluedConnectionPoint = target;
+        draggedEP.setGluedToConnectionPoint(true);
+        draggedEP.connector.calculateStandardPointsPositions(
+            draggedEP.connector.startEndPoint, 
+            draggedEP);
+        draggedEP.connector.drawSections();
+      } else {
+        fixConnectorPath(draggedEP);
+      }
     } else {
       if (diagram.ctrlPressed) {
         fixConnectorPath(draggedEP);

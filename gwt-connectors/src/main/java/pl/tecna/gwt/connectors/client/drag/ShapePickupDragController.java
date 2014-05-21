@@ -131,7 +131,7 @@ public class ShapePickupDragController extends PickupDragController {
               ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
               ep.connector.calculateStandardPointsPositions();
               ep.connector.drawSections();
-            } else if (ep.connector.sections.size() == 3) {
+            } else if (ep.connector.sections.size() <= 3) {
               toRecreate.add(ep.connector);
             } else {
               // moving multiple selected elements

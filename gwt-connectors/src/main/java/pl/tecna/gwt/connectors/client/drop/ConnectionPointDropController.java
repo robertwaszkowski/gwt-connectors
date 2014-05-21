@@ -9,7 +9,7 @@ import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
 
 public class ConnectionPointDropController extends SimpleDropController {
 
-  private ConnectionPoint targetConnectionPoint;
+  public ConnectionPoint targetConnectionPoint;
   
   public ConnectionPointDropController(ConnectionPoint dropTarget) {
     super(dropTarget);

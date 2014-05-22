@@ -655,7 +655,6 @@ public class Connector implements Element {
    */
   public void drawSections(List<CornerPoint> cp, boolean isSelected) {
     this.cornerPoints = (ArrayList<CornerPoint>) cp;
-     logCornerPointsData();
     try {
       for (Section section : sections) {
         section.removeFromDiagram();

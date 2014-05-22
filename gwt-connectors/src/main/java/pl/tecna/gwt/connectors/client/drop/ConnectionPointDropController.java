@@ -20,12 +20,34 @@ public class ConnectionPointDropController extends SimpleDropController {
   public void onEnter(DragContext context) {
     targetConnectionPoint.setVisible();
     targetConnectionPoint.addStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInnerDropOver());
+    if (context.draggable instanceof EndPoint) {
+      EndPoint draggedEP = (EndPoint) context.draggable;
+      if (draggedEP.connector.sections.size() <= 3) {
+        if (draggedEP.connector.startEndPoint.isGluedToConnectionPoint() && 
+            context.dropController instanceof ConnectionPointDropController) {
+          ConnectionPoint target = ((ConnectionPointDropController) context.dropController).targetConnectionPoint;
+          draggedEP.gluedConnectionPoint = target;
+          draggedEP.setGluedToConnectionPoint(true);
+          draggedEP.setPosition(targetConnectionPoint.getCenterLeft(), targetConnectionPoint.getCenterTop());
+          draggedEP.connector.calculateStandardPointsPositions(
+              draggedEP.connector.startEndPoint, 
+              draggedEP);
+          draggedEP.connector.drawSections();
+        }
+      }
+    }
   }
   
   @Override
   public void onLeave(DragContext context) {
-    targetConnectionPoint.setTransparent();
-    targetConnectionPoint.removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInnerDropOver());
+    if (context.finalDropController == null) {
+      targetConnectionPoint.setTransparent();
+      targetConnectionPoint.removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInnerDropOver());
+      if (context.draggable instanceof EndPoint) {
+        EndPoint draggedEP = (EndPoint) context.draggable;
+        draggedEP.unglueFromConnectionPoint();
+      }
+    }
   }
   
   @Override

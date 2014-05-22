@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.drag.EndPointDragController;
 import pl.tecna.gwt.connectors.client.drag.ShapePickupDragController;
+import pl.tecna.gwt.connectors.client.drop.ConnectionPointDropController;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Section;
@@ -274,18 +275,22 @@ public class Diagram {
       public void onDragEnd(DragEndEvent event) {
         endPointDragging = false;
         EndPoint endPoint = (EndPoint) event.getSource();
-        endPoint.connector.fixEndSectionDirection(endPoint);
-        endPoint.connector.drawSections(endPoint.connector.getCorners());
+        
+        if (event.getContext().finalDropController != null && 
+            !(event.getContext().finalDropController instanceof ConnectionPointDropController)) {
+          endPoint.connector.fixEndSectionDirection(endPoint);
+          endPoint.connector.drawSections(endPoint.connector.getCorners());
 
-        try {
-          endPoint.connector.cornerPoints =
-              (ArrayList<CornerPoint>) endPoint.connector.fixLineSections(endPoint.connector.getCorners());
-          endPoint.connector.drawSections();
-          endPoint.connector.fixSections();
-        } catch (Exception e) {
-          LOG.log(Level.SEVERE, "Unexpected exception", e);
+          try {
+            endPoint.connector.cornerPoints =
+                (ArrayList<CornerPoint>) endPoint.connector.fixLineSections(endPoint.connector.getCorners());
+            endPoint.connector.drawSections();
+            endPoint.connector.fixSections();
+          } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Unexpected exception", e);
+          }
         }
-
+        
         Integer endX = null;
         Integer endY = null;
         if (event.getContext().draggable.getParent() != null

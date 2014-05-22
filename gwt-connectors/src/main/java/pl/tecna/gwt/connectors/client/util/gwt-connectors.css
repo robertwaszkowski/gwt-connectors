@@ -62,6 +62,10 @@
 	padding: 4px;
 }
 
+.gwt-connectors-image {
+	display: block;
+}
+
 .gwt-connectors-shape-connector-inner {
 	background-color: white;
 	height: 7px;
@@ -74,6 +78,7 @@
 	height: 11px;
 	width: 11px;
 	background-color: transparent;
+	cursor: crosshair;
 }
 
 .gwt-connectors-shape-connector-inner:hover {
@@ -84,6 +89,18 @@
 	background-color: #FF6633;
 }
 
-.gwt-connectors-image {
-	display: block;
+.gwt-connectors-end-point {
+	width: 6px;
+	height: 6px;
+	background-color: rgb(178, 178, 178);
+	border: 2px solid rgb(93,93,93);
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+.gwt-connectors-end-point-transparent {
+	width: 8px;
+	height: 8px;
+	background-color: transparent;
+	border: none;
 }

@@ -23,7 +23,7 @@ public class ConnectionPointDropController extends SimpleDropController {
   @Override
   public void onEnter(DragContext context) {
     targetConnectionPoint.setVisible();
-    targetConnectionPoint.addStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInnerDropOver());
+    targetConnectionPoint.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInnerDropOver());
     if (context.draggable instanceof EndPoint) {
       EndPoint draggedEP = (EndPoint) context.draggable;
       if (draggedEP.connector.sections.size() <= 3) {
@@ -45,7 +45,7 @@ public class ConnectionPointDropController extends SimpleDropController {
   @Override
   public void onLeave(DragContext context) {
     targetConnectionPoint.setTransparent();
-    targetConnectionPoint.removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInnerDropOver());
+    targetConnectionPoint.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInnerDropOver());
     if (context.finalDropController == null) {
       if (context.draggable instanceof EndPoint) {
         EndPoint draggedEP = (EndPoint) context.draggable;

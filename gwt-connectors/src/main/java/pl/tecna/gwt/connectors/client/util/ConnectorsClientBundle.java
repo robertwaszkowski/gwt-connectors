@@ -51,20 +51,25 @@ public interface ConnectorsClientBundle extends ClientBundle {
     String xUnselectable();
     
     @ClassName("gwt-connectors-shape-connector-transparent")
-    String gwtConnectorsShapeConnectorTransparent();
+    String shapeConnectorTransparent();
 
     @ClassName("gwt-connectors-shape-connector")
-    String gwtConnectorsShapeConnector();
+    String shapeConnector();
 
     @ClassName("gwt-connectors-shape-connector-inner")
-    String gwtConnectorsShapeConnectorInner();
+    String shapeConnectorInner();
     
     @ClassName("gwt-connectors-shape-connector-inner-drop-over")
-    String gwtConnectorsShapeConnectorInnerDropOver();
+    String shapeConnectorInnerDropOver();
     
     @ClassName("gwt-connectors-image")
     String imageDispBlock();
 
+    @ClassName("gwt-connectors-end-point")
+    String endPoint();
+    
+    @ClassName("gwt-connectors-end-point-transparent")
+    String endPointTransparent();
   }
 
   static final ConnectorsClientBundle INSTANCE = GWT.create(ConnectorsClientBundle.class);

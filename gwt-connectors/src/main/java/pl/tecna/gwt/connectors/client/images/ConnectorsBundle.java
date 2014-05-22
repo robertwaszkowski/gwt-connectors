@@ -7,22 +7,7 @@ import com.google.gwt.resources.client.ImageResource;
 public interface ConnectorsBundle extends ClientBundle {
 
   public static final ConnectorsBundle INSTANCE = GWT.create(ConnectorsBundle.class);
-
-  @Source("connection_point.png")
-  ImageResource connection_point();
-
-  @Source("connection_point_focused.png")
-  ImageResource connection_point_focused();
-
-  @Source("connection_point_selected.png")
-  ImageResource connection_point_selected();
-
-  @Source("end_point.png")
-  ImageResource end_point();
-
-  @Source("end_point_focused.png")
-  ImageResource end_point_focused();
-
+  
   // For VERTICAL_DOWN direction
   @Source("arrow_down.png")
   ImageResource arrow_down();
@@ -94,6 +79,4 @@ public interface ConnectorsBundle extends ClientBundle {
   @Source("oval.png")
   ImageResource ovalImg();
 
-  @Source("shape_connector_start.png")
-  ImageResource shapeConnectorStart();
 }

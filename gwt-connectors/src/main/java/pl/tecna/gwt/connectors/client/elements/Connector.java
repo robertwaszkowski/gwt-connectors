@@ -285,8 +285,8 @@ public class Connector implements Element {
     }
 
     // Remove end points
-    startEndPoint.clear();
-    endEndPoint.clear();
+    startEndPoint.setTransparent();
+    endEndPoint.setTransparent();
 
     if (fireEvent) {
       diagram.onDiagramRemove(new DiagramRemoveEvent(this, null, null));

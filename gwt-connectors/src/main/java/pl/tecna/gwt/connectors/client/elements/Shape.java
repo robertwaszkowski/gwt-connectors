@@ -56,11 +56,11 @@ public class Shape extends FocusPanel implements Element {
 
   public List<EndPoint> endPoints;
 
+  public List<ConnectionPoint> connectionPoints;
+
   public CPShapeType cpShapeType;
 
   public Widget connectedWidget;
-
-  public List<ConnectionPoint> connectionPoints;
 
   public AbsolutePanel connectionPointsPanel;
 
@@ -812,7 +812,6 @@ public class Shape extends FocusPanel implements Element {
         ep.removeFromParent();
         diagram.endPointDragController.makeNotDraggable(ep);
       }
-      endPoints.clear();
     }
   }
 
@@ -880,7 +879,7 @@ public class Shape extends FocusPanel implements Element {
       }
       for (EndPoint ep : endPoints) {
         if (ep instanceof ShapeConnectorStart) {
-          ((ShapeConnectorStart) ep).removeHandlers();
+          ((ShapeConnectorStart) ep).disableConnectorCreate();
         }
         ep.removeFromParent();
       }

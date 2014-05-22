@@ -134,8 +134,8 @@ public class ConnectionPoint extends FocusPanel {
 	 * @author robert.waszkowski@gmail.com
 	 */
 	public void setVisible() {
-	  this.removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorTransparent());
-    this.addStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInner());
+	  this.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
+    this.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
 	}
 
 	/**
@@ -148,8 +148,8 @@ public class ConnectionPoint extends FocusPanel {
 	 * @author robert.waszkowski@gmail.com
 	 */
 	public void setTransparent() {
-    this.addStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorTransparent());
-    this.removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInner());
+    this.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
+    this.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
 	}
 
 	public int getCurrentLeft() {

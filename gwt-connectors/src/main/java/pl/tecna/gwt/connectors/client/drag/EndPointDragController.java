@@ -33,18 +33,16 @@ public class EndPointDragController extends PickupDragController {
 
   @Override
   public void previewDragStart() throws VetoDragException {
-
-    // create new connector for dragged ShapeConnectorStart
-    if (context.draggable instanceof ShapeConnectorStart) {
+    EndPoint ep = (EndPoint) context.draggable;
+    if (((EndPoint) context.draggable).connector == null) {
       diagram.clearSelection();
-      ShapeConnectorStart ep = (ShapeConnectorStart) context.draggable;
-      ep.setWidget(ep.createEndPointImage());
+      ep.setVisible();
       ep.setPosition(getEndPointCenterLeft(ep), getEndPointCenterTop(ep));
 
       if (ep.connector == null) {
         ep.shape.endPoints.remove(ep);
         ep.shape.hideShapeConnectorStartPionts();
-        ep.removeHandlers();
+        ep.disableConnectorCreate();
         DOM.setStyleAttribute(ep.getElement(), "cursor", "crosshair");
         if (ep.connector == null) {
           int startLeft = ep.getOverlapingCP().getCenterLeft();

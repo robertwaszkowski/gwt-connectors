@@ -209,7 +209,7 @@ public class ShapePickupDragController extends PickupDragController {
 
     if (conn.endEndPoint.isGluedToConnectionPoint()) {
       ConnectionPoint nearestCP = conn.endEndPoint.gluedConnectionPoint.getParentShape().
-          findNearestConnectionPoint(startPosition.getLeft(), startPosition.getTop());
+          findNearestFreeConnectionPoint(startPosition.getLeft(), startPosition.getTop());
       conn.endEndPoint.glueToConnectionPoint(nearestCP, false);
       conn.endEndPoint.setLeftPosition(nearestCP.getCenterLeft());
       conn.endEndPoint.setTopPosition(nearestCP.getCenterTop());
@@ -219,10 +219,13 @@ public class ShapePickupDragController extends PickupDragController {
     }
     if (conn.startEndPoint.isGluedToConnectionPoint()) {
       ConnectionPoint nearestCP = conn.startEndPoint.gluedConnectionPoint.getParentShape().
-          findNearestConnectionPoint(endPosition.getLeft(), endPosition.getTop());
+          findNearestFreeConnectionPoint(endPosition.getLeft(), endPosition.getTop());
       conn.startEndPoint.glueToConnectionPoint(nearestCP, false);
       conn.startEndPoint.setLeftPosition(nearestCP.getCenterLeft());
       conn.startEndPoint.setTopPosition(nearestCP.getCenterTop());
+      
+      startPosition.setLeft(conn.startEndPoint.getLeft());
+      startPosition.setTop(conn.startEndPoint.getTop());
     }
     conn.calculateStandardPointsPositions();
     conn.drawSections();

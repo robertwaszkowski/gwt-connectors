@@ -79,9 +79,11 @@ public class EndPoint extends Point {
    * 
    */
   public void unglueFromConnectionPoint() {
-    this.gluedConnectionPoint.unglueFromEndPoint(this);
-    this.gluedConnectionPoint = null;
-    this.setGluedToConnectionPoint(false);
+    if (gluedConnectionPoint != null) {
+      gluedConnectionPoint.unglueFromEndPoint(this);
+      gluedConnectionPoint = null;
+    }
+    setGluedToConnectionPoint(false);
   }
 
   /**

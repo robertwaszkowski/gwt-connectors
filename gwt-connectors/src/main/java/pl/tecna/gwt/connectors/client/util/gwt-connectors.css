@@ -71,6 +71,8 @@
 }
 
 .gwt-connectors-shape-connector-transparent {
+	height: 11px;
+	width: 11px;
 	background-color: transparent;
 }
 

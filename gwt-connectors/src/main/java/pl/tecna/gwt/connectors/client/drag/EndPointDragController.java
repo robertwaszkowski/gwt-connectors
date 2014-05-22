@@ -45,7 +45,6 @@ public class EndPointDragController extends PickupDragController {
         ep.shape.endPoints.remove(ep);
         ep.shape.hideShapeConnectorStartPionts();
         ep.removeHandlers();
-        ep.removeStyle();
         DOM.setStyleAttribute(ep.getElement(), "cursor", "crosshair");
         if (ep.connector == null) {
           int startLeft = ep.getOverlapingCP().getCenterLeft();
@@ -88,8 +87,15 @@ public class EndPointDragController extends PickupDragController {
   @Override
   public void dragMove() {
     EndPoint draggedEP = (EndPoint) context.draggable;
-
     draggedEP.connector.select();
+    
+    if (draggedEP.connector.sections.size() <= 3) {
+      if (draggedEP.connector.startEndPoint.isGluedToConnectionPoint() && 
+          context.dropController instanceof ConnectionPointDropController) {
+        super.dragMove();
+      }
+    }
+    
     int desiredLeft = getEndPointCenterLeft(draggedEP);
     int desiredTop = getEndPointCenterTop(draggedEP);
     if (diagram.drawInitializingConnectorsInLine && draggedEP.connector.initalizing) {
@@ -117,18 +123,7 @@ public class EndPointDragController extends PickupDragController {
     draggedEP.setPosition(desiredLeft, desiredTop);
 
     if (draggedEP.connector.sections.size() <= 3) {
-      if (draggedEP.connector.startEndPoint.isGluedToConnectionPoint() && 
-          context.dropController instanceof ConnectionPointDropController) {
-//        ConnectionPoint target = ((ConnectionPointDropController) context.dropController).targetConnectionPoint;
-//        draggedEP.gluedConnectionPoint = target;
-//        draggedEP.setGluedToConnectionPoint(true);
-//        draggedEP.connector.calculateStandardPointsPositions(
-//            draggedEP.connector.startEndPoint, 
-//            draggedEP);
-//        draggedEP.connector.drawSections();
-      } else {
-        fixConnectorPath(draggedEP);
-      }
+      fixConnectorPath(draggedEP);
     } else {
       if (diagram.ctrlPressed) {
         fixConnectorPath(draggedEP);

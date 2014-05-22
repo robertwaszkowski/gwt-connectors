@@ -30,16 +30,7 @@ public class ShapeConnectorStart extends EndPoint {
     this.endPointsTimer = endPointsTimer;
     this.overlapingCP = overlapingCP;
     addHandlers();
-    setStyle();
     DOM.setStyleAttribute(this.getElement(), "cursor", "pointer");
-  }
-
-  protected void setStyle() {
-//    setStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnector());
-  }
-
-  public void removeStyle() {
-//    removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnector());
   }
 
   private void addHandlers() {

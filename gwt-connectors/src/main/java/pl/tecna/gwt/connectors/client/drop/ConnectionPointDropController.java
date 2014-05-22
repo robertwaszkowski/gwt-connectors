@@ -1,5 +1,7 @@
 package pl.tecna.gwt.connectors.client.drop;
 
+import java.util.logging.Logger;
+
 import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
@@ -9,6 +11,8 @@ import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
 
 public class ConnectionPointDropController extends SimpleDropController {
 
+  private static final Logger LOG = Logger.getLogger("ConnectionPointDropController");
+  
   public ConnectionPoint targetConnectionPoint;
   
   public ConnectionPointDropController(ConnectionPoint dropTarget) {
@@ -40,9 +44,9 @@ public class ConnectionPointDropController extends SimpleDropController {
   
   @Override
   public void onLeave(DragContext context) {
+    targetConnectionPoint.setTransparent();
+    targetConnectionPoint.removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInnerDropOver());
     if (context.finalDropController == null) {
-      targetConnectionPoint.setTransparent();
-      targetConnectionPoint.removeStyleName(ConnectorsClientBundle.INSTANCE.css().gwtConnectorsShapeConnectorInnerDropOver());
       if (context.draggable instanceof EndPoint) {
         EndPoint draggedEP = (EndPoint) context.draggable;
         draggedEP.unglueFromConnectionPoint();
@@ -54,6 +58,7 @@ public class ConnectionPointDropController extends SimpleDropController {
   public void onDrop(DragContext context) {
     EndPoint endPoint = (EndPoint) context.draggable;
     endPoint.glueToConnectionPoint(targetConnectionPoint);
+    endPoint.connector.fixEndSectionDirection(endPoint);
   }
   
 }

@@ -280,7 +280,6 @@ public class Diagram {
             !(event.getContext().finalDropController instanceof ConnectionPointDropController)) {
           endPoint.connector.fixEndSectionDirection(endPoint);
           endPoint.connector.drawSections(endPoint.connector.getCorners());
-
           try {
             endPoint.connector.cornerPoints =
                 (ArrayList<CornerPoint>) endPoint.connector.fixLineSections(endPoint.connector.getCorners());

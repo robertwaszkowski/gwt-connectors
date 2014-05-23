@@ -98,9 +98,19 @@
 	cursor: pointer;
 }
 
+.gwt-connectors-end-point-create-connector {
+	background-color: white;
+	height: 7px;
+	width: 7px;
+	border: 2px solid gray;
+	border-radius: 5px;
+	cursor: pointer
+}
+
 .gwt-connectors-end-point-transparent {
 	width: 8px;
 	height: 8px;
 	background-color: transparent;
 	border: none;
+	cursor: default;
 }

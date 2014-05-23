@@ -67,6 +67,9 @@ public interface ConnectorsClientBundle extends ClientBundle {
 
     @ClassName("gwt-connectors-end-point")
     String endPoint();
+
+    @ClassName("gwt-connectors-end-point-create-connector")
+    String endPointConnectorCreate();
     
     @ClassName("gwt-connectors-end-point-transparent")
     String endPointTransparent();

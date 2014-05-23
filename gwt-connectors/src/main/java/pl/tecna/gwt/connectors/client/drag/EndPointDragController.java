@@ -9,14 +9,12 @@ import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Section;
 import pl.tecna.gwt.connectors.client.elements.Shape;
-import pl.tecna.gwt.connectors.client.elements.ShapeConnectorStart;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.allen_sauer.gwt.dnd.client.util.Location;
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
 public class EndPointDragController extends PickupDragController {
@@ -34,27 +32,29 @@ public class EndPointDragController extends PickupDragController {
   @Override
   public void previewDragStart() throws VetoDragException {
     EndPoint ep = (EndPoint) context.draggable;
-    if (((EndPoint) context.draggable).connector == null) {
+    if (ep.connector == null && ep.gluedConnectionPoint != null) {
       diagram.clearSelection();
-      ep.setVisible();
+      ep.setConnectorEndPointStyle();
       ep.setPosition(getEndPointCenterLeft(ep), getEndPointCenterTop(ep));
-
+      Shape shape = ep.gluedConnectionPoint.getParentShape();
+      shape.endPoints.remove(ep);
+      shape.hideShapeConnectorStartPionts();
+      ep.disableConnectorCreate();
       if (ep.connector == null) {
-        ep.shape.endPoints.remove(ep);
-        ep.shape.hideShapeConnectorStartPionts();
-        ep.disableConnectorCreate();
-        DOM.setStyleAttribute(ep.getElement(), "cursor", "crosshair");
-        if (ep.connector == null) {
-          int startLeft = ep.getOverlapingCP().getCenterLeft();
-          int startTop = ep.getOverlapingCP().getCenterTop();
-          int endLeft = ep.getLeft();
-          int endTop = ep.getTop();
+        int startLeft = ep.gluedConnectionPoint.getCenterLeft();
+        int startTop = ep.gluedConnectionPoint.getCenterTop();
+        int endLeft = ep.getLeft();
+        int endTop = ep.getTop();
 
-          ep.connector = diagram.createConnector(startLeft, startTop, endLeft, endTop, ep, ep.shape.connectorsStyle);
-          ep.connector.initalizing = true;
-        }
-        ep.connector.startEndPoint.glueToConnectionPoint(ep.getOverlapingCP());
+        ep.connector = diagram.createConnector(startLeft, startTop, endLeft, endTop, ep, shape.connectorsStyle);
+        ep.connector.initalizing = true;
       }
+      ep.connector.startEndPoint.glueToConnectionPoint(ep.gluedConnectionPoint);
+
+    } else if (ep.connector != null && ep.isGluedToConnectionPoint()) {
+      ep.connector.initalizing = false;
+      ep.unglueFromConnectionPoint();
+      ep.setConnectorEndPointStyle();
     }
     super.previewDragStart();
   }

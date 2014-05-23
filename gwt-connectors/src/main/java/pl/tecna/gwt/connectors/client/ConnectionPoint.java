@@ -69,7 +69,6 @@ public class ConnectionPoint extends FocusPanel {
 		this.getElement().getStyle().setZIndex(2);
 		dropController = new ConnectionPointDropController(this);
 		diagram.endPointDragController.registerDropController(dropController);
-		initHandlers();
 	}
 	
 	public ConnectionPoint(Diagram diagram, int connectionDirection, int position, Widget w) {
@@ -77,17 +76,6 @@ public class ConnectionPoint extends FocusPanel {
 		this.connectionDirection = connectionDirection;
 		this.index = position;
 		this.parentWidget = w;
-	}
-	
-	private void initHandlers() {
-	  sinkEvents(Event.ONMOUSEOVER);
-	  addMouseOverHandler(new MouseOverHandler() {
-      
-      @Override
-      public void onMouseOver(MouseOverEvent event) {
-        LOG.info("@@@@@ CONNECTION POINT MOUSE OVER @@@@@");
-      }
-    });
 	}
 	
 	/**

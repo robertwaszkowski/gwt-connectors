@@ -124,10 +124,11 @@ public class Connector implements Element {
       SectionDecoration endDecoration, EndPoint endEndPoint, Diagram diagram, ConnectorStyle style) {
 
     this.style = style;
-    this.startEndPoint = new EndPoint(startLeft, startTop, this);
+    this.startEndPoint = new EndPoint(startLeft, startTop);
+    startEndPoint.connector = this;
+    startEndPoint.setTransparent();
     this.endEndPoint = endEndPoint;
     endEndPoint.initPosition(endLeft, endTop);
-    this.startEndPoint.connector = this;
     this.endEndPoint.connector = this;
 
     this.sections = new ArrayList<Section>();
@@ -159,9 +160,9 @@ public class Connector implements Element {
     } catch (Exception e) {
       LOG.severe("Error while setting decorations" + e.getStackTrace());
     }
-
     startEndPoint.showOnDiagram(diagram);
-
+    
+    
     int connectorX = diagram.boundaryPanel.getWidgetLeft(startEndPoint) - diagram.boundaryPanel.getAbsoluteLeft();
     int connectorY = diagram.boundaryPanel.getWidgetTop(startEndPoint) - diagram.boundaryPanel.getAbsoluteTop();
     diagram.onDiagramAdd(new DiagramAddEvent(this, connectorX, connectorY));
@@ -171,16 +172,20 @@ public class Connector implements Element {
   private void init(int startLeft, int startTop, int endLeft, int endTop, SectionDecoration startDecoration,
       SectionDecoration endDecoration, ArrayList<CornerPoint> cornerPoints) {
 
-    this.startEndPoint = new EndPoint(startLeft, startTop, this);
-    this.endEndPoint = new EndPoint(endLeft, endTop, this);
-    this.startEndPoint.connector = this;
-    this.endEndPoint.connector = this;
+    startEndPoint = new EndPoint(startLeft, startTop);
+    startEndPoint.setConnectorEndPointStyle();
+    startEndPoint.connector = this;
+    endEndPoint = new EndPoint(endLeft, endTop);
+    endEndPoint.setConnectorEndPointStyle();
+    endEndPoint.connector = this;
+    startEndPoint.connector = this;
+    endEndPoint.connector = this;
 
-    this.sections = new ArrayList<Section>();
+    sections = new ArrayList<Section>();
 
     // Add decorations
-    this.startPointDecoration = startDecoration;
-    this.endPointDecoration = endDecoration;
+    startPointDecoration = startDecoration;
+    endPointDecoration = endDecoration;
 
     // TODO Change workaround for trouble of 3 CornerPoint in a row
     // removing neighbour corner points with same coordinates (3 in a row)
@@ -443,7 +448,9 @@ public class Connector implements Element {
       int left = endEndPoint.getLeft();
       int top = endEndPoint.getTop();
       endEndPoint.unglueFromConnectionPoint();
-      endEndPoint = new EndPoint(left, top, this);
+      endEndPoint = new EndPoint(left, top);
+      endEndPoint.setConnectorEndPointStyle();
+      endEndPoint.connector = this;
       endEndPoint.showOnDiagram(diagram);
 
       try {
@@ -463,7 +470,9 @@ public class Connector implements Element {
       int left = startEndPoint.getLeft();
       int top = startEndPoint.getTop();
       startEndPoint.unglueFromConnectionPoint();
-      startEndPoint = new EndPoint(left, top, this);
+      startEndPoint = new EndPoint(left, top);
+      startEndPoint.setConnectorEndPointStyle();
+      startEndPoint.connector = this;
       startEndPoint.showOnDiagram(diagram);
 
       try {

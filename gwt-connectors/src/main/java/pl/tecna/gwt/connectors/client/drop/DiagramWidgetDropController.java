@@ -50,7 +50,7 @@ public class DiagramWidgetDropController extends SimpleDropController {
         Shape dropTarget = (Shape) getDropTarget();
         EndPoint endPoint = (EndPoint) context.draggable;
         endPoint
-            .glueToConnectionPoint(dropTarget.findNearestFreeConnectionPoint(endPoint.getLeft(), endPoint.getTop()));
+            .glueToConnectionPoint(dropTarget.findNearestConnectionPoint(endPoint.getLeft(), endPoint.getTop()));
 
         // Unglue if EndPoints are glued to the same element
         Connector conn = endPoint.connector;

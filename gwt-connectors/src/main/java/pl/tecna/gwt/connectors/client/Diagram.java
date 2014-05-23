@@ -237,6 +237,15 @@ public class Diagram {
               }
             }
           }
+
+          for (ConnectionPoint cp : shape.connectionPoints) {
+            for (EndPoint gluedEp : cp.gluedEndPoints) {
+              if (gluedEp.isAttached()) {
+                WidgetUtils.setWidgetPosition((AbsolutePanel) gluedEp.getParent(), gluedEp, 
+                    cp.getCenterLeft() - EndPoint.RADIUS, cp.getCenterTop() - EndPoint.RADIUS);
+              }
+            }
+          }
         }
 
         int endX =
@@ -294,12 +303,9 @@ public class Diagram {
         Integer endY = null;
         if (event.getContext().draggable.getParent() != null
             && Diagram.this.boundaryPanel.equals(event.getContext().draggable.getParent())) {
-          endX =
-              Diagram.this.boundaryPanel.getWidgetLeft(event.getContext().draggable)
-                  - Diagram.this.boundaryPanel.getAbsoluteLeft();
-          endY =
-              Diagram.this.boundaryPanel.getWidgetTop(event.getContext().draggable)
-                  - Diagram.this.boundaryPanel.getAbsoluteTop();
+          WidgetLocation location = new WidgetLocation(event.getContext().draggable, Diagram.this.boundaryPanel);
+          endX = location.getLeft();
+          endY = location.getTop();
         }
         Diagram.this.onElementDrag(new ElementDragEvent(event.getContext(), endX, endY,
             ElementDragEvent.DragEventType.DRAG_END));

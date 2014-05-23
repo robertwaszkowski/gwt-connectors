@@ -813,19 +813,19 @@ public class Shape extends FocusPanel implements Element {
         diagram.endPointDragController.makeNotDraggable(ep);
       }
     }
+    endPoints.clear();
   }
 
   public void showShapeConnectorStartPoints() {
     startPointsVisible = true;
     endPointsShowTimer.cancel();
     if (endPoints.isEmpty()) {
-      AbsolutePanel boundaryPanel = diagram.boundaryPanel;
       for (ConnectionPoint cp : connectionPoints) {
         if (cp.gluedEndPoints.size() == 0) {
-          ShapeConnectorStart ep =
-              new ShapeConnectorStart(cp.getCurrentLeft(), cp.getCurrentTop(), Shape.this, endPointsShowTimer, cp);
-          WidgetUtils.addWidget(boundaryPanel, ep, (int) ep.getLeft(), (int) ep.getTop());
-          diagram.endPointDragController.makeDraggable(ep);
+          EndPoint ep = new EndPoint(cp.getCenterLeft(), cp.getCenterTop());
+          ep.enableConnectorCreate(endPointsShowTimer, cp);
+          ep.setConnectorCreateStyle();
+          ep.showOnDiagram(diagram);
           endPoints.add(ep);
         }
       }
@@ -878,9 +878,7 @@ public class Shape extends FocusPanel implements Element {
         hideConnStartMouseHandler.removeHandler();
       }
       for (EndPoint ep : endPoints) {
-        if (ep instanceof ShapeConnectorStart) {
-          ((ShapeConnectorStart) ep).disableConnectorCreate();
-        }
+        ep.disableConnectorCreate();
         ep.removeFromParent();
       }
       showConnStartMouseHandler = null;

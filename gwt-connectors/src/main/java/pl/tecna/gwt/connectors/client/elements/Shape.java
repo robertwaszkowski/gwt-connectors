@@ -132,8 +132,8 @@ public class Shape extends FocusPanel implements Element {
 
     this.add(connectionPointsPanel);
 
-    connectionPointsPanel.setPixelSize(connectedWidget.getOffsetWidth() + ConnectionPoint.RADIUS * 2, connectedWidget
-        .getOffsetHeight() + ConnectionPoint.RADIUS * 2);
+    connectionPointsPanel.setPixelSize(connectedWidget.getOffsetWidth() + ConnectionPoint.RADIUS * 2, 
+        connectedWidget.getOffsetHeight() + ConnectionPoint.RADIUS * 2);
     WidgetUtils.addWidget(connectionPointsPanel, connectedWidget, ConnectionPoint.RADIUS, ConnectionPoint.RADIUS);
 
     // Add connection points to the absolute panel
@@ -464,13 +464,12 @@ public class Shape extends FocusPanel implements Element {
   }
   
   private void calculateOvalCPPositions(List<ConnectionPoint> connectionPoints, AbsolutePanel connectionPointsPanel) {
-    double centerLeft = ((double) connectedWidget.getOffsetHeight()) / 2.0;
-    double centerTop = ((double) connectedWidget.getOffsetWidth()) / 2.0;
-
+    double centerTop = ((double) connectedWidget.getOffsetHeight()) / 2.0;
+    double centerLeft = ((double) connectedWidget.getOffsetWidth()) / 2.0;
     for (int i = 0; i < 8; i++) {
       connectionPoints.get(i).positionOnCPPanel = new Point(
-          (int) Math.ceil(centerLeft - (centerLeft * Math.cos((double) 2.0 * Math.PI / (double) 8.0 * i))), 
-          (int) Math.ceil(centerTop - (centerTop * Math.sin((double) 2.0 * Math.PI / (double) 8.0 * i))));
+          (int) Math.floor(centerLeft - (centerLeft * Math.cos((double) 2.0 * Math.PI / (double) 8.0 * i))), 
+          (int) Math.floor(centerTop - (centerTop * Math.sin((double) 2.0 * Math.PI / (double) 8.0 * i))));
     }
   }
 

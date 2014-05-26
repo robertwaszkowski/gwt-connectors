@@ -10,9 +10,6 @@ import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -68,7 +65,6 @@ public class ConnectionPoint extends FocusPanel {
 		this.index = 1;
 		this.getElement().getStyle().setZIndex(2);
 		dropController = new ConnectionPointDropController(this);
-		diagram.endPointDragController.registerDropController(dropController);
 	}
 	
 	public ConnectionPoint(Diagram diagram, int connectionDirection, int position, Widget w) {
@@ -124,6 +120,7 @@ public class ConnectionPoint extends FocusPanel {
 	public void setVisible() {
 	  this.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
     this.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
+    diagram.endPointDragController.registerDropController(dropController);
 	}
 
 	/**
@@ -138,6 +135,7 @@ public class ConnectionPoint extends FocusPanel {
 	public void setTransparent() {
     this.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
     this.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
+    diagram.endPointDragController.unregisterDropController(dropController);
 	}
 
 	public int getCurrentLeft() {

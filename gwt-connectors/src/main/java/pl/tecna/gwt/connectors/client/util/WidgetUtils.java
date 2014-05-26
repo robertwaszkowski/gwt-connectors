@@ -11,7 +11,11 @@ public class WidgetUtils {
   private static final Logger LOG = Logger.getLogger("WidgetUtils");
   
   public static void setWidgetPosition(AbsolutePanel parent, Widget widget, int left, int top) {
-    parent.setWidgetPosition(widget, left, top);
+    if (parent != null) {
+      parent.setWidgetPosition(widget, left, top);
+    } else {
+      LOG.severe("Unable to set widget position, parent is null");
+    }
 //    WidgetLocation location = new WidgetLocation(widget, parent);
 //    if (location.getLeft() != left || location.getTop() != top) {
 //      parent.setWidgetPosition(widget, left + (left - location.getLeft()), top + (top - location.getTop()));
@@ -30,7 +34,11 @@ public class WidgetUtils {
   }
 
   public static void addWidget(AbsolutePanel parent, Widget widget, int left, int top) {
-    parent.add(widget, left, top);
+    if (parent != null) {
+      parent.add(widget, left, top); 
+    } else {
+      LOG.severe("Unable to add widget, parent is null");
+    }
 //    WidgetLocation location = new WidgetLocation(widget, parent);
 //    if (location.getLeft() != left || location.getTop() != top) {
 //      parent.setWidgetPosition(widget, left + (left - location.getLeft()), top + (top - location.getTop()));

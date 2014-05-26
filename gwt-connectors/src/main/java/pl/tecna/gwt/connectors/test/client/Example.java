@@ -14,14 +14,11 @@ import pl.tecna.gwt.connectors.client.elements.Shape.CPShapeType;
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 
-import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;

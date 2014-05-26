@@ -14,6 +14,8 @@ import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ConnectorDoubleClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
+import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
+import pl.tecna.gwt.connectors.client.util.Position;
 import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
@@ -21,17 +23,20 @@ import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
+import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HTML;
 
 public class Section extends HTML {
 
   private final Logger LOG = Logger.getLogger("Section");
+  
+  private static final int SIZE = 2;
+  private static final int TRANSPARENT_MARGIN_SIZE = 2;
 
   public Point startPoint;
   public Point endPoint;
@@ -42,10 +47,7 @@ public class Section extends HTML {
 
   private int height;
   private int width;
-
-  private final int additionalHeight = 2;
-  private final int additionalWidth = 0;
-
+  
   public static final int VERTICAL = 0;
   public static final int HORIZONTAL = 1;
 
@@ -156,25 +158,20 @@ public class Section extends HTML {
 
     if (isVertical()) {
       if (isSelected) {
-        this.setHTML(selectedVerticalLine(this.height + additionalHeight, style));
+        setHTML(selectedVerticalLine(this.height, style));
       } else {
-        this.setHTML(verticalLine(this.height + additionalHeight, style));
+        setHTML(verticalLine(this.height, style));
       }
+      addStyleName(ConnectorsClientBundle.INSTANCE.css().verticalSection());
       allowHorizontalDragging = true;
     } else if (isHorizontal()) {
       if (isSelected) {
-        this.setHTML(selectedHorizontalLine(this.width + additionalWidth, style));
+        this.setHTML(selectedHorizontalLine(this.width, style));
       } else {
-        this.setHTML(horizontalLine(this.width + additionalWidth, style));
+        this.setHTML(horizontalLine(this.width, style));
       }
+      addStyleName(ConnectorsClientBundle.INSTANCE.css().horizontalSection());
       allowVerticalDragging = true;
-    }
-
-    // Set Section's cursor
-    if (isVertical()) {
-      DOM.setStyleAttribute(this.getElement(), "cursor", "w-resize");
-    } else if (isHorizontal()) {
-      DOM.setStyleAttribute(this.getElement(), "cursor", "n-resize");
     }
 
     // Add drag and drop functionality
@@ -218,34 +215,33 @@ public class Section extends HTML {
       @Override
       public void dragMove() {
         try {
-
           if (isAllowHorizontalDragging()) {
             if (Section.this.startPoint.getLeft() < Section.this.endPoint.getLeft()) {
               Section.this.startPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
-                  - context.boundaryPanel.getAbsoluteLeft());
+                  - context.boundaryPanel.getAbsoluteLeft() + SIZE);
               Section.this.endPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
-                  - context.boundaryPanel.getAbsoluteLeft() + width);
+                  - context.boundaryPanel.getAbsoluteLeft() + width + SIZE);
             } else {
               Section.this.startPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
-                  - context.boundaryPanel.getAbsoluteLeft() + width);
+                  - context.boundaryPanel.getAbsoluteLeft() + width + SIZE);
               Section.this.endPoint.setLeftPosition(context.draggable.getAbsoluteLeft()
-                  - context.boundaryPanel.getAbsoluteLeft());
+                  - context.boundaryPanel.getAbsoluteLeft() + SIZE);
             }
           }
 
           if (isAllowVerticalDragging()) {
             if (Section.this.startPoint.getTop() < Section.this.endPoint.getTop()) {
               Section.this.startPoint.setTopPosition(context.draggable.getAbsoluteTop()
-                  - context.boundaryPanel.getAbsoluteTop());
-              Section.this.endPoint.setTopPosition(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop()
-                  + height);
+                  - context.boundaryPanel.getAbsoluteTop() + SIZE);
+              Section.this.endPoint.setTopPosition(context.draggable.getAbsoluteTop() - 
+                  context.boundaryPanel.getAbsoluteTop() + height + SIZE);
             } else {
               Section.this.startPoint.setTopPosition(context.draggable.getAbsoluteTop()
-                  - context.boundaryPanel.getAbsoluteTop() + height);
-              Section.this.endPoint.setTopPosition(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop());
+                  - context.boundaryPanel.getAbsoluteTop() + height + SIZE);
+              Section.this.endPoint.setTopPosition(context.draggable.getAbsoluteTop() - context.boundaryPanel.getAbsoluteTop() + SIZE);
             }
           }
-
+          
           if (Section.this.connector.getNextSection(Section.this) != null) {
             Section.this.connector.getNextSection(Section.this).update();
           };
@@ -296,6 +292,7 @@ public class Section extends HTML {
             } else {
               desiredTop = startPoint.getTop();
             }
+            desiredLeft += SIZE;
           }
           if (isAllowVerticalDragging()) {
             if (startPoint.getLeft().intValue() > endPoint.getLeft().intValue()) {
@@ -303,6 +300,7 @@ public class Section extends HTML {
             } else {
               desiredLeft = startPoint.getLeft();
             }
+            desiredTop += SIZE;
           }
 
           DOMUtil.fastSetElementPosition(movablePanel.getElement(), desiredLeft, desiredTop);
@@ -373,9 +371,15 @@ public class Section extends HTML {
 
     };
 
+    int positionLeft = Math.min(this.startPoint.getLeft(), this.endPoint.getLeft());
+    int positionTop = Math.min(this.startPoint.getTop(),this.endPoint.getTop());
+    if (isVertical()) {
+      positionLeft -= TRANSPARENT_MARGIN_SIZE;
+    } else {
+      positionTop -= TRANSPARENT_MARGIN_SIZE;
+    }
     // Add line to given panel
-    WidgetUtils.addWidget(panel, this, Math.min(this.startPoint.getLeft(), this.endPoint.getLeft()), 
-        Math.min(this.startPoint.getTop(),this.endPoint.getTop()));
+    WidgetUtils.addWidget(panel, this, positionLeft, positionTop);
     this.sectionDragController.makeDraggable(this);
     this.sectionDragController.setBehaviorDragStartSensitivity(5);
 
@@ -590,19 +594,23 @@ public class Section extends HTML {
   }
 
   private String verticalLine(int height, ConnectorStyle style) {
-    return "<div style=\"border-left:2px " + style.name().toLowerCase() + " #B2B2B2; height:" + height + "px\">";
+    return "<div style=\"border-left:" + SIZE + "px " + style.name().toLowerCase() + 
+        " #B2B2B2; height:" + (height + SIZE) + "px\">";
   }
 
   private String horizontalLine(int width, ConnectorStyle style) {
-    return "<div style=\"border-top:2px " + style.name().toLowerCase() + " #B2B2B2; width:" + width + "px\">";
+    return "<div style=\"border-top:" + SIZE + "px " + style.name().toLowerCase() + 
+        " #B2B2B2; width:" + width + "px\">";
   }
 
   private String selectedVerticalLine(int height, ConnectorStyle style) {
-    return "<div style=\"border-left:2px " + style.name().toLowerCase() + " #00BFFF; height:" + height + "px\">";
+    return "<div style=\"border-left:" + SIZE + "px " + style.name().toLowerCase() + 
+        " #00BFFF; height:" + (height + SIZE) + "px\">";
   }
 
   private String selectedHorizontalLine(int width, ConnectorStyle style) {
-    return "<div style=\"border-top:2px " + style.name().toLowerCase() + " #00BFFF; width:" + width + "px\">";
+    return "<div style=\"border-top:" + SIZE + "px " + style.name().toLowerCase() + 
+        " #00BFFF; width:" + width + "px\">";
   }
 
   /**
@@ -616,26 +624,24 @@ public class Section extends HTML {
 
       if (isVertical()) {
 
-        this.setHTML(verticalLine(this.height + additionalHeight, style));
+        this.setHTML(verticalLine(this.height, style));
 
         sectionDragController.setAllowHorizontalDragging(true);
         sectionDragController.setAllowVerticalDragging(false);
 
-        WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, this.startPoint.getLeft(), Math.min(this.startPoint
-            .getTop(), this.endPoint.getTop()));
+        updateWidgetPosition(false);
 
       } else if (isHorizontal()) {
         if (this.connector.isSelected) {
-          this.setHTML(selectedHorizontalLine(this.width + additionalWidth, style));
+          this.setHTML(selectedHorizontalLine(this.width, style));
         } else {
-          this.setHTML(horizontalLine(this.width + additionalWidth, style));
+          this.setHTML(horizontalLine(this.width, style));
         }
 
         sectionDragController.setAllowHorizontalDragging(false);
         sectionDragController.setAllowVerticalDragging(true);
 
-        WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, Math.min(this.startPoint.getLeft(), this.endPoint
-            .getLeft()), this.endPoint.getTop());
+        updateWidgetPosition(true);
       }
 
       // Calculate decoration's direction and update decorations
@@ -786,7 +792,90 @@ public class Section extends HTML {
 
     this.sectionDragController.makeNotDraggable(this);
   }
+  
+  public int getCurrentTop() {
+    WidgetLocation location = new WidgetLocation(this, this.getParent());
+    if (isHorizontal()) {
+      return location.getTop() + TRANSPARENT_MARGIN_SIZE;
+    } else {
+      return location.getTop();
+    }
+  }
+  
+  public int getCurrentLeft() {
+    WidgetLocation location = new WidgetLocation(this, this.getParent());
+    if (isVertical()) {
+      return location.getLeft() + TRANSPARENT_MARGIN_SIZE;
+    } else {
+      return location.getLeft();
+    }
+  }
+  
+  public void setPosition(int left, int top) {
+    updateEndPointsPositions(left, top);
+    updateWidgetPosition();
+    if (startPointDecoration != null) {
+      startPointDecoration.update(calculateStartPointDecorationDirection(),
+          startPoint.getLeft(), startPoint.getTop());
+    }
+    if (endPointDecoration != null) {
+      endPointDecoration.update(calculateEndPointDecorationDirection(), 
+          endPoint.getLeft(), endPoint.getTop());
+    }
+  }
 
+  /**
+   * Updates start and end point position after {@link Shape} move
+   * @param sectionLeft
+   * @param sectionTop
+   */
+  public void updateEndPointsPositions(int sectionLeft, int sectionTop) {
+    Position startPosition = new Position();
+    Position endPosition = new Position();
+    int length = getLength();
+    if (isHorizontal()) {
+      if (startPoint.getLeft() < endPoint.getLeft()) {
+        startPosition.setLeft(sectionLeft);
+        endPosition.setLeft(sectionLeft + length);
+      } else {
+        startPosition.setLeft(sectionLeft + length);
+        endPosition.setLeft(sectionLeft);
+      }
+      startPosition.setTop(sectionTop);
+      endPosition.setTop(sectionTop);
+    } else {
+      if (startPoint.getTop() < endPoint.getTop()) {
+        startPosition.setTop(sectionTop);
+        endPosition.setTop(sectionTop + length);
+      } else {
+        startPosition.setTop(sectionTop + length);
+        endPosition.setTop(sectionTop);
+      }
+      startPosition.setLeft(sectionLeft);
+      endPosition.setLeft(sectionLeft);
+    }
+  }
+  
+  public void updateWidgetPosition() {
+    updateWidgetPosition(isHorizontal());
+  }
+  
+  /**
+   * Updates {@link Shape} position on boundary panel based on start and end points.
+   * @param horizontal true if section is horizontal
+   */
+  public void updateWidgetPosition(boolean horizontal) {
+    if (horizontal) {
+      WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, 
+          Math.min(this.startPoint.getLeft(), this.endPoint.getLeft()),
+          this.startPoint.getTop() - TRANSPARENT_MARGIN_SIZE);
+    } else {
+      WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, 
+          this.startPoint.getLeft() - TRANSPARENT_MARGIN_SIZE, 
+          Math.min(this.startPoint.getTop(), this.endPoint.getTop()));
+    }
+  }
+  
   public String toDebugString() {
 
     StringBuilder builder = new StringBuilder();

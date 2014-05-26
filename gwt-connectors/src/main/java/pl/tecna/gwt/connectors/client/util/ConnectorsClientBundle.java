@@ -73,6 +73,12 @@ public interface ConnectorsClientBundle extends ClientBundle {
     
     @ClassName("gwt-connectors-end-point-transparent")
     String endPointTransparent();
+    
+    @ClassName("gwt-connectors-vertical-section")
+    String verticalSection();
+    
+    @ClassName("gwt-connectors-horizontal-section")
+    String horizontalSection();
   }
 
   static final ConnectorsClientBundle INSTANCE = GWT.create(ConnectorsClientBundle.class);

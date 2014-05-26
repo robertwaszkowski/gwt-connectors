@@ -547,14 +547,16 @@ public class Diagram {
 
     // fix section position horizontally
     if (lastHorizontalSection != null) {
-      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, shape.getRelativeShapeLeft() - minHorizontal, shape.getRelativeShapeTop());
+      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, 
+          shape.getRelativeShapeLeft() - minHorizontal, shape.getRelativeShapeTop());
       lastHorizontalSection.connector.drawSections(lastHorizontalSection.connector
           .fixLineSections(lastHorizontalSection.connector.getCorners()));
     }
 
     // fix section position vertically
     if (lastVerticalSection != null) {
-      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, shape.getRelativeShapeLeft(), shape.getRelativeShapeTop() - minVertical);
+      WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape, 
+          shape.getRelativeShapeLeft(), shape.getRelativeShapeTop() - minVertical);
       lastVerticalSection.connector.drawSections(lastVerticalSection.connector
           .fixLineSections(lastVerticalSection.connector.getCorners()));
     }

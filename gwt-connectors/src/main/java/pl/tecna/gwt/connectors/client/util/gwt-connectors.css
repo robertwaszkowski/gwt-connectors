@@ -114,3 +114,17 @@
 	border: none;
 	cursor: default;
 }
+
+.gwt-connectors-vertical-section {
+	cursor: w-resize;
+	width: 4px;
+	padding-left: 2px;
+	padding-top: 0px;
+}
+
+.gwt-connectors-horizontal-section {
+	cursor: n-resize;
+	height: 4px;
+	padding-top: 2px;
+	padding-left: none;
+}

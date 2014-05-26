@@ -223,19 +223,19 @@ public class EndPoint extends Point {
   }
   
   public int getDataCenterLeft() {
-    return (int) Math.ceil(getLeft() - ConnectionPoint.RADIUS);
+    return getLeft() - ConnectionPoint.RADIUS;
   }
   
   public int getDataCenterTop() {
-    return (int) Math.ceil(getTop() - ConnectionPoint.RADIUS);
+    return getTop() - ConnectionPoint.RADIUS;
   }
   
   public int getCurrentCenterLeft() {
-    return (int) Math.ceil(getWidgetLocation().getLeft() - ConnectionPoint.RADIUS);
+    return getWidgetLocation().getLeft() - ConnectionPoint.RADIUS;
   }
   
   public int getCurrentCenterTop() {
-    return (int) Math.ceil(getWidgetLocation().getTop() - ConnectionPoint.RADIUS);
+    return getWidgetLocation().getTop() - ConnectionPoint.RADIUS;
   }
   
   private WidgetLocation getWidgetLocation() {

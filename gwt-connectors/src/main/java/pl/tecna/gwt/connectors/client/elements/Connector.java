@@ -1326,22 +1326,7 @@ public class Connector implements Element {
         sectionTopLeft = savedSectionsData.get(i).endPoint;
       }
 
-      WidgetUtils.setWidgetPosition(diagram.boundaryPanel, sections.get(i), sectionTopLeft.getLeft() + xOffset, sectionTopLeft
-          .getTop()
-          + yOffset);
-      sections.get(i).startPoint.setPosition(savedSectionsData.get(i).startPoint.getLeft() + xOffset, 
-          savedSectionsData.get(i).startPoint.getTop() + yOffset);
-      sections.get(i).endPoint.setPosition(savedSectionsData.get(i).endPoint.getLeft() + xOffset, 
-          savedSectionsData.get(i).endPoint.getTop() + yOffset);
-
-      if (sections.get(i).startPointDecoration != null) {
-        this.startPointDecoration.update(sections.get(i).calculateStartPointDecorationDirection(),
-            sections.get(i).startPoint.getLeft(), sections.get(i).startPoint.getTop());
-      }
-      if (sections.get(i).endPointDecoration != null) {
-        this.endPointDecoration.update(sections.get(i).calculateEndPointDecorationDirection(), sections.get(i).endPoint
-            .getLeft(), sections.get(i).endPoint.getTop());
-      }
+      sections.get(i).setPosition(sectionTopLeft.getLeft() + xOffset, sectionTopLeft.getTop() + yOffset);
     }
   }
 

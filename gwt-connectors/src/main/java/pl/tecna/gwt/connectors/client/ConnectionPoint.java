@@ -34,6 +34,7 @@ public class ConnectionPoint extends FocusPanel {
 	public int index;
 	public Widget parentWidget;
 	public Point positionOnCPPanel;
+	public Point connectorStartPosition;
 	public Diagram diagram;
 	private ConnectionPointDropController dropController;
 	

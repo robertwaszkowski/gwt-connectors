@@ -46,6 +46,12 @@ public class Shape extends FocusPanel implements Element {
   public static int SECTION_TOLERANCE = 20;
   
   /**
+   * Distance from connection point to connector start point calculated
+   * from shape center
+   */
+  public static int CONNECTOR_START_POINTS_OFFSET = 4;
+  
+  /**
    * When selected shape have border of 3 pixels, when unselected it is replaced by 3px padding
    */
   public static final int SHAPE_BORDER = 3;
@@ -434,6 +440,34 @@ public class Shape extends FocusPanel implements Element {
     connectionPoints.get(11).positionOnCPPanel = new Point(0, (cpPanelHeight / 2) - ConnectionPoint.RADIUS
         - (cpPanelHeight / 4));
     
+    
+    
+    cpPanelHeight += 2 * CONNECTOR_START_POINTS_OFFSET;
+    cpPanelWidth += 2 * CONNECTOR_START_POINTS_OFFSET;
+    
+    connectionPoints.get(0).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS
+        - (cpPanelWidth / 4), 0);
+    connectionPoints.get(1).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS, 0);
+    connectionPoints.get(2).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS
+        + (cpPanelWidth / 4), 0);
+    connectionPoints.get(3).connectorStartPosition = new Point(cpPanelWidth - ConnectionPoint.SIZE, (cpPanelHeight / 2)
+        - ConnectionPoint.RADIUS - (cpPanelHeight / 4));
+    connectionPoints.get(4).connectorStartPosition = new Point(cpPanelWidth - ConnectionPoint.SIZE, (cpPanelHeight / 2)
+        - ConnectionPoint.RADIUS);
+    connectionPoints.get(5).connectorStartPosition = new Point(cpPanelWidth - ConnectionPoint.SIZE, (cpPanelHeight / 2)
+        - ConnectionPoint.RADIUS + (cpPanelHeight / 4));
+    connectionPoints.get(6).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS
+        + (cpPanelWidth / 4), cpPanelHeight - ConnectionPoint.SIZE);
+    connectionPoints.get(7).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS, cpPanelHeight
+        - ConnectionPoint.SIZE);
+    connectionPoints.get(8).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS
+        - (cpPanelWidth / 4), cpPanelHeight - ConnectionPoint.SIZE);
+    connectionPoints.get(9).connectorStartPosition = new Point(0, (cpPanelHeight / 2) - ConnectionPoint.RADIUS
+        + (cpPanelHeight / 4));
+    connectionPoints.get(10).connectorStartPosition = new Point(0, (cpPanelHeight / 2) - ConnectionPoint.RADIUS);
+    connectionPoints.get(11).connectorStartPosition = new Point(0, (cpPanelHeight / 2) - ConnectionPoint.RADIUS
+        - (cpPanelHeight / 4));
+    
   }
   
   private List<ConnectionPoint> createOvalShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
@@ -464,12 +498,20 @@ public class Shape extends FocusPanel implements Element {
   }
   
   private void calculateOvalCPPositions(List<ConnectionPoint> connectionPoints, AbsolutePanel connectionPointsPanel) {
-    double centerTop = ((double) connectedWidget.getOffsetHeight()) / 2.0;
-    double centerLeft = ((double) connectedWidget.getOffsetWidth()) / 2.0;
+    double topRadius = ((double) connectedWidget.getOffsetHeight()) / 2.0;
+    double widthRadius = ((double) connectedWidget.getOffsetWidth()) / 2.0;
     for (int i = 0; i < 8; i++) {
       connectionPoints.get(i).positionOnCPPanel = new Point(
-          (int) Math.floor(centerLeft - (centerLeft * Math.cos((double) 2.0 * Math.PI / (double) 8.0 * i))), 
-          (int) Math.floor(centerTop - (centerTop * Math.sin((double) 2.0 * Math.PI / (double) 8.0 * i))));
+          (int) Math.floor(widthRadius - (widthRadius * Math.cos((double) 2.0 * Math.PI / (double) 8.0 * i))), 
+          (int) Math.floor(topRadius - (topRadius * Math.sin((double) 2.0 * Math.PI / (double) 8.0 * i))));
+    }
+    
+    topRadius += CONNECTOR_START_POINTS_OFFSET;
+    widthRadius += CONNECTOR_START_POINTS_OFFSET;
+    for (int i = 0; i < 8; i++) {
+      connectionPoints.get(i).connectorStartPosition = new Point(
+          (int) Math.floor(widthRadius - (widthRadius * Math.cos((double) 2.0 * Math.PI / (double) 8.0 * i))), 
+          (int) Math.floor(topRadius - (topRadius * Math.sin((double) 2.0 * Math.PI / (double) 8.0 * i))));
     }
   }
 
@@ -504,8 +546,8 @@ public class Shape extends FocusPanel implements Element {
     LOG.info("Calculate diamond connection points positions");
     int cpPanelHeight = connectionPointsPanel.getOffsetHeight();
     int cpPanelWidth = connectionPointsPanel.getOffsetWidth();
-    int horizontalDifference = ((cpPanelWidth / 2) - ConnectionPoint.RADIUS) / 2;
     int verticalDifference = ((cpPanelHeight / 2) - ConnectionPoint.RADIUS) / 2;
+    int horizontalDifference = ((cpPanelWidth / 2) - ConnectionPoint.RADIUS) / 2;
 
     connectionPoints.get(0).positionOnCPPanel = new Point(0, (cpPanelHeight / 2) - (ConnectionPoint.RADIUS));
     connectionPoints.get(1).positionOnCPPanel = new Point(horizontalDifference, (cpPanelHeight / 2)
@@ -520,6 +562,26 @@ public class Shape extends FocusPanel implements Element {
     connectionPoints.get(6).positionOnCPPanel = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS, cpPanelHeight
         - ConnectionPoint.SIZE);
     connectionPoints.get(7).positionOnCPPanel = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS
+        - horizontalDifference, cpPanelHeight - ConnectionPoint.SIZE - verticalDifference);
+    
+    
+    cpPanelHeight += 2 * CONNECTOR_START_POINTS_OFFSET;
+    cpPanelWidth += 2 * CONNECTOR_START_POINTS_OFFSET;
+    horizontalDifference = ((cpPanelWidth / 2) - ConnectionPoint.RADIUS) / 2;
+    verticalDifference = ((cpPanelHeight / 2) - ConnectionPoint.RADIUS) / 2;
+    connectionPoints.get(0).connectorStartPosition = new Point(0, (cpPanelHeight / 2) - (ConnectionPoint.RADIUS));
+    connectionPoints.get(1).connectorStartPosition = new Point(horizontalDifference, (cpPanelHeight / 2)
+        - ConnectionPoint.RADIUS - verticalDifference);
+    connectionPoints.get(2).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS, 0);
+    connectionPoints.get(3).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS
+        + horizontalDifference, 0 + verticalDifference);
+    connectionPoints.get(4).connectorStartPosition = new Point(cpPanelWidth - ConnectionPoint.SIZE, (cpPanelHeight / 2)
+        - ConnectionPoint.RADIUS);
+    connectionPoints.get(5).connectorStartPosition = new Point(cpPanelWidth - ConnectionPoint.SIZE - horizontalDifference,
+        (cpPanelHeight / 2) - ConnectionPoint.RADIUS + verticalDifference);
+    connectionPoints.get(6).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS, cpPanelHeight
+        - ConnectionPoint.SIZE);
+    connectionPoints.get(7).connectorStartPosition = new Point((cpPanelWidth / 2) - ConnectionPoint.RADIUS
         - horizontalDifference, cpPanelHeight - ConnectionPoint.SIZE - verticalDifference);
   }
 
@@ -816,12 +878,15 @@ public class Shape extends FocusPanel implements Element {
   }
 
   public void showShapeConnectorStartPoints() {
+    WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
     startPointsVisible = true;
     endPointsShowTimer.cancel();
     if (endPoints.isEmpty()) {
       for (ConnectionPoint cp : connectionPoints) {
         if (cp.gluedEndPoints.size() == 0) {
-          EndPoint ep = new EndPoint(cp.getCenterLeft(), cp.getCenterTop());
+          EndPoint ep = new EndPoint(
+              currentLocation.getLeft() + cp.connectorStartPosition.getLeft() + CONNECTOR_START_POINTS_OFFSET,
+              currentLocation.getTop() + cp.connectorStartPosition.getTop() + CONNECTOR_START_POINTS_OFFSET);
           ep.enableConnectorCreate(endPointsShowTimer, cp);
           ep.setConnectorCreateStyle();
           ep.showOnDiagram(diagram);

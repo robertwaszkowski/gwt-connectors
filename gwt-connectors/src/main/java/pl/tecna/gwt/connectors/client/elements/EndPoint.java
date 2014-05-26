@@ -248,13 +248,11 @@ public class EndPoint extends Point {
   }
   
   public void setConnectorEndPointStyle() {
-    getElement().setAttribute("TYPE_", "END_POINT");
     setStyleName(ConnectorsClientBundle.INSTANCE.css().endPoint());
   }
  
   public void setConnectorCreateStyle() {
-    getElement().setAttribute("TYPE_", "CONNECTOR_CREATE");
-    setStyleName(ConnectorsClientBundle.INSTANCE.css().endPoint());
+    setStyleName(ConnectorsClientBundle.INSTANCE.css().endPointConnectorCreate());
   }
   
   public void enableConnectorCreate(Timer timer, ConnectionPoint startCP) {

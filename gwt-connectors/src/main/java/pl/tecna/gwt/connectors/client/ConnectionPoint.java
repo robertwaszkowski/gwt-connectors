@@ -129,7 +129,6 @@ public class ConnectionPoint extends FocusPanel {
 	 */
 	public void setVisible() {
 	  removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
-//    addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
 	  addStyleName(ConnectorsClientBundle.INSTANCE.css().endPointConnectorCreate());
     diagram.endPointDragController.registerDropController(dropController);
 	}
@@ -145,7 +144,6 @@ public class ConnectionPoint extends FocusPanel {
 	 */
 	public void setTransparent() {
     addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
-//    removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
     removeStyleName(ConnectorsClientBundle.INSTANCE.css().endPointConnectorCreate());
     diagram.endPointDragController.unregisterDropController(dropController);
 	}

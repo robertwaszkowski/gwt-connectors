@@ -1021,7 +1021,11 @@ public class Shape extends FocusPanel implements Element {
     }
     connectionPointsPanel.remove(connectedWidget);
     connectedWidget = newConnectedWidget;
-    WidgetUtils.addWidget(connectionPointsPanel, newConnectedWidget, ConnectionPoint.RADIUS, ConnectionPoint.RADIUS);
+
+    width = connectedWidget.getOffsetWidth() + 2 * ConnectionPoint.SIZE;
+    height = connectedWidget.getOffsetHeight() + 2 * ConnectionPoint.SIZE;
+
+    WidgetUtils.addWidget(connectionPointsPanel, newConnectedWidget, ConnectionPoint.SIZE, ConnectionPoint.SIZE);
     
     int newWidgetWidth = newConnectedWidget.getOffsetWidth();
     int newWidgetHeight = newConnectedWidget.getOffsetHeight();

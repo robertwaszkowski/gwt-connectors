@@ -19,6 +19,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -142,35 +144,35 @@ public class Example implements EntryPoint {
     shapeForDiamond.showOnDiagram(diagram);
     shapeForDiamond.enableConnectionCreate(true);
 
-//    task.addDoubleClickHandler(new DoubleClickHandler() {
-//
-//      @Override
-//      public void onDoubleClick(DoubleClickEvent event) {
-//        if (!diamond.isAttached()) {
-//          boundaryPanel.add(diamond, 10700, 10400);
-//        }
-//        shapeForTask.changeConnectedWidget(diamond, CPShapeType.DIAMOND);
-//        shapeForTask.enableConnectionCreate(true);
-//      }
-//    });
-//
-//    diamond.addDoubleClickHandler(new DoubleClickHandler() {
-//
-//      @Override
-//      public void onDoubleClick(DoubleClickEvent event) {
-//        shapeForTask.changeConnectedWidget(oval, CPShapeType.OVAL);
-//        shapeForTask.enableConnectionCreate(false);
-//      }
-//    });
-//
-//    oval.addDoubleClickHandler(new DoubleClickHandler() {
-//
-//      @Override
-//      public void onDoubleClick(DoubleClickEvent event) {
-//        shapeForTask.changeConnectedWidget(task, CPShapeType.RECTANGLE);
-//        shapeForTask.enableConnectionCreate(false);
-//      }
-//    });
+    task.addDoubleClickHandler(new DoubleClickHandler() {
+
+      @Override
+      public void onDoubleClick(DoubleClickEvent event) {
+        if (!diamond.isAttached()) {
+          boundaryPanel.add(diamond, 10700, 10400);
+        }
+        shapeForTask.changeConnectedWidget(diamond, CPShapeType.DIAMOND);
+        shapeForTask.enableConnectionCreate(true);
+      }
+    });
+
+    diamond.addDoubleClickHandler(new DoubleClickHandler() {
+
+      @Override
+      public void onDoubleClick(DoubleClickEvent event) {
+        shapeForTask.changeConnectedWidget(oval, CPShapeType.OVAL);
+        shapeForTask.enableConnectionCreate(false);
+      }
+    });
+
+    oval.addDoubleClickHandler(new DoubleClickHandler() {
+
+      @Override
+      public void onDoubleClick(DoubleClickEvent event) {
+        shapeForTask.changeConnectedWidget(task, CPShapeType.RECTANGLE);
+        shapeForTask.enableConnectionCreate(false);
+      }
+    });
 
     connector3.endEndPoint.linkShape(shapeForLabel2);
   }

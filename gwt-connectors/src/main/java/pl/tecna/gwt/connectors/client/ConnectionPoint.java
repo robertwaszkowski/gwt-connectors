@@ -33,8 +33,17 @@ public class ConnectionPoint extends FocusPanel {
 	public int connectionDirection;
 	public int index;
 	public Widget parentWidget;
+	
+	/**
+	 * Position on ConnectionPointsPanel where {@link Connector}'s {@link EndPoint} is connected
+	 */
 	public Point positionOnCPPanel;
-	public Point connectorStartPosition;
+	
+	/**
+	 * Position EndPoint center
+	 */
+	public Point endPointPosition;
+	
 	public Diagram diagram;
 	private ConnectionPointDropController dropController;
 	
@@ -119,8 +128,9 @@ public class ConnectionPoint extends FocusPanel {
 	 * @author robert.waszkowski@gmail.com
 	 */
 	public void setVisible() {
-	  this.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
-    this.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
+	  removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
+//    addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
+	  addStyleName(ConnectorsClientBundle.INSTANCE.css().endPointConnectorCreate());
     diagram.endPointDragController.registerDropController(dropController);
 	}
 
@@ -134,54 +144,42 @@ public class ConnectionPoint extends FocusPanel {
 	 * @author robert.waszkowski@gmail.com
 	 */
 	public void setTransparent() {
-    this.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
-    this.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
+    addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
+//    removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInner());
+    removeStyleName(ConnectorsClientBundle.INSTANCE.css().endPointConnectorCreate());
     diagram.endPointDragController.unregisterDropController(dropController);
 	}
 
-	public int getCurrentLeft() {
+	public int getWidgetLeft() {
 	  WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
 	  return currentLocation.getLeft();
 	}
 	
-	public int getCurrentTop() {
+	public int getWidgetTop() {
     WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
     return currentLocation.getTop();
   }
 	
 	/**
-	 * Gets left coordinate of this {@link ConnectionPoint}'s center position on {@link AbsolutePanel} </br>
+	 * Gets left coordinate of this {@link ConnectionPoint}'s connection position on {@link AbsolutePanel} </br>
 	 * Useful to define {@link Connector} end point left coordinate
-	 * @return distance from left side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
+	 * @return distance from left side of {@link AbsolutePanel} to this {@link ConnectionPoint} position
 	 */
-	public int getCenterLeft() {
-	  WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-		int left;
-		if (this.getParentShape().diagram != null) {
-		  left = (int) Math.floor(currentLocation.getLeft() + RADIUS);
-		  if (connectionDirection == DIRECTION_LEFT) {
-		    left += 1;
-		  }
-		  return left;
-		} else {
-			return -1;
-		}
+	public int getConnectionPositionLeft() {
+	  WidgetLocation currentLocation = new WidgetLocation(this.getParent(), diagram.boundaryPanel);
+    int left = currentLocation.getLeft() + positionOnCPPanel.getLeft();
+    return left;
 	}
 	
 	/**
-	 * Gets top coordinate of this {@link ConnectionPoint}'s center position on {@link AbsolutePanel} </br>
+	 * Gets top coordinate of this {@link ConnectionPoint}'s connection position on {@link AbsolutePanel} </br>
 	 * Useful to define {@link Connector} end point top coordinate
-	 * @return distance from top side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
+	 * @return distance from top side of {@link AbsolutePanel} to this {@link ConnectionPoint} position
 	 */
-	public int getCenterTop() {
-    WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-		int top;
-		if (this.getParentShape().diagram != null) {
-		  top = (int) Math.floor(currentLocation.getTop() + RADIUS);
-			return top;
-		} else {
-			return -1;
-		}
+	public int getConnectionPositionTop() {
+	  WidgetLocation currentLocation = new WidgetLocation(this.getParent(), diagram.boundaryPanel);
+	  int top = currentLocation.getTop() + positionOnCPPanel.getTop();
+	  return top;
 	}
 	
 	/**

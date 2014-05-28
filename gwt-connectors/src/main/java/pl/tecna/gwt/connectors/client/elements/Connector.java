@@ -521,14 +521,14 @@ public class Connector implements Element {
 
       // Connect element to the center of connection point
       if (last) {
-        endEndPoint.setPosition(connectionPoint.getCenterLeft(), connectionPoint.getCenterTop());
+        endEndPoint.setPosition(connectionPoint.getConnectionPositionLeft(), connectionPoint.getConnectionPositionTop());
         if (!sectionHorizontal) {
           cornerPoints.get(cornerPoints.size() - 1).setLeftPosition(endEndPoint.getLeft());
         } else {
           cornerPoints.get(cornerPoints.size() - 1).setTopPosition(endEndPoint.getTop());
         }
       } else {
-        startEndPoint.setPosition(connectionPoint.getCenterLeft(), connectionPoint.getCenterTop());
+        startEndPoint.setPosition(connectionPoint.getConnectionPositionLeft(), connectionPoint.getConnectionPositionTop());
         if (!sectionHorizontal) {
           cornerPoints.get(0).setLeftPosition(startEndPoint.getLeft());
         } else {

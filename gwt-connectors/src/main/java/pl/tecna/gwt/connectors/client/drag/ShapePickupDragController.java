@@ -128,7 +128,7 @@ public class ShapePickupDragController extends PickupDragController {
         for (ConnectionPoint cp : shape.connectionPoints) {
           for (EndPoint ep : cp.gluedEndPoints) {
             if (diagram.ctrlPressed) {
-              ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
+              ep.setPosition(cp.getConnectionPositionLeft(), cp.getConnectionPositionTop());
               ep.connector.calculateStandardPointsPositions();
               ep.connector.drawSections();
             } else if (ep.connector.sections.size() <= 3) {
@@ -151,7 +151,7 @@ public class ShapePickupDragController extends PickupDragController {
                 } else {
                   vertical = ep.connector.nextSectionForPoint(ep).isVertical();
                 }
-                ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
+                ep.setPosition(cp.getConnectionPositionLeft(), cp.getConnectionPositionTop());
                 if (vertical) {
                   ep.updateOpositeEndPointOfVerticalSection();
                 } else {
@@ -211,8 +211,8 @@ public class ShapePickupDragController extends PickupDragController {
       ConnectionPoint nearestCP = conn.endEndPoint.gluedConnectionPoint.getParentShape().
           findNearestConnectionPoint(startPosition.getLeft(), startPosition.getTop());
       conn.endEndPoint.glueToConnectionPoint(nearestCP, false);
-      conn.endEndPoint.setLeftPosition(nearestCP.getCenterLeft());
-      conn.endEndPoint.setTopPosition(nearestCP.getCenterTop());
+      conn.endEndPoint.setLeftPosition(nearestCP.getConnectionPositionLeft());
+      conn.endEndPoint.setTopPosition(nearestCP.getConnectionPositionTop());
       
       endPosition.setLeft(conn.endEndPoint.getLeft());
       endPosition.setTop(conn.endEndPoint.getTop());
@@ -221,8 +221,8 @@ public class ShapePickupDragController extends PickupDragController {
       ConnectionPoint nearestCP = conn.startEndPoint.gluedConnectionPoint.getParentShape().
           findNearestConnectionPoint(endPosition.getLeft(), endPosition.getTop());
       conn.startEndPoint.glueToConnectionPoint(nearestCP, false);
-      conn.startEndPoint.setLeftPosition(nearestCP.getCenterLeft());
-      conn.startEndPoint.setTopPosition(nearestCP.getCenterTop());
+      conn.startEndPoint.setLeftPosition(nearestCP.getConnectionPositionLeft());
+      conn.startEndPoint.setTopPosition(nearestCP.getConnectionPositionTop());
       
       startPosition.setLeft(conn.startEndPoint.getLeft());
       startPosition.setTop(conn.startEndPoint.getTop());

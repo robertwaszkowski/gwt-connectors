@@ -32,7 +32,7 @@ public class ConnectionPointDropController extends SimpleDropController {
           ConnectionPoint target = ((ConnectionPointDropController) context.dropController).targetConnectionPoint;
           draggedEP.gluedConnectionPoint = target;
           draggedEP.setGluedToConnectionPoint(true);
-          draggedEP.setPosition(targetConnectionPoint.getCenterLeft(), targetConnectionPoint.getCenterTop());
+          draggedEP.setPosition(targetConnectionPoint.getConnectionPositionLeft(), targetConnectionPoint.getConnectionPositionTop());
           draggedEP.connector.calculateStandardPointsPositions(
               draggedEP.connector.startEndPoint, 
               draggedEP);

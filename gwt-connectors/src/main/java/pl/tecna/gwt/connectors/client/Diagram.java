@@ -242,7 +242,7 @@ public class Diagram {
             for (EndPoint gluedEp : cp.gluedEndPoints) {
               if (gluedEp.isAttached()) {
                 WidgetUtils.setWidgetPosition((AbsolutePanel) gluedEp.getParent(), gluedEp, 
-                    cp.getCenterLeft() - EndPoint.RADIUS, cp.getCenterTop() - EndPoint.RADIUS);
+                    cp.getConnectionPositionLeft() - EndPoint.RADIUS, cp.getConnectionPositionLeft() - EndPoint.RADIUS);
               }
             }
           }

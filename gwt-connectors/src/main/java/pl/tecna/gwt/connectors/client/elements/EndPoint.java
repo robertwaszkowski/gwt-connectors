@@ -82,12 +82,12 @@ public class EndPoint extends Point {
     }
     if (this.getParent() == connector.diagram.boundaryPanel) {
       WidgetUtils.setWidgetPosition(connector.diagram.boundaryPanel, this, 
-          connectionPoint.getCenterLeft() - RADIUS, 
-          connectionPoint.getCenterTop() - RADIUS);
+          connectionPoint.getConnectionPositionLeft() - RADIUS, 
+          connectionPoint.getConnectionPositionTop() - RADIUS);
     } else {
       WidgetUtils.addWidget(connector.diagram.boundaryPanel, this, 
-          connectionPoint.getCenterLeft() - RADIUS, 
-          connectionPoint.getCenterTop() - RADIUS);
+          connectionPoint.getConnectionPositionLeft() - RADIUS, 
+          connectionPoint.getConnectionPositionTop() - RADIUS);
     }
     this.gluedConnectionPoint = connectionPoint;
     connectionPoint.glueToEndPoint(this);
@@ -243,7 +243,6 @@ public class EndPoint extends Point {
   }
   
   public void setTransparent() {
-    getElement().setAttribute("TYPE_", "TRANSPARENT");
     addStyleName(ConnectorsClientBundle.INSTANCE.css().endPointTransparent());
   }
   

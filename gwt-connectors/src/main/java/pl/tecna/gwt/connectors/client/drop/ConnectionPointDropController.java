@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
@@ -23,7 +22,7 @@ public class ConnectionPointDropController extends SimpleDropController {
   @Override
   public void onEnter(DragContext context) {
     targetConnectionPoint.setVisible();
-    targetConnectionPoint.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInnerDropOver());
+    targetConnectionPoint.addStyleName("gwt-connectors-shape-connector-inner-drop-over");
     if (context.draggable instanceof EndPoint) {
       EndPoint draggedEP = (EndPoint) context.draggable;
       if (draggedEP.connector.sections.size() <= 3) {
@@ -45,7 +44,7 @@ public class ConnectionPointDropController extends SimpleDropController {
   @Override
   public void onLeave(DragContext context) {
     targetConnectionPoint.setTransparent();
-    targetConnectionPoint.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorInnerDropOver());
+    targetConnectionPoint.removeStyleName("gwt-connectors-shape-connector-inner-drop-over");
     if (context.finalDropController == null) {
       if (context.draggable instanceof EndPoint) {
         EndPoint draggedEP = (EndPoint) context.draggable;

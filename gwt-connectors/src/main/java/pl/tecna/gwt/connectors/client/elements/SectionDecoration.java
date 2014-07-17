@@ -3,7 +3,6 @@ package pl.tecna.gwt.connectors.client.elements;
 import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -123,11 +122,11 @@ public class SectionDecoration extends FocusPanel {
 
   private void initStyles() {
     for (Image img : decorationDirectedImages) {
-      img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+      img.addStyleName("gwt-connectors-image");
     }
 
     for (Image img : decorationDirectedSelectedImages) {
-      img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+      img.addStyleName("gwt-connectors-image");
     }
   }
 

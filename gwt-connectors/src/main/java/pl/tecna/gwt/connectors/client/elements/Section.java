@@ -14,7 +14,6 @@ import pl.tecna.gwt.connectors.client.listeners.event.ConnectorClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ConnectorDoubleClickEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementDragEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import pl.tecna.gwt.connectors.client.util.Position;
 import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
@@ -162,7 +161,7 @@ public class Section extends HTML {
       } else {
         setHTML(verticalLine(this.height, style));
       }
-      addStyleName(ConnectorsClientBundle.INSTANCE.css().verticalSection());
+      addStyleName("gwt-connectors-vertical-section");
       allowHorizontalDragging = true;
     } else if (isHorizontal()) {
       if (isSelected) {
@@ -170,7 +169,7 @@ public class Section extends HTML {
       } else {
         this.setHTML(horizontalLine(this.width, style));
       }
-      addStyleName(ConnectorsClientBundle.INSTANCE.css().horizontalSection());
+      addStyleName("gwt-connectors-horizontal-section");
       allowVerticalDragging = true;
     }
 

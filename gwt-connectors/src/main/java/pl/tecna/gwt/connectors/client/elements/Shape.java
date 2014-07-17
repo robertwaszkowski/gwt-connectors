@@ -13,10 +13,8 @@ import pl.tecna.gwt.connectors.client.drop.DiagramWidgetDropController;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
-import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -115,7 +113,7 @@ public class Shape extends FocusPanel implements Element {
     this.endPoints = new ArrayList<EndPoint>();
     this.connectedWidget = w;
     this.cpShapeType = cpShapeType;
-    this.setStylePrimaryName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
+    this.setStylePrimaryName("gwt-connectors-shape-unselected");
   }
 
   public void showOnDiagram(final Diagram diagram) {

@@ -7,7 +7,6 @@ import pl.tecna.gwt.connectors.client.drop.ConnectionPointDropController;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -128,8 +127,8 @@ public class ConnectionPoint extends FocusPanel {
 	 * @author robert.waszkowski@gmail.com
 	 */
 	public void setVisible() {
-	  removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
-	  addStyleName(ConnectorsClientBundle.INSTANCE.css().endPointConnectorCreate());
+	  removeStyleName("gwt-connectors-shape-connector-transparent");
+	  addStyleName("gwt-connectors-end-point-create-connector");
     diagram.endPointDragController.registerDropController(dropController);
 	}
 
@@ -143,8 +142,8 @@ public class ConnectionPoint extends FocusPanel {
 	 * @author robert.waszkowski@gmail.com
 	 */
 	public void setTransparent() {
-    addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnectorTransparent());
-    removeStyleName(ConnectorsClientBundle.INSTANCE.css().endPointConnectorCreate());
+    addStyleName("gwt-connectors-shape-connector-transparent");
+    removeStyleName("gwt-connectors-end-point-create-connector");
     diagram.endPointDragController.unregisterDropController(dropController);
 	}
 

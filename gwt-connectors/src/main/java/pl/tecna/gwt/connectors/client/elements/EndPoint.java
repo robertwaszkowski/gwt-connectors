@@ -6,7 +6,6 @@ import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.Point;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
@@ -243,15 +242,15 @@ public class EndPoint extends Point {
   }
   
   public void setTransparent() {
-    addStyleName(ConnectorsClientBundle.INSTANCE.css().endPointTransparent());
+    addStyleName("gwt-connectors-end-point-transparent");
   }
   
   public void setConnectorEndPointStyle() {
-    setStyleName(ConnectorsClientBundle.INSTANCE.css().endPoint());
+    setStyleName("gwt-connectors-end-point");
   }
  
   public void setConnectorCreateStyle() {
-    setStyleName(ConnectorsClientBundle.INSTANCE.css().endPointConnectorCreate());
+    setStyleName("gwt-connectors-end-point-create-connector");
   }
   
   public void enableConnectorCreate(Timer timer, ConnectionPoint startCP) {
@@ -276,7 +275,7 @@ public class EndPoint extends Point {
       };
       overHandlerReg = addMouseOverHandler(mouseOverHandler);
     }
-    setStyleName(ConnectorsClientBundle.INSTANCE.css().shapeConnector());
+    setStyleName("gwt-connectors-shape-connector");
   }
 
   public void disableConnectorCreate() {

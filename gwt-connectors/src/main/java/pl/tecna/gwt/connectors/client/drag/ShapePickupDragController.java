@@ -10,7 +10,6 @@ import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import pl.tecna.gwt.connectors.client.util.Position;
 
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
@@ -59,11 +58,11 @@ public class ShapePickupDragController extends PickupDragController {
     for (Iterator<Widget> iterator = context.selectedWidgets.iterator(); iterator.hasNext();) {
       Widget widget = iterator.next();
 
-      widget.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
-      widget.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
+      widget.addStyleName("gwt-connectors-shape-unselected");
+      widget.removeStyleName("gwt-connectors-shape-selected");
       if (!(widget instanceof Shape)) {
-        widget.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
-        widget.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
+        widget.addStyleName("gwt-connectors-widget-padding-unselected");
+        widget.removeStyleName("gwt-connectors-widget-padding-selected");
       }
       iterator.remove();
     }
@@ -77,19 +76,19 @@ public class ShapePickupDragController extends PickupDragController {
     }
     assert draggable != null;
     if (context.selectedWidgets.remove(draggable)) {
-      draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
-      draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
+      draggable.addStyleName("gwt-connectors-shape-unselected");
+      draggable.removeStyleName("gwt-connectors-shape-selected");
       if (!(draggable instanceof Shape)) {
-        draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
-        draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
+        draggable.addStyleName("gwt-connectors-widget-padding-unselected");
+        draggable.removeStyleName("gwt-connectors-widget-padding-selected");
       }
     } else {
       context.selectedWidgets.add(draggable);
-      draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
-      draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
+      draggable.removeStyleName("gwt-connectors-shape-unselected");
+      draggable.addStyleName("gwt-connectors-shape-selected");
       if (!(draggable instanceof Shape)) {
-        draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
-        draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
+        draggable.removeStyleName("gwt-connectors-widget-padding-unselected");
+        draggable.addStyleName("gwt-connectors-widget-padding-selected");
       }
     }
 
@@ -177,7 +176,7 @@ public class ShapePickupDragController extends PickupDragController {
   public void makeDraggable(Widget draggable, Widget dragHandle) {
 
     if (!(draggable instanceof Shape)) {
-      draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
+      draggable.addStyleName("gwt-connectors-widget-padding-unselected");
     }
     dragableWidgets.add(draggable);
     super.makeDraggable(draggable, dragHandle);

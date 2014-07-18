@@ -17,7 +17,6 @@ import pl.tecna.gwt.connectors.client.listeners.event.DiagramAddEvent;
 import pl.tecna.gwt.connectors.client.listeners.event.DiagramRemoveEvent;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.client.util.SectionData;
-import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -268,8 +267,8 @@ public class Connector implements Element {
     diagram.connectors.remove(this);
 
     // Remove Connector from Diagram's boundaryPanel
-    for (int i = 0; i < sections.size(); i++) {
-      diagram.boundaryPanel.remove(sections.get(i));
+    for (Section section : sections) {
+      section.removeFromDiagram(true);
 
     }
     sections.removeAll(sections);
@@ -666,7 +665,7 @@ public class Connector implements Element {
     this.cornerPoints = (ArrayList<CornerPoint>) cp;
     try {
       for (Section section : sections) {
-        section.removeFromDiagram();
+        section.removeFromDiagram(false);
       }
 
       sections.clear();

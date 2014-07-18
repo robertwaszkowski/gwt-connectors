@@ -47,6 +47,7 @@ public class EndPoint extends Point {
    */
   public EndPoint(Integer left, Integer top) {
     super(left, top);
+    getElement().setAttribute("typElementu", "EndPoint");
     getElement().getStyle().setZIndex(3);
     
     addMouseOverHandler(new MouseOverHandler() {

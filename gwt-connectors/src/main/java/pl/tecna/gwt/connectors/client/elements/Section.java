@@ -340,7 +340,7 @@ public class Section extends HTML {
                 Section.this.startPoint = Section.this.connector.getPrevSection(Section.this).startPoint;
                 Section.this.startPointDecoration =
                     Section.this.connector.getPrevSection(Section.this).startPointDecoration;
-                Section.this.connector.getPrevSection(Section.this).removeFromDiagram();
+                Section.this.connector.getPrevSection(Section.this).removeFromDiagram(false);
                 Section.this.connector.sections.remove(Section.this.connector.getPrevSection(Section.this));
               }
             } catch (Exception e) {
@@ -356,7 +356,7 @@ public class Section extends HTML {
                 Section.this.endPoint = Section.this.connector.getNextSection(Section.this).endPoint;
                 Section.this.endPointDecoration =
                     Section.this.connector.getNextSection(Section.this).endPointDecoration;
-                Section.this.connector.getNextSection(Section.this).removeFromDiagram();
+                Section.this.connector.getNextSection(Section.this).removeFromDiagram(false);
                 Section.this.connector.sections.remove(Section.this.connector.getNextSection(Section.this));
               } catch (Exception e) {
                 // LOG.e("Error while connecting sections...");
@@ -582,12 +582,20 @@ public class Section extends HTML {
 
   }
 
-  public boolean removeFromDiagram() {
+  public boolean removeFromDiagram(boolean removeEndPoints) {
     if (endPointDecoration != null && endPointDecoration.isAttached()) {
       endPointDecoration.removeFromParent();
     }
     if (startPointDecoration != null && startPointDecoration.isAttached()) {
       startPointDecoration.removeFromParent();
+    }
+    if (removeEndPoints) {
+      if (startPoint != null && startPoint.isAttached()) {
+        startPoint.removeFromParent();
+      }
+      if (endPoint != null && endPoint.isAttached()) {
+        endPoint.removeFromParent();
+      }
     }
     return connector.diagram.boundaryPanel.remove(this);
   }

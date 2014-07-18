@@ -421,31 +421,31 @@ public class Shape extends FocusPanel implements Element {
 
     connectionPoints.get(0).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE + cpPanelWidth / 2  - cpPanelWidth / 4, 
-        ConnectionPoint.SIZE);
+        ConnectionPoint.SIZE - 2);
     connectionPoints.get(1).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE + cpPanelWidth / 2, 
-        ConnectionPoint.SIZE);
+        ConnectionPoint.SIZE - 2);
     connectionPoints.get(2).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE + cpPanelWidth / 2 + cpPanelWidth / 4,
-        ConnectionPoint.SIZE);
+        ConnectionPoint.SIZE - 2);
     connectionPoints.get(3).positionOnCPPanel = new Point(
-        ConnectionPoint.SIZE + cpPanelWidth,
+        ConnectionPoint.SIZE + cpPanelWidth + 1,
         ConnectionPoint.SIZE + cpPanelHeight / 2 - cpPanelHeight / 4);
     connectionPoints.get(4).positionOnCPPanel = new Point(
-        ConnectionPoint.SIZE + cpPanelWidth,
+        ConnectionPoint.SIZE + cpPanelWidth + 1,
         ConnectionPoint.SIZE + cpPanelHeight / 2);
     connectionPoints.get(5).positionOnCPPanel = new Point(
-        ConnectionPoint.SIZE + cpPanelWidth,
+        ConnectionPoint.SIZE + cpPanelWidth + 1,
         ConnectionPoint.SIZE + cpPanelHeight / 2 + cpPanelHeight / 4);
     connectionPoints.get(6).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE + cpPanelWidth / 2 + (cpPanelWidth / 4), 
-        ConnectionPoint.SIZE + cpPanelHeight);
+        ConnectionPoint.SIZE + cpPanelHeight + 1);
     connectionPoints.get(7).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE + cpPanelWidth / 2, 
-        ConnectionPoint.SIZE + cpPanelHeight);
+        ConnectionPoint.SIZE + cpPanelHeight + 1);
     connectionPoints.get(8).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE + cpPanelWidth / 2 - cpPanelWidth / 4,
-        ConnectionPoint.SIZE + cpPanelHeight);
+        ConnectionPoint.SIZE + cpPanelHeight + 1);
     connectionPoints.get(9).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE, 
         ConnectionPoint.SIZE + cpPanelHeight / 2 + (cpPanelHeight / 4));
@@ -563,28 +563,28 @@ public class Shape extends FocusPanel implements Element {
 
     connectionPoints.get(0).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE, 
-        ConnectionPoint.SIZE + cpPanelHeight / 2);
+        ConnectionPoint.SIZE + cpPanelHeight / 2 - 1);
     connectionPoints.get(1).positionOnCPPanel = new Point(
-        ConnectionPoint.SIZE + cpPanelHeight / 4, 
-        ConnectionPoint.SIZE + cpPanelHeight / 4);
+        ConnectionPoint.SIZE + cpPanelHeight / 4 - 2, 
+        ConnectionPoint.SIZE + cpPanelHeight / 4 - 1);
     connectionPoints.get(2).positionOnCPPanel = new Point(
-        ConnectionPoint.SIZE + cpPanelWidth / 2, 
-        ConnectionPoint.SIZE);
+        ConnectionPoint.SIZE + cpPanelWidth / 2 - 1, 
+        ConnectionPoint.SIZE - 2);
     connectionPoints.get(3).positionOnCPPanel = new Point(
-        ConnectionPoint.SIZE + cpPanelWidth / 4 * 3, 
-        ConnectionPoint.SIZE + cpPanelWidth / 4);
+        ConnectionPoint.SIZE + cpPanelWidth / 4 * 3 , 
+        ConnectionPoint.SIZE + cpPanelWidth / 4 - 1);
     connectionPoints.get(4).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE + cpPanelWidth, 
-        ConnectionPoint.SIZE + cpPanelHeight / 2);
+        ConnectionPoint.SIZE + cpPanelHeight / 2 - 1);
     connectionPoints.get(5).positionOnCPPanel = new Point(
         ConnectionPoint.SIZE + cpPanelWidth / 4 * 3,
-        ConnectionPoint.SIZE + cpPanelHeight / 4 * 3);
+        ConnectionPoint.SIZE + cpPanelHeight / 4 * 3 - 1);
     connectionPoints.get(6).positionOnCPPanel = new Point(
-        ConnectionPoint.SIZE + cpPanelWidth / 2, 
+        ConnectionPoint.SIZE + cpPanelWidth / 2 - 1, 
         ConnectionPoint.SIZE + cpPanelHeight);
     connectionPoints.get(7).positionOnCPPanel = new Point(
-        ConnectionPoint.SIZE + cpPanelWidth / 4, 
-        ConnectionPoint.SIZE + cpPanelHeight / 4 * 3);
+        ConnectionPoint.SIZE + cpPanelWidth / 4 - 2, 
+        ConnectionPoint.SIZE + cpPanelHeight / 4 * 3 - 1);
     
     double cpWidgetOffset = (CONNECTOR_START_POINTS_OFFSET / Math.sqrt(2));
     

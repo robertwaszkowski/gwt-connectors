@@ -241,8 +241,8 @@ public class Diagram {
           for (ConnectionPoint cp : shape.connectionPoints) {
             for (EndPoint gluedEp : cp.gluedEndPoints) {
               if (gluedEp.isAttached()) {
-                WidgetUtils.setWidgetPosition((AbsolutePanel) gluedEp.getParent(), gluedEp, 
-                    cp.getConnectionPositionLeft() - EndPoint.RADIUS, cp.getConnectionPositionLeft() - EndPoint.RADIUS);
+                WidgetUtils.setWidgetPosition(Diagram.this.boundaryPanel, gluedEp, 
+                    cp.getConnectionPositionLeft() - EndPoint.RADIUS, cp.getConnectionPositionTop() - EndPoint.RADIUS);
               }
             }
           }

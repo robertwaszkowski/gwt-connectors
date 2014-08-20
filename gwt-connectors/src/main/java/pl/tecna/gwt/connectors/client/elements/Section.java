@@ -189,11 +189,11 @@ public class Section extends HTML {
             Point sp = Section.this.startPoint;
             Point ep = Section.this.endPoint;
             CornerPoint cp1 =
-                new CornerPoint(sp.getLeft() + (ep.getLeft() - sp.getLeft()) / 2, sp.getTop()
-                    + (ep.getTop() - sp.getTop()) / 2);
+                new CornerPoint(sp.getLeft() + (ep.getLeft() - sp.getLeft()) / 2,
+                    sp.getTop() + (ep.getTop() - sp.getTop()) / 2);
             CornerPoint cp2 =
-                new CornerPoint(sp.getLeft() + (ep.getLeft() - sp.getLeft()) / 2, sp.getTop()
-                    + (ep.getTop() - sp.getTop()) / 2);
+                new CornerPoint(sp.getLeft() + (ep.getLeft() - sp.getLeft()) / 2,
+                    sp.getTop() + (ep.getTop() - sp.getTop()) / 2);
             newCornerPoints.add(cp1);
             newCornerPoints.add(cp2);
             // Split Section
@@ -630,8 +630,11 @@ public class Section extends HTML {
       this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());
 
       if (isVertical()) {
-
-        this.setHTML(verticalLine(this.height, style));
+        if (this.connector.isSelected) {
+          this.setHTML(selectedVerticalLine(this.height, style));
+        } else {
+          this.setHTML(verticalLine(this.height, style));
+        }
 
         sectionDragController.setAllowHorizontalDragging(true);
         sectionDragController.setAllowVerticalDragging(false);

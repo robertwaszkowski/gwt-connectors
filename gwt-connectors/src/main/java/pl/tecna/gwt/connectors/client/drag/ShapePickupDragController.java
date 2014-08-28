@@ -130,7 +130,10 @@ public class ShapePickupDragController extends PickupDragController {
               ep.setPosition(cp.getConnectionPositionLeft(), cp.getConnectionPositionTop());
               ep.connector.calculateStandardPointsPositions();
               ep.connector.drawSections();
-            } else if (ep.connector.sections.size() <= 3) {
+            } else if (diagram.shiftPressed || (ep.connector.sections.size() <= 3 && !ep.connector.keepShape)) {
+              if (diagram.shiftPressed) { 
+                ep.connector.keepShape = false;
+              }
               toRecreate.add(ep.connector);
             } else {
               // moving multiple selected elements

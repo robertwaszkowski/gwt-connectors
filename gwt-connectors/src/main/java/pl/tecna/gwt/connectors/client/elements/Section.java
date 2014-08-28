@@ -182,6 +182,7 @@ public class Section extends HTML {
         // If dragged section startPoint or dragged section endPoint
         // is glued to connectionPoint then split section into three
         // to draw new lines to connectionPoint
+        connector.keepShape = true;
         try {
           if (Section.this.startPointIsGluedToConnectionPoint() || Section.this.endPointIsGluedToConnectionPoint()) {
             // Calculate new CornerPoints

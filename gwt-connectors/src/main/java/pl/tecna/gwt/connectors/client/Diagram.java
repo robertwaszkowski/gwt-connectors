@@ -93,6 +93,7 @@ public class Diagram {
   public boolean ctrlPressed = false;
 
   public boolean altPressed = false;
+  public boolean shiftPressed = false;
 
   public Diagram(AbsolutePanel boundaryPanel) {
     super();
@@ -742,6 +743,7 @@ public class Diagram {
 
           ctrlPressed = e.getCtrlKey();
           altPressed = e.getAltKey();
+          shiftPressed = e.getShiftKey();
         }
 
         public void onKeyUp(int key, Event e) {
@@ -754,6 +756,7 @@ public class Diagram {
           }
           ctrlPressed = e.getCtrlKey();
           altPressed = e.getAltKey();
+          shiftPressed = e.getShiftKey();
         }
       };
 

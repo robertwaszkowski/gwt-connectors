@@ -32,6 +32,8 @@ public class Connector implements Element {
    */
   public boolean initalizing = false;
   
+  public boolean keepShape = false;
+  
   public ArrayList<Section> sections;
   public ArrayList<CornerPoint> cornerPoints;
 

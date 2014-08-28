@@ -626,6 +626,14 @@ public class Section extends HTML {
    * sets the functionality of the horizontal or vertical dragging.
    */
   public void update() {
+    if (startPoint.getLeft().compareTo(endPoint.getLeft()) != 0 && 
+        startPoint.getTop().compareTo(endPoint.getTop()) != 0) {
+      LOG.severe("!!! Error during section update !!!");
+      connector.logCornerPointsData();
+      connector.calculateStandardPointsPositions();
+      connector.drawSections();
+      return;
+    }
     try {
       this.height = Math.abs(endPoint.getTop() - startPoint.getTop());
       this.width = Math.abs(endPoint.getLeft() - startPoint.getLeft());

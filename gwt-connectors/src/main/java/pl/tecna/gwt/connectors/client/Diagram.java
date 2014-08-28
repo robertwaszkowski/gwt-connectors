@@ -298,6 +298,7 @@ public class Diagram {
           } catch (Exception e) {
             LOG.log(Level.SEVERE, "Unexpected exception", e);
           }
+          endPoint.connector.keepShape = true;
         }
         
         Integer endX = null;

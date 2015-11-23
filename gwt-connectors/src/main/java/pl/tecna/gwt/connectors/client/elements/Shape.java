@@ -91,6 +91,9 @@ public class Shape extends FocusPanel implements Element {
 
   private Timer endPointsShowTimer;
   private boolean connectable = false;
+  private boolean connectableStart = false;
+  private boolean connectableEnd = false;
+  private boolean connectionCreateEnabled = false;
 
   private HandlerRegistration showConnStartMouseHandler;
   private HandlerRegistration hideConnStartMouseHandler;
@@ -170,8 +173,7 @@ public class Shape extends FocusPanel implements Element {
     // Create drop controller
     shapeDropController = new DiagramWidgetDropController(this);
 
-    diagram.endPointDragController.registerDropController(shapeDropController);
-    diagram.shapeDragController.registerDropController(shapeDropController);
+    makeConnectable(true);
 
     sinkEvents(Event.ONMOUSEUP);
     sinkEvents(Event.ONCLICK);
@@ -329,8 +331,7 @@ public class Shape extends FocusPanel implements Element {
       }
 
       // Remove Shape from Diagram
-      diagram.endPointDragController.unregisterDropController(shapeDropController);
-      diagram.shapeDragController.unregisterDropController(shapeDropController);
+      makeConnectable(false);
       diagram.shapeDragController.makeNotDraggable(this);
 
       diagram.shapes.remove(this);
@@ -898,6 +899,10 @@ public class Shape extends FocusPanel implements Element {
   public boolean isEnableOverlap() {
     return enableOverlap;
   }
+  
+  public boolean isConnectionCreateEnabled() {
+    return connectionCreateEnabled;
+  }
 
   public void hideShapeConnectorStartPionts() {
     startPointsVisible = false;
@@ -935,6 +940,7 @@ public class Shape extends FocusPanel implements Element {
    * @param enable
    */
   public void enableConnectionCreate(boolean enable) {
+    connectionCreateEnabled = enable;
     if (enable) {
       if (showConnStartMouseHandler == null && hideConnStartMouseHandler == null) {
         if (endPointsShowTimer == null) {
@@ -992,9 +998,19 @@ public class Shape extends FocusPanel implements Element {
   public boolean isConnectable() {
     return connectable;
   }
-
+  
+  public boolean isConnectableStart() {
+    return connectableStart;
+  }
+  
+  public boolean isConnectableEnd() {
+    return connectableEnd;
+  }
+  
   public void makeConnectable(boolean enable) {
     connectable = enable;
+    setConnectable(enable, enable);
+    
     if (enable) {
       diagram.endPointDragController.registerDropController(shapeDropController);
       diagram.shapeDragController.registerDropController(shapeDropController);
@@ -1006,6 +1022,11 @@ public class Shape extends FocusPanel implements Element {
         LOG.log(Level.SEVERE, "error while disable connectors for shape", e);
       }
     }
+  }
+
+  public void setConnectable(boolean enableStart, boolean enableEnd) {
+    connectableStart = enableStart;
+    connectableEnd = enableEnd;
   }
 
   public void changeConnectedWidget(Widget newConnectedWidget, CPShapeType newCpShapeType) {

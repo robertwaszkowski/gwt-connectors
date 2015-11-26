@@ -474,6 +474,8 @@ public class Diagram {
   /**
    * Changes position of dropped Shape to make last section straight (if the section before is
    * shorter than section tolerance (default 8))
+   * 
+   * @param shape the shape
    */
   public void fixShapePosition(Shape shape) {
 

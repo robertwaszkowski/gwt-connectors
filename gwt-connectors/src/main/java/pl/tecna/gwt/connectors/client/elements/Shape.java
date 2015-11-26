@@ -314,6 +314,7 @@ public class Shape extends FocusPanel implements Element {
    * Removes Shape from Diagram and from its boundaryPanel
    * 
    * @param diagram a Diagram the Shape will be removed from
+   * @param fireEvent if <code>true</code>, {@link DiagramRemoveEvent} will be fired
    */
   public void removeFromDiagram(Diagram diagram, boolean fireEvent) {
     try {
@@ -624,10 +625,7 @@ public class Shape extends FocusPanel implements Element {
 
   private void addConnectionPoints(List<ConnectionPoint> connectionPoints, AbsolutePanel connectionPointsPanel) {
     for (ConnectionPoint cp : connectionPoints) {
-      WidgetUtils.addWidget(connectionPointsPanel, cp, 
-          cp.endPointPosition.getLeft() - EndPoint.RADIUS, 
-          cp.endPointPosition.getTop() - EndPoint.RADIUS);
-      cp.showOnDiagram();
+      cp.showOnDiagram(connectionPointsPanel);
     }
   }
   
@@ -754,6 +752,7 @@ public class Shape extends FocusPanel implements Element {
   /**
    * Determines whether given {@link Section} is on this Shape's containing widget
    * 
+   * @param section the section
    * @return <code>true</code>, if section is on current shape
    */
   public boolean isOnThisShape(Section section) {
@@ -804,8 +803,8 @@ public class Shape extends FocusPanel implements Element {
   /**
    * Define wheather given x and y coordinates lie on this {@link Shape}
    * 
-   * @param x
-   * @param y
+   * @param x the x coordinate
+   * @param y the y coordinate
    * @return <code>true</code>, if the point is on the shape
    */
   public boolean isOnShape(int x, int y) {
@@ -840,8 +839,8 @@ public class Shape extends FocusPanel implements Element {
   /**
    * Defines, wheather this {@link Shape} lie on selected rectangular
    * 
-   * @param startSelectionPoint
-   * @param endSelectionPoint
+   * @param startSelectionPoint the start selection point
+   * @param endSelectionPoint the end selection point
    * @return <code>true</code>, if the shape is on defined rectangle
    */
   public boolean isInRect(Point startSelectionPoint, Point endSelectionPoint) {
@@ -937,7 +936,7 @@ public class Shape extends FocusPanel implements Element {
   /**
    * Controls showing end points for creating connection
    * 
-   * @param enable
+   * @param enable should enable creating connections
    */
   public void enableConnectionCreate(boolean enable) {
     connectionCreateEnabled = enable;

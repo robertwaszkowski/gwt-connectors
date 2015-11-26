@@ -384,6 +384,8 @@ public class AxisXYDragController extends AbstractDragController {
 
   /**
    * @deprecated Use {@link #getBehaviorDragProxy()} instead.
+   * 
+   * @return is drag proxy enabled
    */
   public boolean isDragProxyEnabled() {
     return getBehaviorDragProxy();
@@ -445,6 +447,8 @@ public class AxisXYDragController extends AbstractDragController {
 
   /**
    * @deprecated Use {@link #setBehaviorDragProxy(boolean)} instead.
+   * 
+   * @param dragProxyEnabled should drag proxy be enabled
    */
   public void setDragProxyEnabled(boolean dragProxyEnabled) {
     setBehaviorDragProxy(dragProxyEnabled);
@@ -464,6 +468,9 @@ public class AxisXYDragController extends AbstractDragController {
   /**
    * @deprecated Use {@link #newDragProxy(DragContext)} and {@link #setBehaviorDragProxy(boolean)}
    *             instead.
+   *             
+   * @param draggable the draggable widget
+   * @return the widget
    */
   protected final Widget maybeNewDraggableProxy(Widget draggable) {
     throw new UnsupportedOperationException();

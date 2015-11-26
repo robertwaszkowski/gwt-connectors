@@ -44,6 +44,8 @@ public class EndPoint extends Point {
    * <p>
    * {@link EndPoint} is visible until the {@link Connector} is glued to {@link ConnectionPoint}.
    * EndPoints are represented by small circles.
+   * @param left the left position
+   * @param top the top position
    */
   public EndPoint(Integer left, Integer top) {
     super(left, top);
@@ -118,7 +120,7 @@ public class EndPoint extends Point {
   }
 
   /**
-   * @param diagram
+   * @param diagram the diagram
    */
   public void showOnDiagram(Diagram diagram) {
     // Add EndPoint to given panel

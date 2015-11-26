@@ -64,6 +64,7 @@ public class Section extends HTML {
    * 
    * @param startPoint a {@link CornerPoint} or {@link EndPoint} where the Section starts
    * @param endPoint a {@link CornerPoint} or {@link EndPoint} where the Section ends
+   * @param connector the connector
    */
   public Section(Point startPoint, Point endPoint, Connector connector) throws IllegalArgumentException {
     super();
@@ -138,6 +139,7 @@ public class Section extends HTML {
    * 
    * @param diagram an absolute panel on witch the line will be drawn
    * @param isSelected defines whether connector is selected
+   * @param style the connector style
    */
   public void showOnDiagram(Diagram diagram, boolean isSelected, ConnectorStyle style) {
     // Create DIV to draw a line
@@ -845,8 +847,8 @@ public class Section extends HTML {
 
   /**
    * Updates start and end point position after {@link Shape} move
-   * @param sectionLeft
-   * @param sectionTop
+   * @param sectionLeft the left position
+   * @param sectionTop the top position
    */
   public void updateEndPointsPositions(int sectionLeft, int sectionTop) {
     Position startPosition = new Position();

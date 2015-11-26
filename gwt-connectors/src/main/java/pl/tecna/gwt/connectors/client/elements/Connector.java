@@ -212,11 +212,13 @@ public class Connector implements Element {
    * This method also add all necessary {@link Point}s: {@link EndPoint}s at the beginning and at
    * the end of the Connector and {@link CornerPoint}s at the Connector's corners.
    * <p>
-   * The way sections are generated: </br> Let "width" a width of rectangle drown on connectors
-   * start point and end point </br> Let "height" a height of rectangle drown on connectors start
-   * point and end point </br> If ("width" < "height") the connection contains two vertical sections
-   * and one horizontal section. </br> If ("height" < "width") the connection contains two
-   * horizontal sections and one vertical section.
+   * The way sections are generated:
+   * <ul>
+   * <li>Let "width" a width of rectangle drown on connectors start point and end point.</li>
+   * <li>Let "height" a height of rectangle drown on connectors start point and end point.</li>
+   * <li>If ("width" &lt; "height") the connection contains two vertical sections and one horizontal section.</li>
+   * <li>If ("height" &lt; "width") the connection contains two horizontal sections and one vertical section.</li>
+   * </ul>
    * 
    * @param diagram a Diagram the Connector will be added to
    */
@@ -262,6 +264,7 @@ public class Connector implements Element {
    * Removes Connector from Diagram and from its boundaryPanel
    * 
    * @param diagram a Diagram the Connector will be removed from
+   * @param fireEvent if <code>true</code>, {@link DiagramRemoveEvent} will be fired
    */
   public void removeFromDiagram(Diagram diagram, boolean fireEvent) {
 
@@ -487,11 +490,13 @@ public class Connector implements Element {
 
   /**
    * Creates new {@link Section} when {@link Connector} is connected to the {@link ConnectionPoint}
-   * </br> Section is created when direction of last {@link Section} is wrong (horizontal when
+   * <p>
+   * Section is created when direction of last {@link Section} is wrong (horizontal when
    * {@link ConnectionPoint} is on top or bottom of {@link Shape} or vertical when
    * {@link ConnectionPoint} is on left or right of {@link Shape}
    * 
-   * @param endPoint
+   * @param endPoint the end point
+   * @return fixed???
    */
   public boolean fixEndSectionDirection(EndPoint endPoint) {
     // end point must be connected
@@ -614,7 +619,7 @@ public class Connector implements Element {
    * Retrieve list of {@link CornerPoint}'s from list of {@link Section} (without {@link Connector}
    * end points)
    * 
-   * @param sectionList
+   * @param sectionList the section list
    * @return the list of corner points
    */
   public List<CornerPoint> getCorners(List<Section> sectionList) {
@@ -662,6 +667,7 @@ public class Connector implements Element {
    * sections data and given list of {@link CornerPoint}
    * 
    * @param cp list of {@link CornerPoint} containing {@link Connector} shape
+   * @param isSelected should section be selected
    */
   public void drawSections(List<CornerPoint> cp, boolean isSelected) {
     this.cornerPoints = (ArrayList<CornerPoint>) cp;
@@ -721,11 +727,14 @@ public class Connector implements Element {
   }
 
   /**
-   * Merges two {@link Section} on end of {@link Connector} </br> {@link Connector} sections length
-   * must be greater equals 3, and last section length must be lesser than defined length (default -
-   * 10)
+   * Merges two {@link Section} on end of {@link Connector}.
+   * <p>
+   * {@link Connector} sections length must be greater equals 3, and last section length must be
+   * lesser than defined length (default - 10).
    * 
    * @param endSection last {@link Section} of {@link Connection}
+   * @param cornerPoints the list of corner points
+   * @return <code>true</code> if new corner point was created
    */
   public boolean mergeTwoLastSections(Section endSection, List<CornerPoint> cornerPoints) {
     int connDirection = this.endEndPoint.gluedConnectionPoint.connectionDirection;
@@ -778,9 +787,14 @@ public class Connector implements Element {
   }
 
   /**
-   * Merges two {@link Section} on start of {@link Connector} </br> {@link Connector} sections
-   * length must be greater equals 3, and first section length must be lesser than defined length
-   * (default - 10)
+   * Merges two {@link Section} on start of {@link Connector}.
+   * <p>
+   * {@link Connector} sections length must be greater equals 3, and first section length
+   * must be lesser than defined length (default - 10).
+   * 
+   * @param startSection the start section
+   * @param cornerPoints the list of corner points
+   * @return <code>true</code> if new corner point was created
    */
   public boolean mergeTwoFirstSections(Section startSection, List<CornerPoint> cornerPoints) {
     int connDirection = this.startEndPoint.gluedConnectionPoint.connectionDirection;
@@ -888,7 +902,8 @@ public class Connector implements Element {
   /**
    * Removes short sections, and merges sections that are in one line
    * 
-   * @param corners
+   * @param corners the list of corner points
+   * @return new list of corner points
    */
   public List<CornerPoint> fixLineSections(List<CornerPoint> corners) {
     if (corners.size() < 3) {
@@ -988,6 +1003,7 @@ public class Connector implements Element {
 
   /**
    * If there are {@link Section}'s, that overlap some {@link Shape}, the {@link Shape} is evaded
+   * @return <code>true</code> if shape was evaded
    */
   public boolean fixOverlapSections() {
     return fixOverlapSections(getCorners());
@@ -995,6 +1011,8 @@ public class Connector implements Element {
 
   /**
    * If there are {@link Section}'s, that overlap some {@link Shape}, the {@link Shape} is evaded
+   * @param corners the list of corners
+   * @return <code>true</code> if shape was evaded
    */
   public boolean fixOverlapSections(List<CornerPoint> corners) {
     boolean result = false;
@@ -1015,6 +1033,7 @@ public class Connector implements Element {
    * 
    * @param shape {@link Shape} to omit
    * @param overlapSections {@link Section}s which overlap given {@link Section}s
+   * @param corners the list of corners
    */
   public void evadeShape(Shape shape, List<Section> overlapSections, List<CornerPoint> corners) {
     if (shape.isEnableOverlap()) {
@@ -1310,8 +1329,8 @@ public class Connector implements Element {
   /**
    * Move {@link Connector} by defined x and y offset from saved {@link Section}'s positions.
    * 
-   * @param xOffset
-   * @param yOffset
+   * @param xOffset the x offset
+   * @param yOffset the y offset
    */
   public void moveOffsetFromStartPos(int xOffset, int yOffset) {
     xOffset = xOffset - diagram.boundaryPanel.getAbsoluteLeft();

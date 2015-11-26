@@ -7,6 +7,7 @@ import pl.tecna.gwt.connectors.client.drop.ConnectionPointDropController;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -64,6 +65,8 @@ public class ConnectionPoint extends FocusPanel {
 	 * <p>
 	 * Connection Point have its own Drop Controller to allow dropping {@link EndPoint}
 	 * on it to make it glued.
+	 * 
+	 * @param diagram the diagram
 	 */
 	public ConnectionPoint(Diagram diagram) {
 		super();
@@ -101,28 +104,28 @@ public class ConnectionPoint extends FocusPanel {
 
 	
 	/**
-	 * Shows ConnectionPoint on a given panel. By default the ConnectionPoint
+	 * <p>Shows ConnectionPoint on a given panel. By default the ConnectionPoint
 	 * is invisible. It can be visible when Shape is selected or ConnectionPoint
-	 * is focused. 
-	 * <p>
-	 * This method also add a drop controller to the ConnectionPoint.
+	 * is focused.</p> 
+	 * <p>This method also add a drop controller to the ConnectionPoint.
 	 * Drop controller is necessary to allow ConnectionPoints to be glued
-	 * with EndPoint.
+	 * with EndPoint.</p>
 	 *
 	 * @param  panel  an absolute panel on witch the connection point will be drawn
-	 * @return        the connection point drawn on specified panel
 	 * 
 	 * @author robert.waszkowski@gmail.com
 	 */
-	public void showOnDiagram() {
+	public void showOnDiagram(AbsolutePanel panel) {
+	  int left = endPointPosition.getLeft() - EndPoint.RADIUS;
+	  int top = endPointPosition.getTop() - EndPoint.RADIUS;
+    WidgetUtils.addWidget(panel, this, left, top);
 	}
 
 	/**
-	 * Changes ConnectionPoint's picture. The ConnectionPoint is 
-	 * represented by a small x, which is visible when wrapped
-	 * element is focused.
+	 * <p>Changes ConnectionPoint's picture. The ConnectionPoint is represented by a small x, which is visible when wrapped
+	 * element is focused.</p>
 	 *
-	 * @return  the ConnectionPoint's picture is changed to connection_point_selected.png
+	 * <p>The ConnectionPoint's picture is changed to connection_point_selected.png</p>
 	 * 
 	 * @author robert.waszkowski@gmail.com
 	 */
@@ -133,11 +136,10 @@ public class ConnectionPoint extends FocusPanel {
 	}
 
 	/**
-	 * Changes ConnectionPoint's picture. The ConnectionPoint is 
-	 * represented by invisible element when ConnectionPoint
-	 * is not focused and its wrapped element is not focused too.
+	 * <p>Changes ConnectionPoint's picture. The ConnectionPoint is represented by invisible element when ConnectionPoint
+	 * is not focused and its wrapped element is not focused too.</p>
 	 *
-	 * @return  the ConnectionPoint's picture is changed to connection_point.png
+	 * <p>The ConnectionPoint's picture is changed to connection_point.png</p>
 	 * 
 	 * @author robert.waszkowski@gmail.com
 	 */
@@ -158,8 +160,8 @@ public class ConnectionPoint extends FocusPanel {
   }
 	
 	/**
-	 * Gets left coordinate of this {@link ConnectionPoint}'s connection position on {@link AbsolutePanel} </br>
-	 * Useful to define {@link Connector} end point left coordinate
+	 * Gets left coordinate of this {@link ConnectionPoint}'s connection position on {@link AbsolutePanel}.
+	 * Useful to define {@link Connector} end point left coordinate.
 	 * @return distance from left side of {@link AbsolutePanel} to this {@link ConnectionPoint} position
 	 */
 	public int getConnectionPositionLeft() {
@@ -169,8 +171,8 @@ public class ConnectionPoint extends FocusPanel {
 	}
 	
 	/**
-	 * Gets top coordinate of this {@link ConnectionPoint}'s connection position on {@link AbsolutePanel} </br>
-	 * Useful to define {@link Connector} end point top coordinate
+	 * Gets top coordinate of this {@link ConnectionPoint}'s connection position on {@link AbsolutePanel}.
+	 * Useful to define {@link Connector} end point top coordinate.
 	 * @return distance from top side of {@link AbsolutePanel} to this {@link ConnectionPoint} position
 	 */
 	public int getConnectionPositionTop() {

@@ -4,18 +4,17 @@ import java.util.ArrayList;
 
 import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
+import pl.tecna.gwt.connectors.client.drop.ConnectionPointDropController;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Section;
 import pl.tecna.gwt.connectors.client.elements.Shape;
-import pl.tecna.gwt.connectors.client.elements.ShapeConnectorStart;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.allen_sauer.gwt.dnd.client.util.Location;
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
 public class EndPointDragController extends PickupDragController {
@@ -32,31 +31,30 @@ public class EndPointDragController extends PickupDragController {
 
   @Override
   public void previewDragStart() throws VetoDragException {
-
-    // create new connector for dragged ShapeConnectorStart
-    if (context.draggable instanceof ShapeConnectorStart) {
+    EndPoint ep = (EndPoint) context.draggable;
+    if (ep.connector == null && ep.gluedConnectionPoint != null) {
       diagram.clearSelection();
-      ShapeConnectorStart ep = (ShapeConnectorStart) context.draggable;
-      ep.setWidget(ep.createEndPointImage());
+      ep.setConnectorEndPointStyle();
       ep.setPosition(getEndPointCenterLeft(ep), getEndPointCenterTop(ep));
-
+      Shape shape = ep.gluedConnectionPoint.getParentShape();
+      shape.endPoints.remove(ep);
+      shape.hideShapeConnectorStartPionts();
+      ep.disableConnectorCreate();
       if (ep.connector == null) {
-        ep.shape.endPoints.remove(ep);
-        ep.shape.hideShapeConnectorStartPionts();
-        ep.removeHandlers();
-        ep.removeStyle();
-        DOM.setStyleAttribute(ep.getElement(), "cursor", "crosshair");
-        if (ep.connector == null) {
-          int startLeft = ep.getOverlapingCP().getCenterLeft();
-          int startTop = ep.getOverlapingCP().getCenterTop();
-          int endLeft = ep.getLeft();
-          int endTop = ep.getTop();
+        int startLeft = ep.gluedConnectionPoint.getConnectionPositionLeft();
+        int startTop = ep.gluedConnectionPoint.getConnectionPositionTop();
+        int endLeft = ep.getLeft();
+        int endTop = ep.getTop();
 
-          ep.connector = diagram.createConnector(startLeft, startTop, endLeft, endTop, ep, ep.shape.connectorsStyle);
-          ep.connector.initalizing = true;
-        }
-        ep.connector.startEndPoint.glueToConnectionPoint(ep.getOverlapingCP());
+        ep.connector = diagram.createConnector(startLeft, startTop, endLeft, endTop, ep, shape.connectorsStyle);
+        ep.connector.initalizing = true;
       }
+      ep.connector.startEndPoint.glueToConnectionPoint(ep.gluedConnectionPoint);
+
+    } else if (ep.connector != null && ep.isGluedToConnectionPoint()) {
+      ep.connector.initalizing = false;
+      ep.unglueFromConnectionPoint();
+      ep.setConnectorEndPointStyle();
     }
     super.previewDragStart();
   }
@@ -87,8 +85,15 @@ public class EndPointDragController extends PickupDragController {
   @Override
   public void dragMove() {
     EndPoint draggedEP = (EndPoint) context.draggable;
-
     draggedEP.connector.select();
+    
+    if (draggedEP.connector.sections.size() <= 3) {
+      if (draggedEP.connector.startEndPoint.isGluedToConnectionPoint() && 
+          context.dropController instanceof ConnectionPointDropController) {
+        super.dragMove();
+      }
+    }
+    
     int desiredLeft = getEndPointCenterLeft(draggedEP);
     int desiredTop = getEndPointCenterTop(draggedEP);
     if (diagram.drawInitializingConnectorsInLine && draggedEP.connector.initalizing) {
@@ -99,7 +104,7 @@ public class EndPointDragController extends PickupDragController {
           if (Math.abs(draggedEP.connector.startEndPoint.getTop() - 
               (context.desiredDraggableY - boundaryOffsetY)) < diagram.initialDragTolerance) {
             desiredTop = connectorStartPoint.getTop();
-            context.desiredDraggableY = (int) Math.round(desiredTop + boundaryOffsetY - EndPoint.CP_MARGIN / 2.0);
+            context.desiredDraggableY = (int) Math.round(desiredTop + boundaryOffsetY - ConnectionPoint.RADIUS);
           }
         } break;
         case ConnectionPoint.DIRECTION_TOP:
@@ -107,7 +112,7 @@ public class EndPointDragController extends PickupDragController {
           if (Math.abs(draggedEP.connector.startEndPoint.getLeft() - 
               (context.desiredDraggableX - boundaryOffsetX)) < diagram.initialDragTolerance) {
             desiredLeft = connectorStartPoint.getLeft();
-            context.desiredDraggableX = (int) Math.round(desiredLeft + boundaryOffsetX - EndPoint.CP_MARGIN / 2.0);
+            context.desiredDraggableX = (int) Math.round(desiredLeft + boundaryOffsetX - ConnectionPoint.RADIUS);
           }
         } break;
       }
@@ -149,7 +154,7 @@ public class EndPointDragController extends PickupDragController {
             shape.findNearestConnectionPoint(dragEndPoint.getLeft(), dragEndPoint.getTop(), excluded);
         if (nearestCP != null && nearestCP != conn.startEndPoint.gluedConnectionPoint) {
           conn.startEndPoint.glueToConnectionPoint(nearestCP);
-          conn.startEndPoint.setPosition(nearestCP.getCenterLeft(), nearestCP.getCenterTop());
+          conn.startEndPoint.setPosition(nearestCP.getConnectionPositionLeft(), nearestCP.getConnectionPositionTop());
         }
       }
     }

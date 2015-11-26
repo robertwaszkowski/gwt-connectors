@@ -1,24 +1,32 @@
 package pl.tecna.gwt.connectors.client.elements;
 
+import java.util.logging.Logger;
+
 import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.Point;
-import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.listeners.event.ElementConnectEvent;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
 
 public class EndPoint extends Point {
 
-  //Defines size of connection point
-  public static final int CP_MARGIN = 13;
-  public static final int CENTER_OFFSET = (int) Math.floor(CP_MARGIN / 2.0);
+  private static final Logger LOG = Logger.getLogger("EndPoint");
+  
+  public static final int SIZE = 8;
+  public static final int RADIUS = 4;
+  
+  private Timer endPointsHideTimer;
+  private HandlerRegistration overHandlerReg;
+  private HandlerRegistration outHandlerReg;
   
   public ConnectionPoint gluedConnectionPoint;
   public Connector connector;
@@ -36,29 +44,35 @@ public class EndPoint extends Point {
    * <p>
    * {@link EndPoint} is visible until the {@link Connector} is glued to {@link ConnectionPoint}.
    * EndPoints are represented by small circles.
+   * @param left the left position
+   * @param top the top position
    */
-  public EndPoint(Integer left, Integer top, Connector connector) {
-    super(left, top);
-
-    this.connector = connector;
-    this.setGluedToConnectionPoint(false);
-    Widget img = createImage();
-    if (img != null) {
-      this.setWidget(img);
-    }
-    this.getElement().getStyle().setZIndex(3);
-  }
-
   public EndPoint(Integer left, Integer top) {
     super(left, top);
-    this.setGluedToConnectionPoint(false);
-    Widget img = createImage();
-    if (img != null) {
-      this.setWidget(img);
-    }
-    this.getElement().getStyle().setZIndex(3);
+    getElement().setAttribute("typElementu", "EndPoint");
+    getElement().getStyle().setZIndex(3);
+    
+    addMouseOverHandler(new MouseOverHandler() {
+      
+      @Override
+      public void onMouseOver(MouseOverEvent event) {
+        if (isGluedToConnectionPoint()) {
+          setConnectorEndPointStyle();
+          gluedConnectionPoint.getParentShape().hideShapeConnectorStartPionts();
+        }
+      }
+    });
+    
+    addMouseOutHandler(new MouseOutHandler() {
+      
+      @Override
+      public void onMouseOut(MouseOutEvent event) {
+        if (isGluedToConnectionPoint()) {
+          setTransparent();
+        }
+      }
+    });
   }
-
 
   public void glueToConnectionPoint(ConnectionPoint connectionPoint) {
     glueToConnectionPoint(connectionPoint, true);
@@ -68,10 +82,19 @@ public class EndPoint extends Point {
     if (isGluedToConnectionPoint()) {
       unglueFromConnectionPoint();
     }
+    if (this.getParent() == connector.diagram.boundaryPanel) {
+      WidgetUtils.setWidgetPosition(connector.diagram.boundaryPanel, this, 
+          connectionPoint.getConnectionPositionLeft() - RADIUS, 
+          connectionPoint.getConnectionPositionTop() - RADIUS);
+    } else {
+      WidgetUtils.addWidget(connector.diagram.boundaryPanel, this, 
+          connectionPoint.getConnectionPositionLeft() - RADIUS, 
+          connectionPoint.getConnectionPositionTop() - RADIUS);
+    }
     this.gluedConnectionPoint = connectionPoint;
     connectionPoint.glueToEndPoint(this);
     this.setGluedToConnectionPoint(true);
-    this.clear();
+    setTransparent();
 
     if (fireEvent) {
       connector.diagram.onElementConnect(new ElementConnectEvent(connectionPoint.parentWidget, connector, this));
@@ -82,31 +105,30 @@ public class EndPoint extends Point {
    * 
    */
   public void unglueFromConnectionPoint() {
-    this.gluedConnectionPoint.unglueFromEndPoint(this);
-    this.gluedConnectionPoint = null;
-    this.setGluedToConnectionPoint(false);
+    if (gluedConnectionPoint != null) {
+      gluedConnectionPoint.unglueFromEndPoint(this);
+      gluedConnectionPoint = null;
+    }
+    setGluedToConnectionPoint(false);
   }
 
   /**
 	 * 
 	 */
   public void update() {
-    ((AbsolutePanel) this.getParent()).setWidgetPosition(this, getDataCenterLeft(), getDataCenterTop());
+    WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, getDataCenterLeft(), getDataCenterTop());
   }
 
   /**
-   * @param diagram
+   * @param diagram the diagram
    */
   public void showOnDiagram(Diagram diagram) {
     // Add EndPoint to given panel
-    diagram.boundaryPanel.add(this, getDataCenterLeft(), getDataCenterTop());
-
-    // Set EndPoint's cursor
-    DOM.setStyleAttribute(this.getElement(), "cursor", "crosshair");
+    WidgetUtils.addWidget(diagram.boundaryPanel, this, getLeft() - RADIUS, getTop() - RADIUS);
 
     // Make EndPoint draggable
     diagram.endPointDragController.makeDraggable(this);
-
+    
   }
 
   public void updateOpositeEndPointOfVerticalSection() {
@@ -153,12 +175,6 @@ public class EndPoint extends Point {
     this.gluedToConnectionPoint = gluedToConnectionPoint;
   }
 
-  protected Widget createImage() {
-    Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.end_point()).createImage();
-    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
-    return img;
-  }
-  
   public void linkShape(Shape shape) {
     linkedShape = shape;
   }
@@ -174,7 +190,7 @@ public class EndPoint extends Point {
       WidgetLocation linkedShapeLocation = new WidgetLocation(linkedShape, linkedShape.diagram.boundaryPanel);
       linkedShape.left = linkedShapeLocation.getLeft() + offsetLeft;
       linkedShape.top = linkedShapeLocation.getTop() + offsetTop;
-      linkedShape.diagram.boundaryPanel.setWidgetPosition(linkedShape, linkedShape.left, linkedShape.top);
+      WidgetUtils.setWidgetPosition(linkedShape.diagram.boundaryPanel, linkedShape, linkedShape.left, linkedShape.top);
       linkedShape.updateConnectors();
     }
   }
@@ -209,27 +225,67 @@ public class EndPoint extends Point {
   }
   
   public int getDataCenterLeft() {
-    return (int) Math.ceil(getLeft() - getCenterOffset());
+    return getLeft() - ConnectionPoint.RADIUS;
   }
   
   public int getDataCenterTop() {
-    return (int) Math.ceil(getTop() - getCenterOffset());
+    return getTop() - ConnectionPoint.RADIUS;
   }
   
   public int getCurrentCenterLeft() {
-    return (int) Math.ceil(getWidgetLocation().getLeft() - getCenterOffset());
+    return getWidgetLocation().getLeft() - ConnectionPoint.RADIUS;
   }
   
   public int getCurrentCenterTop() {
-    return (int) Math.ceil(getWidgetLocation().getTop() - getCenterOffset());
-  }
-  
-  private double getCenterOffset() {
-    return (double) CP_MARGIN / 2.0;
+    return getWidgetLocation().getTop() - ConnectionPoint.RADIUS;
   }
   
   private WidgetLocation getWidgetLocation() {
     return new WidgetLocation(this, connector.diagram.boundaryPanel);
+  }
+  
+  public void setTransparent() {
+    addStyleName("gwt-connectors-end-point-transparent");
+  }
+  
+  public void setConnectorEndPointStyle() {
+    setStyleName("gwt-connectors-end-point");
+  }
+ 
+  public void setConnectorCreateStyle() {
+    setStyleName("gwt-connectors-end-point-create-connector");
+  }
+  
+  public void enableConnectorCreate(Timer timer, ConnectionPoint startCP) {
+    gluedConnectionPoint = startCP;
+    endPointsHideTimer = timer;
+    if (outHandlerReg == null) {
+      MouseOutHandler mouseOutHandler = new MouseOutHandler() {
+
+        public void onMouseOut(MouseOutEvent event) {
+          endPointsHideTimer.schedule(Shape.END_POINTS_VIS_DELAY);
+        }
+      };
+      outHandlerReg = addMouseOutHandler(mouseOutHandler);
+    }
+    
+    if (overHandlerReg == null) {
+      MouseOverHandler mouseOverHandler = new MouseOverHandler() {
+
+        public void onMouseOver(MouseOverEvent event) {
+          endPointsHideTimer.cancel();
+        }
+      };
+      overHandlerReg = addMouseOverHandler(mouseOverHandler);
+    }
+    setStyleName("gwt-connectors-shape-connector");
+  }
+
+  public void disableConnectorCreate() {
+    outHandlerReg.removeHandler();
+    overHandlerReg.removeHandler();
+    outHandlerReg = null;
+    overHandlerReg = null;
   }
   
 }

@@ -3,17 +3,15 @@ package pl.tecna.gwt.connectors.client;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import pl.tecna.gwt.connectors.client.drop.ConnectionPointDropController;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
-import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -24,6 +22,9 @@ public class ConnectionPoint extends FocusPanel {
 
   Logger LOG = Logger.getLogger("ConnectionPoint");
   
+  public static final int SIZE = 11;
+  public static final int RADIUS = (int) Math.floor(SIZE / 2);
+  
 	public ArrayList<EndPoint> gluedEndPoints;
 	
 	/**
@@ -32,16 +33,25 @@ public class ConnectionPoint extends FocusPanel {
 	public int connectionDirection;
 	public int index;
 	public Widget parentWidget;
+	
+	/**
+	 * Position on ConnectionPointsPanel where {@link Connector}'s {@link EndPoint} is connected
+	 */
 	public Point positionOnCPPanel;
+	
+	/**
+	 * Position EndPoint center
+	 */
+	public Point endPointPosition;
+	
 	public Diagram diagram;
+	private ConnectionPointDropController dropController;
 	
 	public static final int ALL    =  0;
 	public static final int DIRECTION_TOP    =  1;
 	public static final int DIRECTION_RIGHT  =  2;
 	public static final int DIRECTION_BOTTOM =  3;
 	public static final int DIRECTION_LEFT   =  4;
-	
-	public static final int CPSize = 13;
 	
 	/**
 	 * Any element which should be connected by {@link Connector}
@@ -55,24 +65,24 @@ public class ConnectionPoint extends FocusPanel {
 	 * <p>
 	 * Connection Point have its own Drop Controller to allow dropping {@link EndPoint}
 	 * on it to make it glued.
+	 * 
+	 * @param diagram the diagram
 	 */
-	public ConnectionPoint() {
+	public ConnectionPoint(Diagram diagram) {
 		super();
+		this.diagram = diagram;
 		gluedEndPoints = new ArrayList<EndPoint>();
 		connectionDirection = ConnectionPoint.ALL;
-		
-		Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point()).createImage();
-    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
-		this.setWidget(img);
+		setTransparent();
 		this.index = 1;
 		this.getElement().getStyle().setZIndex(2);
+		dropController = new ConnectionPointDropController(this);
 	}
 	
-	public ConnectionPoint(int connectionDirection, int position, Widget w) {
-		this();
+	public ConnectionPoint(Diagram diagram, int connectionDirection, int position, Widget w) {
+		this(diagram);
 		this.connectionDirection = connectionDirection;
 		this.index = position;
-		this.getElement().getStyle().setZIndex(2);
 		this.parentWidget = w;
 	}
 	
@@ -94,103 +104,81 @@ public class ConnectionPoint extends FocusPanel {
 
 	
 	/**
-	 * Shows ConnectionPoint on a given panel. By default the ConnectionPoint
+	 * <p>Shows ConnectionPoint on a given panel. By default the ConnectionPoint
 	 * is invisible. It can be visible when Shape is selected or ConnectionPoint
-	 * is focused. 
-	 * <p>
-	 * This method also add a drop controller to the ConnectionPoint.
+	 * is focused.</p> 
+	 * <p>This method also add a drop controller to the ConnectionPoint.
 	 * Drop controller is necessary to allow ConnectionPoints to be glued
-	 * with EndPoint.
+	 * with EndPoint.</p>
 	 *
 	 * @param  panel  an absolute panel on witch the connection point will be drawn
-	 * @return        the connection point drawn on specified panel
 	 * 
 	 * @author robert.waszkowski@gmail.com
 	 */
-	public void showOnDiagram(Diagram diagram) {
-		this.diagram = diagram;
+	public void showOnDiagram(AbsolutePanel panel) {
+	  int left = endPointPosition.getLeft() - EndPoint.RADIUS;
+	  int top = endPointPosition.getTop() - EndPoint.RADIUS;
+    WidgetUtils.addWidget(panel, this, left, top);
 	}
 
 	/**
-	 * Changes ConnectionPoint's picture. The ConnectionPoint is 
-	 * represented by a small x, which is visible when wrapped
-	 * element is focused.
+	 * <p>Changes ConnectionPoint's picture. The ConnectionPoint is represented by a small x, which is visible when wrapped
+	 * element is focused.</p>
 	 *
-	 * @return  the ConnectionPoint's picture is changed to connection_point_selected.png
+	 * <p>The ConnectionPoint's picture is changed to connection_point_selected.png</p>
 	 * 
 	 * @author robert.waszkowski@gmail.com
 	 */
-	public void setSelected() {
-	  Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_selected()).createImage();
-    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
-    this.setWidget(img);
-//		this.setWidget(AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_selected()).createImage());
+	public void setVisible() {
+	  removeStyleName("gwt-connectors-shape-connector-transparent");
+	  addStyleName("gwt-connectors-end-point-create-connector");
+    diagram.endPointDragController.registerDropController(dropController);
 	}
 
 	/**
-	 * Changes ConnectionPoint's picture. The ConnectionPoint is 
-	 * represented by a small x, which is visible when ConnectionPoint
-	 * is focused.
+	 * <p>Changes ConnectionPoint's picture. The ConnectionPoint is represented by invisible element when ConnectionPoint
+	 * is not focused and its wrapped element is not focused too.</p>
 	 *
-	 * @return  the ConnectionPoint's picture is changed to connection_point_focused.png
+	 * <p>The ConnectionPoint's picture is changed to connection_point.png</p>
 	 * 
 	 * @author robert.waszkowski@gmail.com
 	 */
-	public void setFocused() { 
-	  Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point_focused()).createImage();
-	  img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
-    this.setWidget(img);
+	public void setTransparent() {
+    addStyleName("gwt-connectors-shape-connector-transparent");
+    removeStyleName("gwt-connectors-end-point-create-connector");
+    diagram.endPointDragController.unregisterDropController(dropController);
 	}
 
-	/**
-	 * Changes ConnectionPoint's picture. The ConnectionPoint is 
-	 * represented by invisible element when ConnectionPoint
-	 * is not focused and its wrapped element is not focused too.
-	 *
-	 * @return  the ConnectionPoint's picture is changed to connection_point.png
-	 * 
-	 * @author robert.waszkowski@gmail.com
-	 */
-	public void setUnfocused() {
-	  Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.connection_point()).createImage();
-    img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
-    this.setWidget(img);
-		
-	}
-
-	/**
-	 * Gets left coordinate of this {@link ConnectionPoint}'s center position on {@link AbsolutePanel} </br>
-	 * Useful to define {@link Connector} end point left coordinate
-	 * @return distance from left side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
-	 */
-	public int getCenterLeft() {
+	public int getWidgetLeft() {
 	  WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-		int left;
-		if (this.getParentShape().diagram != null) {
-		  left = (int) Math.floor(currentLocation.getLeft() + ((double) getOffsetWidth() / 2.0));
-		  if (connectionDirection == DIRECTION_LEFT) {
-		    left += 1;
-		  }
-		  return left;
-		} else {
-			return -1;
-		}
+	  return currentLocation.getLeft();
+	}
+	
+	public int getWidgetTop() {
+    WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
+    return currentLocation.getTop();
+  }
+	
+	/**
+	 * Gets left coordinate of this {@link ConnectionPoint}'s connection position on {@link AbsolutePanel}.
+	 * Useful to define {@link Connector} end point left coordinate.
+	 * @return distance from left side of {@link AbsolutePanel} to this {@link ConnectionPoint} position
+	 */
+	public int getConnectionPositionLeft() {
+	  WidgetLocation currentLocation = new WidgetLocation(this.getParent(), diagram.boundaryPanel);
+    int left = currentLocation.getLeft() + positionOnCPPanel.getLeft();
+    return left;
 	}
 	
 	/**
-	 * Gets top coordinate of this {@link ConnectionPoint}'s center position on {@link AbsolutePanel} </br>
-	 * Useful to define {@link Connector} end point top coordinate
-	 * @return distance from top side of {@link AbsolutePanel} to this {@link ConnectionPoint} center
+	 * Gets top coordinate of this {@link ConnectionPoint}'s connection position on {@link AbsolutePanel}.
+	 * Useful to define {@link Connector} end point top coordinate.
+	 * @return distance from top side of {@link AbsolutePanel} to this {@link ConnectionPoint} position
 	 */
-	public int getCenterTop() {
-    WidgetLocation currentLocation = new WidgetLocation(this, diagram.boundaryPanel);
-		int top;
-		if (this.getParentShape().diagram != null) {
-		  top = (int) Math.floor(currentLocation.getTop() + ((double) getOffsetHeight() / 2.0));
-			return top;
-		} else {
-			return -1;
-		}
+	public int getConnectionPositionTop() {
+	  WidgetLocation currentLocation = new WidgetLocation(this.getParent(), diagram.boundaryPanel);
+	  int top = currentLocation.getTop() + positionOnCPPanel.getTop();
+	  return top;
 	}
 	
 	/**
@@ -204,4 +192,9 @@ public class ConnectionPoint extends FocusPanel {
 	public Widget getParentWidget() {
 	  return parentWidget;
 	}
+	
+	public void unregisterDropController() {
+    diagram.endPointDragController.unregisterDropController(dropController);
+	}
+
 }

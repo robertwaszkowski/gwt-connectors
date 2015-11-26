@@ -23,7 +23,8 @@ public class DiagramWidgetDropController extends SimpleDropController {
         EndPoint ep = (EndPoint) context.draggable;
         if (ep.connector.startEndPoint.isGluedToConnectionPoint()
             && ep.connector.startEndPoint.gluedConnectionPoint.getParentShape().equals(dropTarget)) {
-
+        } else if((!dropTarget.isConnectableStart() && ep.isStart()) 
+            || (!dropTarget.isConnectableEnd() && ep.isEnd())) {
         } else {
           dropTarget.showConnectionPoints(dropTarget.diagram);
         }
@@ -50,11 +51,17 @@ public class DiagramWidgetDropController extends SimpleDropController {
       if (getDropTarget() instanceof Shape) {
         Shape dropTarget = (Shape) getDropTarget();
         EndPoint endPoint = (EndPoint) context.draggable;
-        endPoint
-            .glueToConnectionPoint(dropTarget.findNearestFreeConnectionPoint(endPoint.getLeft(), endPoint.getTop()));
-
-        // Unglue if EndPoints are glued to the same element
+        endPoint.glueToConnectionPoint(dropTarget.findNearestConnectionPoint(endPoint.getLeft(), endPoint.getTop()));
         Connector conn = endPoint.connector;
+        
+        // Unglue if shape is unconnectable for start or end EndPoint
+        if(!dropTarget.isConnectableStart() && endPoint.isStart()) {
+          conn.disconnectStart();
+        } else if(!dropTarget.isConnectableEnd() && endPoint.isEnd()) {
+          conn.disconnectEnd();
+        }
+        
+        // Unglue if EndPoints are glued to the same element
         if (conn.startEndPoint.isGluedToConnectionPoint() && conn.endEndPoint.isGluedToConnectionPoint()) {
           if (conn.endEndPoint.gluedConnectionPoint.getParentWidget() == conn.startEndPoint.gluedConnectionPoint
               .getParentWidget()) {

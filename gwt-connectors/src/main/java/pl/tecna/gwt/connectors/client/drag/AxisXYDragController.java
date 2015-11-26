@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
+
 import com.allen_sauer.gwt.dnd.client.AbstractDragController;
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
@@ -327,14 +329,14 @@ public class AxisXYDragController extends AbstractDragController {
 
     if (getBehaviorDragProxy()) {
       movablePanel = newDragProxy(context);
-      context.boundaryPanel.add(movablePanel, currentDraggableLocation.getLeft(), currentDraggableLocation.getTop());
+      WidgetUtils.addWidget(context.boundaryPanel, movablePanel, currentDraggableLocation.getLeft(), currentDraggableLocation.getTop());
     } else {
       saveSelectedWidgetsLocationAndStyle();
       AbsolutePanel container = new AbsolutePanel();
       DOM.setStyleAttribute(container.getElement(), "overflow", "visible");
 
       container.setPixelSize(context.draggable.getOffsetWidth(), context.draggable.getOffsetHeight());
-      context.boundaryPanel.add(container, currentDraggableLocation.getLeft(), currentDraggableLocation.getTop());
+      WidgetUtils.addWidget(context.boundaryPanel, container, currentDraggableLocation.getLeft(), currentDraggableLocation.getTop());
 
       int draggableAbsoluteLeft = context.draggable.getAbsoluteLeft();
       int draggableAbsoluteTop = context.draggable.getAbsoluteTop();
@@ -343,10 +345,10 @@ public class AxisXYDragController extends AbstractDragController {
         if (widget != context.draggable) {
           int relativeX = widget.getAbsoluteLeft() - draggableAbsoluteLeft;
           int relativeY = widget.getAbsoluteTop() - draggableAbsoluteTop;
-          container.add(widget, relativeX, relativeY);
+          WidgetUtils.addWidget(container, widget, relativeX, relativeY);
         }
       }
-      container.add(context.draggable, 0, 0);
+      WidgetUtils.addWidget(container, context.draggable, 0, 0);
       movablePanel = container;
     }
     movablePanel.addStyleName(PRIVATE_CSS_MOVABLE_PANEL);
@@ -382,6 +384,8 @@ public class AxisXYDragController extends AbstractDragController {
 
   /**
    * @deprecated Use {@link #getBehaviorDragProxy()} instead.
+   * 
+   * @return is drag proxy enabled
    */
   public boolean isDragProxyEnabled() {
     return getBehaviorDragProxy();
@@ -443,6 +447,8 @@ public class AxisXYDragController extends AbstractDragController {
 
   /**
    * @deprecated Use {@link #setBehaviorDragProxy(boolean)} instead.
+   * 
+   * @param dragProxyEnabled should drag proxy be enabled
    */
   public void setDragProxyEnabled(boolean dragProxyEnabled) {
     setBehaviorDragProxy(dragProxyEnabled);
@@ -462,6 +468,9 @@ public class AxisXYDragController extends AbstractDragController {
   /**
    * @deprecated Use {@link #newDragProxy(DragContext)} and {@link #setBehaviorDragProxy(boolean)}
    *             instead.
+   *             
+   * @param draggable the draggable widget
+   * @return the widget
    */
   protected final Widget maybeNewDraggableProxy(Widget draggable) {
     throw new UnsupportedOperationException();
@@ -500,8 +509,8 @@ public class AxisXYDragController extends AbstractDragController {
       Widget proxy = new SimplePanel();
       proxy.setPixelSize(widget.getOffsetWidth(), widget.getOffsetHeight());
       proxy.addStyleName(PRIVATE_CSS_PROXY);
-      container
-          .add(proxy, widgetArea.getLeft() - draggableArea.getLeft(), widgetArea.getTop() - draggableArea.getTop());
+      WidgetUtils.addWidget(container, proxy, widgetArea.getLeft() - draggableArea.getLeft(), 
+          widgetArea.getTop() - draggableArea.getTop());
     }
 
     return container;
@@ -522,7 +531,7 @@ public class AxisXYDragController extends AbstractDragController {
       // TODO simplify after enhancement for issue 1112 provides InsertPanel interface
       // http://code.google.com/p/google-web-toolkit/issues/detail?id=1112
       if (info.initialDraggableParent instanceof AbsolutePanel) {
-        ((AbsolutePanel) info.initialDraggableParent).add(widget, info.initialDraggableParentLocation.getLeft(),
+        WidgetUtils.addWidget(((AbsolutePanel) info.initialDraggableParent), widget, info.initialDraggableParentLocation.getLeft(),
             info.initialDraggableParentLocation.getTop());
       } else if (info.initialDraggableParent instanceof HorizontalPanel) {
         ((HorizontalPanel) info.initialDraggableParent).insert(widget, info.initialDraggableIndex);

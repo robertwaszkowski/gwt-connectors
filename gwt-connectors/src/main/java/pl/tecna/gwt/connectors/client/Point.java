@@ -62,4 +62,9 @@ public class Point extends FocusPanel implements Comparable<Point> {
     }
   }
 
+  @Override
+  public String toString() {
+    return "top:" + top + " left:" + left;
+  }
+  
 }

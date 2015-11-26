@@ -3,7 +3,7 @@ package pl.tecna.gwt.connectors.client.elements;
 import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -122,11 +122,11 @@ public class SectionDecoration extends FocusPanel {
 
   private void initStyles() {
     for (Image img : decorationDirectedImages) {
-      img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+      img.addStyleName("gwt-connectors-image");
     }
 
     for (Image img : decorationDirectedSelectedImages) {
-      img.addStyleName(ConnectorsClientBundle.INSTANCE.css().imageDispBlock());
+      img.addStyleName("gwt-connectors-image");
     }
   }
 
@@ -167,7 +167,7 @@ public class SectionDecoration extends FocusPanel {
         }
         break;
     }
-    ((AbsolutePanel) this.getParent()).setWidgetPosition(this, left, top);
+    WidgetUtils.setWidgetPosition(((AbsolutePanel) this.getParent()), this, left, top);
   }
 
   private void setDecoration(boolean sel, DecorationDirection direction) {
@@ -183,13 +183,13 @@ public class SectionDecoration extends FocusPanel {
     // Add decoration to given panel
     if (this.isAttached()) {
       if (this.getParent().equals(panel)) {
-        panel.setWidgetPosition(this, left, top);
+        WidgetUtils.setWidgetPosition(panel, this, left, top);
       } else {
         this.removeFromParent();
-        panel.add(this, left, top);
+        WidgetUtils.addWidget(panel, this, left, top);
       }
     } else {
-      panel.add(this, left, top);
+      WidgetUtils.addWidget(panel, this, left, top);
     }
     // Update decoration's position and picture
     update(direction, left, top);

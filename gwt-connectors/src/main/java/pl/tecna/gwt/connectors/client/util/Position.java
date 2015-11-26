@@ -33,4 +33,9 @@ public class Position {
     return top;
   }
 
+  @Override
+  public String toString() {
+    return "Position (left: " + left + " top: " + top + ")";
+  }
+  
 }

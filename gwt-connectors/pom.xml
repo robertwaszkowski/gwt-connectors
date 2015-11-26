@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>pl.tecna.gwt</groupId>
 	<artifactId>gwt-connectors</artifactId>
 	<packaging>jar</packaging>
-	<version>2.5.1</version>
+	<version>2.6</version>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -89,6 +88,18 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<groupId>external.atlassian.jgitflow</groupId>
+				<artifactId>jgitflow-maven-plugin</artifactId>
+				<version>1.0-m5.1</version>
+				<configuration>
+					<allowSnapshots>true</allowSnapshots>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<noDeploy>true</noDeploy>
+					<pushChanges>false</pushChanges>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -117,7 +128,7 @@
 					<value>true</value>
 				</property>
 			</activation>
-
+<!--
 			<build>
 				<plugins>
 					<plugin>
@@ -139,6 +150,7 @@
 					</plugin>
 				</plugins>
 			</build>
+			-->
 		</profile>
 
 		<profile>

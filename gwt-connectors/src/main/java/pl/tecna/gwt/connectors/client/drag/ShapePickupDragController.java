@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import pl.tecna.gwt.connectors.client.ConnectionPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.elements.Connector;
 import pl.tecna.gwt.connectors.client.elements.EndPoint;
 import pl.tecna.gwt.connectors.client.elements.Shape;
-import pl.tecna.gwt.connectors.client.util.ConnectorsClientBundle;
 import pl.tecna.gwt.connectors.client.util.Position;
 
 import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
@@ -28,6 +28,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ShapePickupDragController extends PickupDragController {
 
+  private Logger LOG = Logger.getLogger("ShapePickupDragController");
+  
   public List<Widget> dragableWidgets;
   private Diagram diagram;
 
@@ -59,11 +61,11 @@ public class ShapePickupDragController extends PickupDragController {
     for (Iterator<Widget> iterator = context.selectedWidgets.iterator(); iterator.hasNext();) {
       Widget widget = iterator.next();
 
-      widget.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
-      widget.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
+      widget.addStyleName("gwt-connectors-shape-unselected");
+      widget.removeStyleName("gwt-connectors-shape-selected");
       if (!(widget instanceof Shape)) {
-        widget.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
-        widget.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
+        widget.addStyleName("gwt-connectors-widget-padding-unselected");
+        widget.removeStyleName("gwt-connectors-widget-padding-selected");
       }
       iterator.remove();
     }
@@ -77,19 +79,19 @@ public class ShapePickupDragController extends PickupDragController {
     }
     assert draggable != null;
     if (context.selectedWidgets.remove(draggable)) {
-      draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
-      draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
+      draggable.addStyleName("gwt-connectors-shape-unselected");
+      draggable.removeStyleName("gwt-connectors-shape-selected");
       if (!(draggable instanceof Shape)) {
-        draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
-        draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
+        draggable.addStyleName("gwt-connectors-widget-padding-unselected");
+        draggable.removeStyleName("gwt-connectors-widget-padding-selected");
       }
     } else {
       context.selectedWidgets.add(draggable);
-      draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().shapeUnselected());
-      draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().shapeSelected());
+      draggable.removeStyleName("gwt-connectors-shape-unselected");
+      draggable.addStyleName("gwt-connectors-shape-selected");
       if (!(draggable instanceof Shape)) {
-        draggable.removeStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
-        draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingSelected());
+        draggable.removeStyleName("gwt-connectors-widget-padding-unselected");
+        draggable.addStyleName("gwt-connectors-widget-padding-selected");
       }
     }
 
@@ -119,7 +121,6 @@ public class ShapePickupDragController extends PickupDragController {
     // Update all glued connectors while dragging shape
     // Update glued end points positions and update connector
     // TODO
-    diagram.selectedWidgets = context.selectedWidgets;
     for (Widget widget : context.selectedWidgets) {
       if (widget instanceof Shape) {
         Shape shape = (Shape) widget;
@@ -129,11 +130,14 @@ public class ShapePickupDragController extends PickupDragController {
         for (ConnectionPoint cp : shape.connectionPoints) {
           for (EndPoint ep : cp.gluedEndPoints) {
             if (diagram.ctrlPressed) {
-              toRecreate.add(ep.connector);
-            } else if (ep.connector.sections.size() == 3) {
-              ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
+              ep.setPosition(cp.getConnectionPositionLeft(), cp.getConnectionPositionTop());
               ep.connector.calculateStandardPointsPositions();
               ep.connector.drawSections();
+            } else if (diagram.shiftPressed || (ep.connector.sections.size() <= 3 && !ep.connector.keepShape)) {
+              if (diagram.shiftPressed) { 
+                ep.connector.keepShape = false;
+              }
+              toRecreate.add(ep.connector);
             } else {
               // moving multiple selected elements
               if (ep.connector.startEndPoint.isGluedToConnectionPoint()
@@ -146,16 +150,14 @@ public class ShapePickupDragController extends PickupDragController {
                     - diagram.boundaryPanel.getAbsoluteTop());
               } else {
                 // one element selected
-
-                // if (!shape.isOnThisShape(lastSection)) {
-                // LOG.d("Section is not on shape");
                 boolean vertical = false;
                 if (ep.connector.prevSectionForPoint(ep) != null) {
                   vertical = ep.connector.prevSectionForPoint(ep).isVertical();
                 } else {
                   vertical = ep.connector.nextSectionForPoint(ep).isVertical();
                 }
-                ep.setPosition(cp.getCenterLeft(), cp.getCenterTop());
+                ep.setPosition(cp.getConnectionPositionLeft(), cp.getConnectionPositionTop());
+                
                 if (vertical) {
                   ep.updateOpositeEndPointOfVerticalSection();
                 } else {
@@ -181,7 +183,7 @@ public class ShapePickupDragController extends PickupDragController {
   public void makeDraggable(Widget draggable, Widget dragHandle) {
 
     if (!(draggable instanceof Shape)) {
-      draggable.addStyleName(ConnectorsClientBundle.INSTANCE.css().widgetPaddingUnselected());
+      draggable.addStyleName("gwt-connectors-widget-padding-unselected");
     }
     dragableWidgets.add(draggable);
     super.makeDraggable(draggable, dragHandle);
@@ -215,8 +217,8 @@ public class ShapePickupDragController extends PickupDragController {
       ConnectionPoint nearestCP = conn.endEndPoint.gluedConnectionPoint.getParentShape().
           findNearestConnectionPoint(startPosition.getLeft(), startPosition.getTop());
       conn.endEndPoint.glueToConnectionPoint(nearestCP, false);
-      conn.endEndPoint.setLeftPosition(nearestCP.getCenterLeft());
-      conn.endEndPoint.setTopPosition(nearestCP.getCenterTop());
+      conn.endEndPoint.setLeftPosition(nearestCP.getConnectionPositionLeft());
+      conn.endEndPoint.setTopPosition(nearestCP.getConnectionPositionTop());
       
       endPosition.setLeft(conn.endEndPoint.getLeft());
       endPosition.setTop(conn.endEndPoint.getTop());
@@ -225,8 +227,11 @@ public class ShapePickupDragController extends PickupDragController {
       ConnectionPoint nearestCP = conn.startEndPoint.gluedConnectionPoint.getParentShape().
           findNearestConnectionPoint(endPosition.getLeft(), endPosition.getTop());
       conn.startEndPoint.glueToConnectionPoint(nearestCP, false);
-      conn.startEndPoint.setLeftPosition(nearestCP.getCenterLeft());
-      conn.startEndPoint.setTopPosition(nearestCP.getCenterTop());
+      conn.startEndPoint.setLeftPosition(nearestCP.getConnectionPositionLeft());
+      conn.startEndPoint.setTopPosition(nearestCP.getConnectionPositionTop());
+      
+      startPosition.setLeft(conn.startEndPoint.getLeft());
+      startPosition.setTop(conn.startEndPoint.getTop());
     }
     conn.calculateStandardPointsPositions();
     conn.drawSections();

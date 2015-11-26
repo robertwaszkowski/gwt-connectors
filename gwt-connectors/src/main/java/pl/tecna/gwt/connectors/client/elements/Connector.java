@@ -32,6 +32,8 @@ public class Connector implements Element {
    */
   public boolean initalizing = false;
   
+  public boolean keepShape = false;
+  
   public ArrayList<Section> sections;
   public ArrayList<CornerPoint> cornerPoints;
 
@@ -123,10 +125,11 @@ public class Connector implements Element {
       SectionDecoration endDecoration, EndPoint endEndPoint, Diagram diagram, ConnectorStyle style) {
 
     this.style = style;
-    this.startEndPoint = new EndPoint(startLeft, startTop, this);
+    this.startEndPoint = new EndPoint(startLeft, startTop);
+    startEndPoint.connector = this;
+    startEndPoint.setTransparent();
     this.endEndPoint = endEndPoint;
     endEndPoint.initPosition(endLeft, endTop);
-    this.startEndPoint.connector = this;
     this.endEndPoint.connector = this;
 
     this.sections = new ArrayList<Section>();
@@ -158,9 +161,9 @@ public class Connector implements Element {
     } catch (Exception e) {
       LOG.severe("Error while setting decorations" + e.getStackTrace());
     }
-
     startEndPoint.showOnDiagram(diagram);
-
+    
+    
     int connectorX = diagram.boundaryPanel.getWidgetLeft(startEndPoint) - diagram.boundaryPanel.getAbsoluteLeft();
     int connectorY = diagram.boundaryPanel.getWidgetTop(startEndPoint) - diagram.boundaryPanel.getAbsoluteTop();
     diagram.onDiagramAdd(new DiagramAddEvent(this, connectorX, connectorY));
@@ -170,16 +173,20 @@ public class Connector implements Element {
   private void init(int startLeft, int startTop, int endLeft, int endTop, SectionDecoration startDecoration,
       SectionDecoration endDecoration, ArrayList<CornerPoint> cornerPoints) {
 
-    this.startEndPoint = new EndPoint(startLeft, startTop, this);
-    this.endEndPoint = new EndPoint(endLeft, endTop, this);
-    this.startEndPoint.connector = this;
-    this.endEndPoint.connector = this;
+    startEndPoint = new EndPoint(startLeft, startTop);
+    startEndPoint.setConnectorEndPointStyle();
+    startEndPoint.connector = this;
+    endEndPoint = new EndPoint(endLeft, endTop);
+    endEndPoint.setConnectorEndPointStyle();
+    endEndPoint.connector = this;
+    startEndPoint.connector = this;
+    endEndPoint.connector = this;
 
-    this.sections = new ArrayList<Section>();
+    sections = new ArrayList<Section>();
 
     // Add decorations
-    this.startPointDecoration = startDecoration;
-    this.endPointDecoration = endDecoration;
+    startPointDecoration = startDecoration;
+    endPointDecoration = endDecoration;
 
     // TODO Change workaround for trouble of 3 CornerPoint in a row
     // removing neighbour corner points with same coordinates (3 in a row)
@@ -194,10 +201,6 @@ public class Connector implements Element {
       cornerPoints.remove(removed);
     }
 
-    if (toRemove.size() > 0) {
-      logCornerPointsData(cornerPoints);
-    }
-
     this.cornerPoints = cornerPoints;
   }
 
@@ -209,11 +212,13 @@ public class Connector implements Element {
    * This method also add all necessary {@link Point}s: {@link EndPoint}s at the beginning and at
    * the end of the Connector and {@link CornerPoint}s at the Connector's corners.
    * <p>
-   * The way sections are generated: </br> Let "width" a width of rectangle drown on connectors
-   * start point and end point </br> Let "height" a height of rectangle drown on connectors start
-   * point and end point </br> If ("width" < "height") the connection contains two vertical sections
-   * and one horizontal section. </br> If ("height" < "width") the connection contains two
-   * horizontal sections and one vertical section.
+   * The way sections are generated:
+   * <ul>
+   * <li>Let "width" a width of rectangle drown on connectors start point and end point.</li>
+   * <li>Let "height" a height of rectangle drown on connectors start point and end point.</li>
+   * <li>If ("width" &lt; "height") the connection contains two vertical sections and one horizontal section.</li>
+   * <li>If ("height" &lt; "width") the connection contains two horizontal sections and one vertical section.</li>
+   * </ul>
    * 
    * @param diagram a Diagram the Connector will be added to
    */
@@ -259,6 +264,7 @@ public class Connector implements Element {
    * Removes Connector from Diagram and from its boundaryPanel
    * 
    * @param diagram a Diagram the Connector will be removed from
+   * @param fireEvent if <code>true</code>, {@link DiagramRemoveEvent} will be fired
    */
   public void removeFromDiagram(Diagram diagram, boolean fireEvent) {
 
@@ -266,8 +272,8 @@ public class Connector implements Element {
     diagram.connectors.remove(this);
 
     // Remove Connector from Diagram's boundaryPanel
-    for (int i = 0; i < sections.size(); i++) {
-      diagram.boundaryPanel.remove(sections.get(i));
+    for (Section section : sections) {
+      section.removeFromDiagram(true);
 
     }
     sections.removeAll(sections);
@@ -288,8 +294,8 @@ public class Connector implements Element {
     }
 
     // Remove end points
-    startEndPoint.clear();
-    endEndPoint.clear();
+    startEndPoint.setTransparent();
+    endEndPoint.setTransparent();
 
     if (fireEvent) {
       diagram.onDiagramRemove(new DiagramRemoveEvent(this, null, null));
@@ -304,37 +310,51 @@ public class Connector implements Element {
    * the connection contains two horizontal sections and one vertical section.
    */
   public void calculateStandardPointsPositions() {
-    
+    calculateStandardPointsPositions(startEndPoint, endEndPoint);
+  }
+  
+  public void calculateStandardPointsPositions(EndPoint startEndPoint, EndPoint endEndPoint) {
     cornerPoints.clear();
 
-    int distanceX = startEndPoint.getLeft() - endEndPoint.getLeft();
-    int distanceY = startEndPoint.getTop() - endEndPoint.getTop();
-    
-    int firstSectionDirection = -1;
-    if (startEndPoint.isGluedToConnectionPoint()) {
-      firstSectionDirection = startEndPoint.gluedConnectionPoint.connectionDirection;
-    }
-
-    CornerPoint cp1 = new CornerPoint(0, 0);
-    CornerPoint cp2 = new CornerPoint(0, 0);
-    if (firstSectionDirection == ConnectionPoint.DIRECTION_TOP ||
-        firstSectionDirection == ConnectionPoint.DIRECTION_BOTTOM || (
-        firstSectionDirection == -1 && Math.abs(distanceX) < Math.abs(distanceY))) {
-      // the connection contains two vertical sections and one horizontal section
-      cp1.setPosition(startEndPoint.getLeft(), startEndPoint.getTop() - (distanceY / 2));
-      cp2.setPosition(endEndPoint.getLeft(), cp1.getTop());
+    if (startEndPoint.isGluedToConnectionPoint() && endEndPoint.isGluedToConnectionPoint() &&
+        (startEndPoint.gluedConnectionPoint.connectionDirection % 2 != 
+          endEndPoint.gluedConnectionPoint.connectionDirection % 2)) {
+      CornerPoint cp = null;
+      //start point direction is vertical
+      if (startEndPoint.gluedConnectionPoint.connectionDirection % 2 == 1) {
+        cp = new CornerPoint(startEndPoint.getLeft(), endEndPoint.getTop());
+      } else {
+        cp = new CornerPoint(endEndPoint.getLeft(), startEndPoint.getTop());
+      }
+      
+      cornerPoints.add(cp);
     } else {
-      // the connection contains two horizontal sections and one vertical section
-      cp1.setPosition(startEndPoint.getLeft() - (distanceX / 2), startEndPoint.getTop());
-      cp2.setPosition(cp1.getLeft(), endEndPoint.getTop());
+      int distanceX = startEndPoint.getLeft() - endEndPoint.getLeft();
+      int distanceY = startEndPoint.getTop() - endEndPoint.getTop();
+      
+      int firstSectionDirection = -1;
+      if (startEndPoint.isGluedToConnectionPoint()) {
+        firstSectionDirection = startEndPoint.gluedConnectionPoint.connectionDirection;
+      }
+      CornerPoint cp1 = new CornerPoint(0, 0);
+      CornerPoint cp2 = new CornerPoint(0, 0);
+      if (firstSectionDirection == ConnectionPoint.DIRECTION_TOP ||
+          firstSectionDirection == ConnectionPoint.DIRECTION_BOTTOM || (
+              firstSectionDirection == -1 && Math.abs(distanceX) < Math.abs(distanceY))) {
+        // the connection contains two vertical sections and one horizontal section
+        cp1.setPosition(startEndPoint.getLeft(), startEndPoint.getTop() - (distanceY / 2));
+        cp2.setPosition(endEndPoint.getLeft(), cp1.getTop());
+      } else {
+        // the connection contains two horizontal sections and one vertical section
+        cp1.setPosition(startEndPoint.getLeft() - (distanceX / 2), startEndPoint.getTop());
+        cp2.setPosition(cp1.getLeft(), endEndPoint.getTop());
+      }
+      cornerPoints.add(cp1);
+      cornerPoints.add(cp2);
     }
-    cornerPoints.add(cp1);
-    cornerPoints.add(cp2);
-
   }
 
   public void updateCornerPoints() {
-    // Log.info("updateCornerPoints - Connector - 275");
     this.cornerPoints = (ArrayList<CornerPoint>) getCorners(sections);
   }
 
@@ -432,7 +452,9 @@ public class Connector implements Element {
       int left = endEndPoint.getLeft();
       int top = endEndPoint.getTop();
       endEndPoint.unglueFromConnectionPoint();
-      endEndPoint = new EndPoint(left, top, this);
+      endEndPoint = new EndPoint(left, top);
+      endEndPoint.setConnectorEndPointStyle();
+      endEndPoint.connector = this;
       endEndPoint.showOnDiagram(diagram);
 
       try {
@@ -452,7 +474,9 @@ public class Connector implements Element {
       int left = startEndPoint.getLeft();
       int top = startEndPoint.getTop();
       startEndPoint.unglueFromConnectionPoint();
-      startEndPoint = new EndPoint(left, top, this);
+      startEndPoint = new EndPoint(left, top);
+      startEndPoint.setConnectorEndPointStyle();
+      startEndPoint.connector = this;
       startEndPoint.showOnDiagram(diagram);
 
       try {
@@ -466,11 +490,13 @@ public class Connector implements Element {
 
   /**
    * Creates new {@link Section} when {@link Connector} is connected to the {@link ConnectionPoint}
-   * </br> Section is created when direction of last {@link Section} is wrong (horizontal when
+   * <p>
+   * Section is created when direction of last {@link Section} is wrong (horizontal when
    * {@link ConnectionPoint} is on top or bottom of {@link Shape} or vertical when
    * {@link ConnectionPoint} is on left or right of {@link Shape}
    * 
-   * @param endPoint
+   * @param endPoint the end point
+   * @return fixed???
    */
   public boolean fixEndSectionDirection(EndPoint endPoint) {
     // end point must be connected
@@ -501,14 +527,14 @@ public class Connector implements Element {
 
       // Connect element to the center of connection point
       if (last) {
-        endEndPoint.setPosition(connectionPoint.getCenterLeft(), connectionPoint.getCenterTop());
+        endEndPoint.setPosition(connectionPoint.getConnectionPositionLeft(), connectionPoint.getConnectionPositionTop());
         if (!sectionHorizontal) {
           cornerPoints.get(cornerPoints.size() - 1).setLeftPosition(endEndPoint.getLeft());
         } else {
           cornerPoints.get(cornerPoints.size() - 1).setTopPosition(endEndPoint.getTop());
         }
       } else {
-        startEndPoint.setPosition(connectionPoint.getCenterLeft(), connectionPoint.getCenterTop());
+        startEndPoint.setPosition(connectionPoint.getConnectionPositionLeft(), connectionPoint.getConnectionPositionTop());
         if (!sectionHorizontal) {
           cornerPoints.get(0).setLeftPosition(startEndPoint.getLeft());
         } else {
@@ -593,7 +619,7 @@ public class Connector implements Element {
    * Retrieve list of {@link CornerPoint}'s from list of {@link Section} (without {@link Connector}
    * end points)
    * 
-   * @param sectionList
+   * @param sectionList the section list
    * @return the list of corner points
    */
   public List<CornerPoint> getCorners(List<Section> sectionList) {
@@ -641,15 +667,13 @@ public class Connector implements Element {
    * sections data and given list of {@link CornerPoint}
    * 
    * @param cp list of {@link CornerPoint} containing {@link Connector} shape
+   * @param isSelected should section be selected
    */
   public void drawSections(List<CornerPoint> cp, boolean isSelected) {
     this.cornerPoints = (ArrayList<CornerPoint>) cp;
-    // logCornerPointsData();
-
     try {
       for (Section section : sections) {
-        // LOG.i(section.toDebugString());
-        section.removeFromDiagram();
+        section.removeFromDiagram(false);
       }
 
       sections.clear();
@@ -703,11 +727,14 @@ public class Connector implements Element {
   }
 
   /**
-   * Merges two {@link Section} on end of {@link Connector} </br> {@link Connector} sections length
-   * must be greater equals 3, and last section length must be lesser than defined length (default -
-   * 10)
+   * Merges two {@link Section} on end of {@link Connector}.
+   * <p>
+   * {@link Connector} sections length must be greater equals 3, and last section length must be
+   * lesser than defined length (default - 10).
    * 
    * @param endSection last {@link Section} of {@link Connection}
+   * @param cornerPoints the list of corner points
+   * @return <code>true</code> if new corner point was created
    */
   public boolean mergeTwoLastSections(Section endSection, List<CornerPoint> cornerPoints) {
     int connDirection = this.endEndPoint.gluedConnectionPoint.connectionDirection;
@@ -760,9 +787,14 @@ public class Connector implements Element {
   }
 
   /**
-   * Merges two {@link Section} on start of {@link Connector} </br> {@link Connector} sections
-   * length must be greater equals 3, and first section length must be lesser than defined length
-   * (default - 10)
+   * Merges two {@link Section} on start of {@link Connector}.
+   * <p>
+   * {@link Connector} sections length must be greater equals 3, and first section length
+   * must be lesser than defined length (default - 10).
+   * 
+   * @param startSection the start section
+   * @param cornerPoints the list of corner points
+   * @return <code>true</code> if new corner point was created
    */
   public boolean mergeTwoFirstSections(Section startSection, List<CornerPoint> cornerPoints) {
     int connDirection = this.startEndPoint.gluedConnectionPoint.connectionDirection;
@@ -870,7 +902,8 @@ public class Connector implements Element {
   /**
    * Removes short sections, and merges sections that are in one line
    * 
-   * @param corners
+   * @param corners the list of corner points
+   * @return new list of corner points
    */
   public List<CornerPoint> fixLineSections(List<CornerPoint> corners) {
     if (corners.size() < 3) {
@@ -970,6 +1003,7 @@ public class Connector implements Element {
 
   /**
    * If there are {@link Section}'s, that overlap some {@link Shape}, the {@link Shape} is evaded
+   * @return <code>true</code> if shape was evaded
    */
   public boolean fixOverlapSections() {
     return fixOverlapSections(getCorners());
@@ -977,6 +1011,8 @@ public class Connector implements Element {
 
   /**
    * If there are {@link Section}'s, that overlap some {@link Shape}, the {@link Shape} is evaded
+   * @param corners the list of corners
+   * @return <code>true</code> if shape was evaded
    */
   public boolean fixOverlapSections(List<CornerPoint> corners) {
     boolean result = false;
@@ -997,6 +1033,7 @@ public class Connector implements Element {
    * 
    * @param shape {@link Shape} to omit
    * @param overlapSections {@link Section}s which overlap given {@link Section}s
+   * @param corners the list of corners
    */
   public void evadeShape(Shape shape, List<Section> overlapSections, List<CornerPoint> corners) {
     if (shape.isEnableOverlap()) {
@@ -1292,8 +1329,8 @@ public class Connector implements Element {
   /**
    * Move {@link Connector} by defined x and y offset from saved {@link Section}'s positions.
    * 
-   * @param xOffset
-   * @param yOffset
+   * @param xOffset the x offset
+   * @param yOffset the y offset
    */
   public void moveOffsetFromStartPos(int xOffset, int yOffset) {
     xOffset = xOffset - diagram.boundaryPanel.getAbsoluteLeft();
@@ -1309,22 +1346,7 @@ public class Connector implements Element {
         sectionTopLeft = savedSectionsData.get(i).endPoint;
       }
 
-      diagram.boundaryPanel.setWidgetPosition(sections.get(i), sectionTopLeft.getLeft() + xOffset, sectionTopLeft
-          .getTop()
-          + yOffset);
-      sections.get(i).startPoint.setPosition(savedSectionsData.get(i).startPoint.getLeft() + xOffset, 
-          savedSectionsData.get(i).startPoint.getTop() + yOffset);
-      sections.get(i).endPoint.setPosition(savedSectionsData.get(i).endPoint.getLeft() + xOffset, 
-          savedSectionsData.get(i).endPoint.getTop() + yOffset);
-
-      if (sections.get(i).startPointDecoration != null) {
-        this.startPointDecoration.update(sections.get(i).calculateStartPointDecorationDirection(),
-            sections.get(i).startPoint.getLeft(), sections.get(i).startPoint.getTop());
-      }
-      if (sections.get(i).endPointDecoration != null) {
-        this.endPointDecoration.update(sections.get(i).calculateEndPointDecorationDirection(), sections.get(i).endPoint
-            .getLeft(), sections.get(i).endPoint.getTop());
-      }
+      sections.get(i).setPosition(sectionTopLeft.getLeft() + xOffset, sectionTopLeft.getTop() + yOffset);
     }
   }
 

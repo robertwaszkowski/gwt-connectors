@@ -5,7 +5,7 @@
 	<groupId>pl.tecna.gwt</groupId>
 	<artifactId>gwt-connectors</artifactId>
 	<packaging>jar</packaging>
-	<version>2.7-SNAPSHOT</version>
+	<version>2.6</version>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>

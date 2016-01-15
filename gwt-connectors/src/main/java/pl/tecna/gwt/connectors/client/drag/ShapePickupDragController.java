@@ -130,9 +130,7 @@ public class ShapePickupDragController extends PickupDragController {
         for (ConnectionPoint cp : shape.connectionPoints) {
           for (EndPoint ep : cp.gluedEndPoints) {
             if (diagram.ctrlPressed) {
-              ep.setPosition(cp.getConnectionPositionLeft(), cp.getConnectionPositionTop());
-              ep.connector.calculateStandardPointsPositions();
-              ep.connector.drawSections();
+              moveEndPointGluedToCP(ep, cp);
             } else if (diagram.shiftPressed || (ep.connector.sections.size() <= 3 && !ep.connector.keepShape)) {
               if (diagram.shiftPressed) { 
                 ep.connector.keepShape = false;
@@ -145,9 +143,7 @@ public class ShapePickupDragController extends PickupDragController {
                   && context.selectedWidgets.contains(ep.connector.startEndPoint.gluedConnectionPoint.getParentShape())
                   && context.selectedWidgets.contains(ep.connector.endEndPoint.gluedConnectionPoint.getParentShape())) {
 
-                ep.connector.moveOffsetFromStartPos(context.desiredDraggableX - startX
-                    - diagram.boundaryPanel.getAbsoluteLeft(), context.desiredDraggableY - startY
-                    - diagram.boundaryPanel.getAbsoluteTop());
+                moveEndPointGluedToCP(ep, cp);
               } else {
                 // one element selected
                 boolean vertical = false;
@@ -194,6 +190,15 @@ public class ShapePickupDragController extends PickupDragController {
 
     dragableWidgets.remove(draggable);
     super.makeNotDraggable(draggable);
+  }
+  
+  /*
+   * Move End Point without change Connection Point's glue position
+   */
+  private void moveEndPointGluedToCP(EndPoint ep, ConnectionPoint cp) {
+    ep.setPosition(cp.getConnectionPositionLeft(), cp.getConnectionPositionTop());
+    ep.connector.calculateStandardPointsPositions();
+    ep.connector.drawSections();
   }
 
   private void recreateConnectios(Connector conn) {

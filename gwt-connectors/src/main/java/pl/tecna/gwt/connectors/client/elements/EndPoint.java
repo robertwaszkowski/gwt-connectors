@@ -186,7 +186,7 @@ public class EndPoint extends Point {
   }
   
   public void moveLinkedShape(Integer offsetLeft, Integer offsetTop) {
-    if (linkedShape != null && linkedShape.isAttached()) {
+    if (linkedShape != null && linkedShape.isAttached() && linkedShape.diagram.boundaryPanel.equals(linkedShape.getParent())) {
       WidgetLocation linkedShapeLocation = new WidgetLocation(linkedShape, linkedShape.diagram.boundaryPanel);
       linkedShape.left = linkedShapeLocation.getLeft() + offsetLeft;
       linkedShape.top = linkedShapeLocation.getTop() + offsetTop;

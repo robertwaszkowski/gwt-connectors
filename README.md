@@ -18,6 +18,16 @@ Getting Started
 The [Wiki](https://github.com/robertwaszkowski/gwt-connectors/wiki) contains all the information you'll need to write your own application with drawing connections capabilities.
 You can also check sources of our [tester project](tester-webapp), where you should find all what you need.
 
+Simply you can use this project dependency in your pom.xml file to download gwt-connectors from Maven Central repository:
+
+```xml
+<dependency>
+  <groupId>pl.tecna.gwt</groupId>
+  <artifactId>gwt-connectors</artifactId>
+  <version>2.7</version>
+  <scope>provided</scope>
+</dependency>
+```
 
 Reporting Issues
 ----------------

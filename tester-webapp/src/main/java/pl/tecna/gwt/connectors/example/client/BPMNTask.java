@@ -30,6 +30,7 @@ public class BPMNTask extends FocusPanel {
 		
 		html.setHTML(htmlText);
 		setWidget(html);
+		setWidth("150px");
 		addStyleName("gwt-connectors-test-task");
 		
 	}

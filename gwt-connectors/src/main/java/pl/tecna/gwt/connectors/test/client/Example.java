@@ -67,7 +67,7 @@ public class Example implements EntryPoint {
     final Diagram diagram = new Diagram(boundaryPanel);
     diagram.drawInitializingConnectorsInLine = true;
 
-    boundaryPanel.add(new Label("Connectors example for GWT 2.4"), 10010, 10002);
+    boundaryPanel.add(new Label("Connectors example for GWT 2.7"), 10010, 10002);
     Connector connector1 = new Connector(10050, 10080, 10150, 10200, new SectionDecoration(DecorationType.ARROW_SOLID), new SectionDecoration(DecorationType.ARROW_SOLID));
     connector1.showOnDiagram(diagram);
 

@@ -2,8 +2,6 @@
 <module rename-to="example">
 
 	<!-- Inherit the core Web Toolkit stuff. -->
-	<inherits name="com.google.gwt.user.User" />
-	<inherits name='com.google.gwt.core.Core' />
 	<inherits name="com.google.gwt.resources.Resources" />
 	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
 
@@ -12,9 +10,8 @@
 
 	<!-- Inherit the logging system -->
 	<inherits name='com.google.gwt.logging.Logging' />
-	<set-property name='gwt.logging.logLevel' value='ALL' />
-	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
-	<set-property name="gwt.logging.firebugHandler" value="ENABLED" />
+	<set-property name='gwt.logging.logLevel' value='INFO' />
+	<set-property name="gwt.logging.consoleHandler" value="ENABLED" />
 	
 	<!-- Specify the app entry point class. -->
 	<entry-point class='pl.tecna.gwt.connectors.test.client.Example' />

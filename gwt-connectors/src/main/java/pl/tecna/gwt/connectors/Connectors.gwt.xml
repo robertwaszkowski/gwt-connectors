@@ -1,4 +1,7 @@
 <module>
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name='com.google.gwt.core.Core' />
+	
 	<!-- Inherit gwt-dnd support -->
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
 

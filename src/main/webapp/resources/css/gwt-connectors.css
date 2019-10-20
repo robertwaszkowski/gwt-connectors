@@ -156,3 +156,7 @@
 .dragdrop-draggable input[style*="hidden"], .gwt-connectors-end-point input[style*="hidden"] {
     display: none;
 }
+
+.dragdrop-draggable img {
+    -webkit-user-drag: none;
+}

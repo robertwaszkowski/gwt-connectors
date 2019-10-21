@@ -19,6 +19,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -54,7 +55,7 @@ public class Example implements EntryPoint {
     });
 
     AbsolutePanel viewPanel = new AbsolutePanel();
-    DOM.setStyleAttribute(viewPanel.getElement(), "overflow", "scroll");
+    viewPanel.getElement().getStyle().setOverflow(Overflow.SCROLL);
     viewPanel.setSize("100%", "100%");
 
     // Create boundary panel

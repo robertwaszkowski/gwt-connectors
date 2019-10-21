@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.*;
 import pl.tecna.gwt.connectors.client.CornerPoint;
 import pl.tecna.gwt.connectors.client.Diagram;
 import pl.tecna.gwt.connectors.client.elements.Connector;
@@ -22,12 +24,6 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 
 
 public class Example implements EntryPoint {
@@ -76,9 +72,7 @@ public class Example implements EntryPoint {
     cp.add(new CornerPoint(10370, 10120));
     cp.add(new CornerPoint(10270, 10120));
     SectionDecoration startDecoration = new SectionDecoration(DecorationType.ARROW_LINE);
-    SectionDecoration endDecoration = new SectionDecoration(
-        new Image("http://code.google.com/images/code_sm.png"), 
-        new Image("http://code.google.com/images/code_sm.png"));
+    SectionDecoration endDecoration = new SectionDecoration(DecorationType.ARROW_LINE);
     Connector connector2 = new Connector(10350, 10200, 10270, 10080, cp, startDecoration, endDecoration);
     connector2.style = ConnectorStyle.DASHED;
     connector2.showOnDiagram(diagram);
@@ -88,31 +82,33 @@ public class Example implements EntryPoint {
     connector3.showOnDiagram(diagram);
 
     final FocusPanel diamond = new FocusPanel();
-    Image img = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.diamondImg()).createImage();
-    img.getElement().getStyle().setDisplay(Display.BLOCK);
-    diamond.setWidget(img);
-    boundaryPanel.add(diamond, 10800, 10500);
+    Image diamondImg = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.diamondImg()).createImage();
+    diamondImg.getElement().getStyle().setDisplay(Display.BLOCK);
+    diamond.setWidget(diamondImg);
+    boundaryPanel.add(diamond, 10400, 10300);
 
     final FocusPanel oval = new FocusPanel();
     Image ovalImg = AbstractImagePrototype.create(ConnectorsBundle.INSTANCE.ovalImg()).createImage();
     ovalImg.getElement().getStyle().setDisplay(Display.BLOCK);
     oval.setWidget(ovalImg);
-    boundaryPanel.add(oval, 11100, 10700);
+    boundaryPanel.add(oval, 10300, 10300);
 
     final Label label = new Label("Test label");
     final Label label2 = new Label("LABEL_2");
-    final Image image = new Image("http://code.google.com/images/code_sm.png");
+
+    final Image image = new Image("https://upload.wikimedia.org/wikipedia/en/3/36/Google_Web_Toolkit_%28icon%29.png");
+    boundaryPanel.add(image, 10300, 10500);
 
     final Label label3 = new Label("LABEL_3 Test Longer Label with rectangle connection points");
 
-    image.setPixelSize(10153, 10055);
+    image.setPixelSize(100, 100);
 
     final BPMNTask task = new BPMNTask();
-    boundaryPanel.add(task, 10500, 10300);
+    boundaryPanel.add(task, 10100, 10300);
 
     boundaryPanel.add(label, 10050, 10250);
     boundaryPanel.add(label2, 10450, 10200);
-    boundaryPanel.add(label3, 10300, 10500);
+    boundaryPanel.add(label3, 10300, 10400);
 
     Shape shapeForLabel = new Shape(label, CPShapeType.DIAMOND);
     shapeForLabel.showOnDiagram(diagram);
@@ -143,6 +139,11 @@ public class Example implements EntryPoint {
     shapeForDiamond.connectorsStyle = ConnectorStyle.SOLID;
     shapeForDiamond.showOnDiagram(diagram);
     shapeForDiamond.enableConnectionCreate(true);
+
+    Shape shapeForImage = new Shape(image, CPShapeType.RECTANGLE);
+    shapeForImage.connectorsStyle = ConnectorStyle.SOLID;
+    shapeForImage.showOnDiagram(diagram);
+    shapeForImage.enableConnectionCreate(true);
 
     task.addDoubleClickHandler(new DoubleClickHandler() {
 

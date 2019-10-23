@@ -1,10 +1,14 @@
 <module>
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name='com.google.gwt.core.Core' />
+	<inherits name="com.google.gwt.resources.Resources" />
 	
 	<!-- Inherit gwt-dnd support -->
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
+	
+	<entry-point class="pl.tecna.gwt.connectors.client.ConnectorsEntryPoint" />
 
 	<source path="client" />
 	<source path="shared" />
+	
 </module>

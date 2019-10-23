@@ -27,7 +27,7 @@ import pl.tecna.gwt.connectors.client.elements.SectionDecoration;
 import pl.tecna.gwt.connectors.client.elements.SectionDecoration.DecorationType;
 import pl.tecna.gwt.connectors.client.elements.Shape;
 import pl.tecna.gwt.connectors.client.elements.Shape.CPShapeType;
-import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
+import pl.tecna.gwt.connectors.client.resources.ConnectorsBundle;
 import pl.tecna.gwt.connectors.client.util.ConnectorStyle;
 import pl.tecna.gwt.connectors.test.client.resources.ExampleResources;
 

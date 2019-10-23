@@ -2,13 +2,13 @@ package pl.tecna.gwt.connectors.client.elements;
 
 import java.util.logging.Logger;
 
-import pl.tecna.gwt.connectors.client.images.ConnectorsBundle;
-import pl.tecna.gwt.connectors.client.util.WidgetUtils;
-
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
+
+import pl.tecna.gwt.connectors.client.resources.ConnectorsBundle;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 public class SectionDecoration extends FocusPanel {
   

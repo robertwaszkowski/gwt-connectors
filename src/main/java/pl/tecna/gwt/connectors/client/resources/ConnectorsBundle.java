@@ -1,13 +1,17 @@
-package pl.tecna.gwt.connectors.client.images;
+package pl.tecna.gwt.connectors.client.resources;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.TextResource;
 
 public interface ConnectorsBundle extends ClientBundle {
 
-  public static final ConnectorsBundle INSTANCE = GWT.create(ConnectorsBundle.class);
+  public static final ConnectorsBundle INSTANCE =  GWT.create(ConnectorsBundle.class);
   
+  @Source("gwt-connectors.css")
+  TextResource css();
+
   // For VERTICAL_DOWN direction
   @Source("arrow_down.png")
   ImageResource arrow_down();
@@ -78,5 +82,4 @@ public interface ConnectorsBundle extends ClientBundle {
   
   @Source("oval.png")
   ImageResource ovalImg();
-
 }

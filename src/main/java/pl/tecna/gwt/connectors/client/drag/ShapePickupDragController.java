@@ -120,7 +120,9 @@ public class ShapePickupDragController extends PickupDragController {
   public void dragMove() {
     // Update all glued connectors while dragging shape
     // Update glued end points positions and update connector
-    // TODO
+    //TODO: Refresh connections regarding to its endPoints positions
+    //TODO: --------------------------------------------------------
+    //TODO: poniżej jest rozbudowana wersja ze zmianą Connection Pointów przy obracaniu obiektów wokół siebie
     for (Widget widget : context.selectedWidgets) {
       if (widget instanceof Shape) {
         Shape shape = (Shape) widget;
@@ -129,51 +131,74 @@ public class ShapePickupDragController extends PickupDragController {
         List<Connector> toRecreate = new LinkedList<Connector>();
         for (ConnectionPoint cp : shape.connectionPoints) {
           for (EndPoint ep : cp.gluedEndPoints) {
-            if (diagram.ctrlPressed) {
-              moveEndPointGluedToCP(ep, cp);
-            } else if (diagram.shiftPressed || (ep.connector.sections.size() <= 3 && !ep.connector.keepShape)) {
-              if (diagram.shiftPressed) { 
-                ep.connector.keepShape = false;
-              }
-              toRecreate.add(ep.connector);
-            } else {
-              // moving multiple selected elements
-              if (ep.connector.startEndPoint.isGluedToConnectionPoint()
-                  && ep.connector.endEndPoint.isGluedToConnectionPoint()
-                  && context.selectedWidgets.contains(ep.connector.startEndPoint.gluedConnectionPoint.getParentShape())
-                  && context.selectedWidgets.contains(ep.connector.endEndPoint.gluedConnectionPoint.getParentShape())) {
 
-                moveEndPointGluedToCP(ep, cp);
-              } else {
-                // one element selected
-                boolean vertical = false;
-                if (ep.connector.prevSectionForPoint(ep) != null) {
-                  vertical = ep.connector.prevSectionForPoint(ep).isVertical();
-                } else {
-                  vertical = ep.connector.nextSectionForPoint(ep).isVertical();
-                }
-                ep.setPosition(cp.getConnectionPositionLeft(), cp.getConnectionPositionTop());
-                
-                if (vertical) {
-                  ep.updateOpositeEndPointOfVerticalSection();
-                } else {
-                  ep.updateOpositeEndPointOfHorizontalSection();
-                }
+                //moveEndPointGluedToCP(ep, cp);
+                recreateConnectios(ep.connector);
               }
             }
           }
         }
-        
-        if (toRecreate.size() > 0) {
-          for (Connector conn : toRecreate) {
-            recreateConnectios(conn);
-          }
-        }
-      }
-    }
-
     super.dragMove();
   }
+
+//  @Override
+//  public void dragMove() {
+//    // Update all glued connectors while dragging shape
+//    // Update glued end points positions and update connector
+//    // TODO Refresh connections regarding to its endPoints positions
+//    for (Widget widget : context.selectedWidgets) {
+//      if (widget instanceof Shape) {
+//        Shape shape = (Shape) widget;
+//        shape.setTranslationX(context.desiredDraggableX - startX - diagram.boundaryPanel.getAbsoluteLeft());
+//        shape.setTranslationY(context.desiredDraggableY - startY - diagram.boundaryPanel.getAbsoluteTop());
+//        List<Connector> toRecreate = new LinkedList<Connector>();
+//        for (ConnectionPoint cp : shape.connectionPoints) {
+//          for (EndPoint ep : cp.gluedEndPoints) {
+//            if (diagram.ctrlPressed) {
+//              moveEndPointGluedToCP(ep, cp);
+//            } else if (diagram.shiftPressed || (ep.connector.sections.size() <= 3 && !ep.connector.keepShape)) {
+//              if (diagram.shiftPressed) {
+//                ep.connector.keepShape = false;
+//              }
+//              toRecreate.add(ep.connector);
+//            } else {
+//              // moving multiple selected elements
+//              if (ep.connector.startEndPoint.isGluedToConnectionPoint()
+//                  && ep.connector.endEndPoint.isGluedToConnectionPoint()
+//                  && context.selectedWidgets.contains(ep.connector.startEndPoint.gluedConnectionPoint.getParentShape())
+//                  && context.selectedWidgets.contains(ep.connector.endEndPoint.gluedConnectionPoint.getParentShape())) {
+//
+//                moveEndPointGluedToCP(ep, cp);
+//              } else {
+//                // one element selected
+//                boolean vertical = false;
+//                if (ep.connector.prevSectionForPoint(ep) != null) {
+//                  vertical = ep.connector.prevSectionForPoint(ep).isVertical();
+//                } else {
+//                  vertical = ep.connector.nextSectionForPoint(ep).isVertical();
+//                }
+//                ep.setPosition(cp.getConnectionPositionLeft(), cp.getConnectionPositionTop());
+//
+//                if (vertical) {
+//                  ep.updateOpositeEndPointOfVerticalSection();
+//                } else {
+//                  ep.updateOpositeEndPointOfHorizontalSection();
+//                }
+//              }
+//            }
+//          }
+//        }
+//
+//        if (toRecreate.size() > 0) {
+//          for (Connector conn : toRecreate) {
+//            recreateConnectios(conn);
+//          }
+//        }
+//      }
+//    }
+//
+//    super.dragMove();
+//  }
 
   @Override
   public void makeDraggable(Widget draggable, Widget dragHandle) {

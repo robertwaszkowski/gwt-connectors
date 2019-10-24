@@ -15,5 +15,5 @@
 	
 	<!-- Specify the app entry point class. -->
 	<entry-point class='pl.tecna.gwt.connectors.test.client.Example' />
-	
+
 </module>

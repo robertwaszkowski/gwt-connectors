@@ -316,9 +316,13 @@ public class Connector implements Element {
   public void calculateStandardPointsPositions(EndPoint startEndPoint, EndPoint endEndPoint) {
     cornerPoints.clear();
 
+    //TODO: If connector's end point is glued to the shape's connection point
+    //TODO: ------------------------------------------------------------------
     if (startEndPoint.isGluedToConnectionPoint() && endEndPoint.isGluedToConnectionPoint() &&
-        (startEndPoint.gluedConnectionPoint.connectionDirection % 2 != 
-          endEndPoint.gluedConnectionPoint.connectionDirection % 2)) {
+        (startEndPoint.gluedConnectionPoint.connectionDirection % 2 !=   // % (modulus) divides two numbers and returns the reminder
+          endEndPoint.gluedConnectionPoint.connectionDirection % 2)) {   // the direction could be DIRECTION_TOP (1), _RIGHT (2), _BOTTOM (3) or _LEFT (4)
+      // This IF is for the situation when one end of the connector is vertical when another is horizontal.
+      // In that case the connector can have only one angle (consists of two sections only)
       CornerPoint cp = null;
       //start point direction is vertical
       if (startEndPoint.gluedConnectionPoint.connectionDirection % 2 == 1) {
@@ -326,9 +330,9 @@ public class Connector implements Element {
       } else {
         cp = new CornerPoint(endEndPoint.getLeft(), startEndPoint.getTop());
       }
-      
       cornerPoints.add(cp);
     } else {
+      // In this case the connector has both ends vertical or both ends horizontal
       int distanceX = startEndPoint.getLeft() - endEndPoint.getLeft();
       int distanceY = startEndPoint.getTop() - endEndPoint.getTop();
       
@@ -336,6 +340,7 @@ public class Connector implements Element {
       if (startEndPoint.isGluedToConnectionPoint()) {
         firstSectionDirection = startEndPoint.gluedConnectionPoint.connectionDirection;
       }
+
       CornerPoint cp1 = new CornerPoint(0, 0);
       CornerPoint cp2 = new CornerPoint(0, 0);
       if (firstSectionDirection == ConnectionPoint.DIRECTION_TOP ||

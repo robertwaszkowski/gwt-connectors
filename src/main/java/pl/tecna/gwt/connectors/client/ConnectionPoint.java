@@ -30,7 +30,7 @@ public class ConnectionPoint extends FocusPanel {
 	/**
 	 * Connection point is on left/right/top/bottom edge of shape
 	 */
-	public int connectionDirection;
+	public ConnectionDirection connectionDirection;
 	public int index;
 	public Widget parentWidget;
 	
@@ -52,6 +52,14 @@ public class ConnectionPoint extends FocusPanel {
 	public static final int DIRECTION_RIGHT  =  2;
 	public static final int DIRECTION_BOTTOM =  3;
 	public static final int DIRECTION_LEFT   =  4;
+
+	public enum ConnectionDirection {
+		ALL,
+		DIRECTION_TOP,
+		DIRECTION_RIGHT,
+		DIRECTION_BOTTOM,
+		DIRECTION_LEFT
+	}
 	
 	/**
 	 * Any element which should be connected by {@link Connector}
@@ -72,19 +80,26 @@ public class ConnectionPoint extends FocusPanel {
 		super();
 		this.diagram = diagram;
 		gluedEndPoints = new ArrayList<EndPoint>();
-		connectionDirection = ConnectionPoint.ALL;
+		connectionDirection = ConnectionDirection.ALL;
 		setTransparent();
 		this.index = 1;
 		this.getElement().getStyle().setZIndex(2);
 		dropController = new ConnectionPointDropController(this);
 	}
 	
-	public ConnectionPoint(Diagram diagram, int connectionDirection, int position, Widget w) {
+	public ConnectionPoint(Diagram diagram, ConnectionDirection connectionDirection, int position, Widget w) {
 		this(diagram);
 		this.connectionDirection = connectionDirection;
 		this.index = position;
 		this.parentWidget = w;
 	}
+
+//TODO:	public ConnectionPoint(Diagram diagram, int connectionDirection, int position, Widget w, int connectionPointImportance) {
+//		this(diagram);
+//		this.connectionDirection = connectionDirection;
+//		this.index = position;
+//		this.parentWidget = w;
+//	}
 	
 	/**
 	 * 

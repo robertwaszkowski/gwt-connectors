@@ -122,7 +122,7 @@
 					<allowSnapshots>true</allowSnapshots>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<noDeploy>true</noDeploy>
-					<pushChanges>false</pushChanges>
+<!--					<pushChanges>false</pushChanges>-->
 				</configuration>
 			</plugin>
 			

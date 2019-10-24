@@ -51,6 +51,7 @@ public class Diagram {
   private final Logger LOG = Logger.getLogger("Diagram");
 
   final static int MIN_SELECTION_SIZE = 20; // rect 20x20
+  final static int GRID_SIZE = 20; // grid size constant
 
   /**
    * Defines weather keyboard events should be fired

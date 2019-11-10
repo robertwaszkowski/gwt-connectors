@@ -52,6 +52,7 @@ public class Diagram {
 
   final static int MIN_SELECTION_SIZE = 20; // rect 20x20
   final static int GRID_SIZE = 20; // grid size constant
+  final static int MIN_SHAPE_DISTANCE = 60; // minimal distance between shapes
 
   /**
    * Defines weather keyboard events should be fired
@@ -473,12 +474,39 @@ public class Diagram {
   }
 
   /**
-   * Changes position of dropped Shape to make last section straight (if the section before is
-   * shorter than section tolerance (default 8))
-   * 
+   * Fixes the distance to the connected {@link Shape} by moving the Shape away by MIN_SHAPE_DISTANCE.
+   *
+   * Also changes position of dropped Shape to make last section straight (if the section before is
+   * shorter than section tolerance - Shape.SECTION_TOLERANCE (default 20))
+   *
    * @param shape the shape
    */
   public void fixShapePosition(Shape shape) {
+    // -------------------------------------------
+    // FIX THE DISTANCE BETWEEN SHAPES
+//    int leftDistance;
+//    int topDistance;
+//    int leftOffset = 0;
+//    int topOffset = 0;
+//    for (ConnectionPoint cp : shape.connectionPoints) {
+//      for (EndPoint ep : cp.gluedEndPoints) {
+//        Shape connectedShape = ep.connector.getOppositeEndPoint(ep).gluedConnectionPoint.getParentShape();
+//        leftDistance = shape.getCenterLeft() - connectedShape.getCenterLeft();
+//        topDistance = shape.getCenterTop() - connectedShape.getCenterTop();
+//        if ((Math.abs(leftDistance) < MIN_SHAPE_DISTANCE) && (Math.abs(topDistance) < MIN_SHAPE_DISTANCE)) {
+//          leftOffset = (MIN_SHAPE_DISTANCE * (leftDistance / Math.abs(leftDistance))) - leftDistance;
+//          topOffset = (MIN_SHAPE_DISTANCE * (topDistance / Math.abs(topDistance))) - topDistance;
+//          WidgetUtils.setWidgetPosition((AbsolutePanel) shape.getParent(), shape,
+//                shape.getRelativeShapeLeft() + leftOffset,
+//                shape.getRelativeShapeTop() + topOffset);
+//          //todo: chyba nie pomaga
+////          ep.connector.recreateConnections();
+//        }
+//      }
+//    }
+
+    // -------------------------------------------
+    // FIX SMALL CONNECTOR SECTIONS ("STRAIGHTEN LINES")
 
     // LOG.d("fixShapePosition");
     // map with sections of connectors connected to the shape, from this map

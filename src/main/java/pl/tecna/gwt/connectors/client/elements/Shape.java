@@ -31,7 +31,17 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Kamil Kurek
  */
 public class Shape extends FocusPanel implements Element {
- 
+
+  public ConnectionPoint getConnectionPointByPosition(ConnectionPoint.ConnectionPointPosition position) {
+    ConnectionPoint cp = null;
+    for (int i = 0; i < connectionPoints.size(); i++) {
+      if (connectionPoints.get(i).position == position) {
+        cp = connectionPoints.get(i);
+      }
+    }
+    return cp;
+  }
+
   /**
    * Enum with values defining Shape object connection points positioning type
    */
@@ -202,6 +212,7 @@ public class Shape extends FocusPanel implements Element {
       for (ConnectionPoint cp : connectionPoints) {
         connectedEndPoints.addAll(cp.gluedEndPoints);
       }
+//todo: używane tylko tutaj. Sprawdzić, do czego potrzebne
       updateNumberOfCP(newShapeType, cpShapeType);
     }
     
@@ -230,6 +241,7 @@ public class Shape extends FocusPanel implements Element {
     return connectionPoints;
   }
   
+  //todo: używane tylko w repaint
   private void updateNumberOfCP(CPShapeType newShapeType, CPShapeType oldShapeType) {
     LOG.info("UPDATE number of connection points (current number:" + connectionPoints.size() + " shape type: " + newShapeType + ")");
     List<ConnectionPoint> toRemove = new ArrayList<ConnectionPoint>();
@@ -253,7 +265,9 @@ public class Shape extends FocusPanel implements Element {
       }
     } else if (connectionPoints.size() < newCpSize) {
       for (int i = connectionPoints.size() ; i < newCpSize ; i++) {
-        ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, i, connectedWidget);
+//todo: poprawić i
+        ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT, ConnectionPoint.ConnectionPointPosition.NNW, connectedWidget);
+        //todo: NNW powyżej jest wpisane jako sztuczka. Będzie to wymagało przeliczenia (było tu "i")
         connectionPoints.add(cp);
         connectionPointsPanel.add(cp);
       }
@@ -272,28 +286,28 @@ public class Shape extends FocusPanel implements Element {
     switch (shapeType) {
       case DIAMOND:
       case OVAL: {
-        connectionPoints.get(0).connectionDirection = ConnectionPoint.DIRECTION_LEFT;
-        connectionPoints.get(1).connectionDirection = ConnectionPoint.DIRECTION_TOP;
-        connectionPoints.get(2).connectionDirection = ConnectionPoint.DIRECTION_TOP;
-        connectionPoints.get(3).connectionDirection = ConnectionPoint.DIRECTION_TOP;
-        connectionPoints.get(4).connectionDirection = ConnectionPoint.DIRECTION_RIGHT;
-        connectionPoints.get(5).connectionDirection = ConnectionPoint.DIRECTION_BOTTOM;
-        connectionPoints.get(6).connectionDirection = ConnectionPoint.DIRECTION_BOTTOM;
-        connectionPoints.get(7).connectionDirection = ConnectionPoint.DIRECTION_BOTTOM;
+        connectionPoints.get(0).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_LEFT;
+        connectionPoints.get(1).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_TOP;
+        connectionPoints.get(2).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_TOP;
+        connectionPoints.get(3).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_TOP;
+        connectionPoints.get(4).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT;
+        connectionPoints.get(5).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM;
+        connectionPoints.get(6).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM;
+        connectionPoints.get(7).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM;
       } break;
       case RECTANGLE: {
-        connectionPoints.get(0).connectionDirection = ConnectionPoint.DIRECTION_TOP;
-        connectionPoints.get(1).connectionDirection = ConnectionPoint.DIRECTION_TOP;
-        connectionPoints.get(2).connectionDirection = ConnectionPoint.DIRECTION_TOP;
-        connectionPoints.get(3).connectionDirection = ConnectionPoint.DIRECTION_RIGHT;
-        connectionPoints.get(4).connectionDirection = ConnectionPoint.DIRECTION_RIGHT;
-        connectionPoints.get(5).connectionDirection = ConnectionPoint.DIRECTION_RIGHT;
-        connectionPoints.get(6).connectionDirection = ConnectionPoint.DIRECTION_BOTTOM;
-        connectionPoints.get(7).connectionDirection = ConnectionPoint.DIRECTION_BOTTOM;
-        connectionPoints.get(8).connectionDirection = ConnectionPoint.DIRECTION_BOTTOM;
-        connectionPoints.get(9).connectionDirection = ConnectionPoint.DIRECTION_LEFT;
-        connectionPoints.get(10).connectionDirection = ConnectionPoint.DIRECTION_LEFT;
-        connectionPoints.get(11).connectionDirection = ConnectionPoint.DIRECTION_LEFT;
+        connectionPoints.get(0).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_TOP;
+        connectionPoints.get(1).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_TOP;
+        connectionPoints.get(2).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_TOP;
+        connectionPoints.get(3).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT;
+        connectionPoints.get(4).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT;
+        connectionPoints.get(5).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT;
+        connectionPoints.get(6).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM;
+        connectionPoints.get(7).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM;
+        connectionPoints.get(8).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM;
+        connectionPoints.get(9).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_LEFT;
+        connectionPoints.get(10).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_LEFT;
+        connectionPoints.get(11).connectionDirection = ConnectionPoint.ConnectionDirection.DIRECTION_LEFT;
       } break;
       case USER_DEFINED: {
         //TODO user defined update connection direction
@@ -361,16 +375,41 @@ public class Shape extends FocusPanel implements Element {
     int distance = Integer.MAX_VALUE;
     for (ConnectionPoint cp : connectionPoints) {
       int tempDist = Math.abs(absLeft - cp.getConnectionPositionLeft()) + Math.abs(absTop - cp.getConnectionPositionTop());
-      if (tempDist < distance && !excluded.contains(cp)) {
-        distance = tempDist;
-        retCP = cp;
+//todo: " && cp.position.isMain()" to jest ograniczenie tylko do głównych connection point. Przemyśleć eleganckie rozwiązanie. Może zrobić wybór w argumencie metody.
+      if (tempDist < distance && !excluded.contains(cp) && cp.position.isMain()) {
+//todo: jeżeli dystans jest zbyt krótki, to szukany jest connection point o przeciwnym kierunku (vertical do horizontal i odwrotnie)
+        if (tempDist < 20) {
+//todo !!!          if (cp.connectionDirection != this.
+          distance = tempDist;
+          retCP = cp;
+        } else {
+          distance = tempDist;
+          retCP = cp;
+        }
       }
     }
 
     return retCP;
   }
 
-  public ConnectionPoint findNearestFreeConnectionPoint(int absLeft, int absTop) {
+  //todo !!!!!!!! uzależnić od kierunku
+  public ConnectionPoint findNearestConnectionPoint(int absLeft, int absTop, ConnectionPoint.ConnectionDirection direction) {
+    ConnectionPoint retCP = null;
+    int distance = Integer.MAX_VALUE;
+    for (ConnectionPoint cp : connectionPoints) {
+      int tempDist = Math.abs(absLeft - cp.getConnectionPositionLeft()) + Math.abs(absTop - cp.getConnectionPositionTop());
+//todo: " && cp.position.isMain()" to jest ograniczenie tylko do głównych connection point. Przemyśleć eleganckie rozwiązanie. Może zrobić wybór w argumencie metody.
+      if (tempDist < distance && cp.position.isMain()
+            && ((tempDist <= 100 && cp.connectionDirection != direction) || (tempDist > 100))) {
+//todo: jeżeli dystans jest zbyt krótki, to szukany jest connection point o przeciwnym kierunku (vertical do horizontal i odwrotnie)
+          distance = tempDist;
+          retCP = cp;
+        }
+      }
+    return retCP;
+  }
+
+    public ConnectionPoint findNearestFreeConnectionPoint(int absLeft, int absTop) {
     List<ConnectionPoint> excluded = new ArrayList<ConnectionPoint>();
     for (ConnectionPoint cp : connectionPoints) {
       if (cp.gluedEndPoints != null && cp.gluedEndPoints.size() != 0) {
@@ -383,30 +422,57 @@ public class Shape extends FocusPanel implements Element {
   private List<ConnectionPoint> createRectangleShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
     List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 
-    ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 0, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 1, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 2, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 3, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 4, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 5, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 6, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 8, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 9, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 10, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 11, connectedWidget);
-    connectionPoints.add(cp);
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP,
+                                                      ConnectionPoint.ConnectionPointPosition.NNW, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP,
+                                                      ConnectionPoint.ConnectionPointPosition.N, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP,
+                                                      ConnectionPoint.ConnectionPointPosition.NNE, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT,
+                                                      ConnectionPoint.ConnectionPointPosition.ENE, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT,
+                                                      ConnectionPoint.ConnectionPointPosition.E, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT,
+                                                      ConnectionPoint.ConnectionPointPosition.ESE, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM,
+                                                      ConnectionPoint.ConnectionPointPosition.SSE, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM,
+                                                      ConnectionPoint.ConnectionPointPosition.S, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM,
+                                                      ConnectionPoint.ConnectionPointPosition.SSW, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT,
+                                                      ConnectionPoint.ConnectionPointPosition.WSW, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT,
+                                                      ConnectionPoint.ConnectionPointPosition.W, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT,
+                                                      ConnectionPoint.ConnectionPointPosition.WNW, connectedWidget));
+
+
+
+//    ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP, 1, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP, 1, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP, 2, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT, 3, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT, 4, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT, 5, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM, 6, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM, 7, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM, 8, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT, 9, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT, 10, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT, 11, connectedWidget);
+//    connectionPoints.add(cp);
 
     calculateRectangleCPPositions(connectionPoints, connectionPointsPanel);
     
@@ -460,22 +526,22 @@ public class Shape extends FocusPanel implements Element {
     
     for (ConnectionPoint cp : connectionPoints) {
       switch (cp.connectionDirection) {
-        case ConnectionPoint.DIRECTION_LEFT: {
+        case DIRECTION_LEFT: {
           cp.endPointPosition = new Point(
               cp.positionOnCPPanel.getLeft() - ConnectionPoint.RADIUS - END_POINT_DISTANCE_FROM_WIDGET, 
               cp.positionOnCPPanel.getTop());
         } break;
-        case ConnectionPoint.DIRECTION_TOP: {
+        case DIRECTION_TOP: {
           cp.endPointPosition = new Point(
               cp.positionOnCPPanel.getLeft(), 
               cp.positionOnCPPanel.getTop() - ConnectionPoint.RADIUS - END_POINT_DISTANCE_FROM_WIDGET);
         } break;
-        case ConnectionPoint.DIRECTION_RIGHT: {
+        case DIRECTION_RIGHT: {
           cp.endPointPosition = new Point(
               cp.positionOnCPPanel.getLeft() + ConnectionPoint.RADIUS + END_POINT_DISTANCE_FROM_WIDGET, 
               cp.positionOnCPPanel.getTop());
         } break;
-        case ConnectionPoint.DIRECTION_BOTTOM: {
+        case DIRECTION_BOTTOM: {
           cp.endPointPosition = new Point(
               cp.positionOnCPPanel.getLeft(), 
               cp.positionOnCPPanel.getTop() + ConnectionPoint.RADIUS + END_POINT_DISTANCE_FROM_WIDGET);
@@ -489,22 +555,40 @@ public class Shape extends FocusPanel implements Element {
   private List<ConnectionPoint> createOvalShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
     List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 
-    ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 0, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 1, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 2, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 3, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 4, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 5, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 6, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
-    connectionPoints.add(cp);
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT,
+            ConnectionPoint.ConnectionPointPosition.W, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP,
+            ConnectionPoint.ConnectionPointPosition.NW, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP,
+            ConnectionPoint.ConnectionPointPosition.N, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP,
+            ConnectionPoint.ConnectionPointPosition.NE, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT,
+            ConnectionPoint.ConnectionPointPosition.E, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM,
+            ConnectionPoint.ConnectionPointPosition.SE, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM,
+            ConnectionPoint.ConnectionPointPosition.S, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM,
+            ConnectionPoint.ConnectionPointPosition.SW, connectedWidget));
+
+//
+//    ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT, 0, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP, 1, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP, 2, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP, 3, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT, 4, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM, 5, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM, 6, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM, 7, connectedWidget);
+//    connectionPoints.add(cp);
 
     calculateOvalCPPositions(connectionPoints, connectionPointsPanel);
     
@@ -534,22 +618,40 @@ public class Shape extends FocusPanel implements Element {
   private List<ConnectionPoint> createDiamondShapeCP(AbsolutePanel connectionPointsPanel, Diagram diagram) {
     List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 
-    ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_LEFT, 0, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 1, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 2, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_TOP, 3, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_RIGHT, 4, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 5, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 6, connectedWidget);
-    connectionPoints.add(cp);
-    cp = new ConnectionPoint(diagram, ConnectionPoint.DIRECTION_BOTTOM, 7, connectedWidget);
-    connectionPoints.add(cp);
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT,
+            ConnectionPoint.ConnectionPointPosition.W, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP,
+            ConnectionPoint.ConnectionPointPosition.NW, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP,
+            ConnectionPoint.ConnectionPointPosition.N, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP,
+            ConnectionPoint.ConnectionPointPosition.NE, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT,
+            ConnectionPoint.ConnectionPointPosition.E, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM,
+            ConnectionPoint.ConnectionPointPosition.SE, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM,
+            ConnectionPoint.ConnectionPointPosition.S, connectedWidget));
+    connectionPoints.add(new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM,
+            ConnectionPoint.ConnectionPointPosition.SW, connectedWidget));
+
+//
+//    ConnectionPoint cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_LEFT, 0, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP, 1, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP, 2, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_TOP, 3, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT, 4, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM, 5, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM, 6, connectedWidget);
+//    connectionPoints.add(cp);
+//    cp = new ConnectionPoint(diagram, ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM, 7, connectedWidget);
+//    connectionPoints.add(cp);
 
     calculateDiamondShapeCP(connectionPoints, connectionPointsPanel);
     
@@ -651,9 +753,9 @@ public class Shape extends FocusPanel implements Element {
     }
   }
 
-  public ConnectionPoint getCPForPosition(int cpPos) {
+  public ConnectionPoint getCPForPosition(ConnectionPoint.ConnectionPointPosition cpPos) {
     for (ConnectionPoint cp : connectionPoints) {
-      if (cp.index == cpPos) {
+      if (cp.position == cpPos) {
         return cp;
       }
     }

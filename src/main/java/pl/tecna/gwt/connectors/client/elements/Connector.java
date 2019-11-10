@@ -20,6 +20,7 @@ import pl.tecna.gwt.connectors.client.util.SectionData;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import pl.tecna.gwt.connectors.client.util.WidgetUtils;
 
 public class Connector implements Element {
   public static final int OVERLAP_MARGIN = 5;
@@ -318,14 +319,15 @@ public class Connector implements Element {
 
     //TODO: If connector's end point is glued to the shape's connection point
     //TODO: ------------------------------------------------------------------
+
+    // This IF is for the situation when one end of the connector is vertical when another is horizontal.
+    // In that case the connector can have only one angle (consists of two sections only)
     if (startEndPoint.isGluedToConnectionPoint() && endEndPoint.isGluedToConnectionPoint() &&
-        (startEndPoint.gluedConnectionPoint.connectionDirection % 2 !=   // % (modulus) divides two numbers and returns the reminder
-          endEndPoint.gluedConnectionPoint.connectionDirection % 2)) {   // the direction could be DIRECTION_TOP (1), _RIGHT (2), _BOTTOM (3) or _LEFT (4)
-      // This IF is for the situation when one end of the connector is vertical when another is horizontal.
-      // In that case the connector can have only one angle (consists of two sections only)
+            ((startEndPoint.gluedConnectionPoint.connectionDirection.isHorizontal() && endEndPoint.gluedConnectionPoint.connectionDirection.isVertical())
+            || (startEndPoint.gluedConnectionPoint.connectionDirection.isVertical() && endEndPoint.gluedConnectionPoint.connectionDirection.isHorizontal()))) {
       CornerPoint cp = null;
       //start point direction is vertical
-      if (startEndPoint.gluedConnectionPoint.connectionDirection % 2 == 1) {
+      if (startEndPoint.gluedConnectionPoint.connectionDirection.isVertical()) {
         cp = new CornerPoint(startEndPoint.getLeft(), endEndPoint.getTop());
       } else {
         cp = new CornerPoint(endEndPoint.getLeft(), startEndPoint.getTop());
@@ -336,16 +338,16 @@ public class Connector implements Element {
       int distanceX = startEndPoint.getLeft() - endEndPoint.getLeft();
       int distanceY = startEndPoint.getTop() - endEndPoint.getTop();
       
-      int firstSectionDirection = -1;
+      ConnectionPoint.ConnectionDirection firstSectionDirection = null;
       if (startEndPoint.isGluedToConnectionPoint()) {
         firstSectionDirection = startEndPoint.gluedConnectionPoint.connectionDirection;
       }
 
       CornerPoint cp1 = new CornerPoint(0, 0);
       CornerPoint cp2 = new CornerPoint(0, 0);
-      if (firstSectionDirection == ConnectionPoint.DIRECTION_TOP ||
-          firstSectionDirection == ConnectionPoint.DIRECTION_BOTTOM || (
-              firstSectionDirection == -1 && Math.abs(distanceX) < Math.abs(distanceY))) {
+      if (firstSectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_TOP ||
+          firstSectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM || (
+              firstSectionDirection == null && Math.abs(distanceX) < Math.abs(distanceY))) {
         // the connection contains two vertical sections and one horizontal section
         cp1.setPosition(startEndPoint.getLeft(), startEndPoint.getTop() - (distanceY / 2));
         cp2.setPosition(endEndPoint.getLeft(), cp1.getTop());
@@ -449,6 +451,13 @@ public class Connector implements Element {
     }
   }
 
+  public EndPoint getOppositeEndPoint(EndPoint endPoint) {
+    EndPoint oppositeEndPoint = null;
+    if (endPoint == startEndPoint) oppositeEndPoint = endEndPoint;
+    if (endPoint == endEndPoint) oppositeEndPoint = startEndPoint;
+    return oppositeEndPoint;
+  }
+
   /**
    * Disconnects {@link Connector} end point (if attached), and creates dragable {@link EndPoint}
    */
@@ -547,11 +556,11 @@ public class Connector implements Element {
         }
       }
 
-      if (((connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM || connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_TOP))
+      if (((connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM || connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_TOP))
           && !sectionHorizontal) {
         drawSections(cornerPoints, isSelected);
         return false;
-      } else if (((connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_LEFT || connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT))
+      } else if (((connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_LEFT || connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT))
           && sectionHorizontal) {
         drawSections(cornerPoints, isSelected);
         return false;
@@ -564,8 +573,8 @@ public class Connector implements Element {
       CornerPoint newCornerPoint = null;
 
       // Creating new CornerPoint
-      if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_LEFT
-          || connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) {
+      if (connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_LEFT
+          || connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT) {
         // Horizontal
         if (last) {
           extremeCorner = cornerPoints.get(cornerPoints.size() - 1);
@@ -573,7 +582,7 @@ public class Connector implements Element {
           extremeCorner = cornerPoints.get(0);
         }
 
-        if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_RIGHT) {
+        if (connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_RIGHT) {
           extremeCorner.setLeftPosition(extremeCorner.getLeft() + sectionMargin);
         } else {
           extremeCorner.setLeftPosition(extremeCorner.getLeft() - sectionMargin);
@@ -584,15 +593,15 @@ public class Connector implements Element {
         } else {
           newCornerPoint = new CornerPoint(extremeCorner.getLeft(), startEndPoint.getTop());
         }
-      } else if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM
-          || connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_TOP) {
+      } else if (connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM
+          || connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_TOP) {
         // Vertical
         if (last) {
           extremeCorner = cornerPoints.get(cornerPoints.size() - 1);
         } else {
           extremeCorner = cornerPoints.get(0);
         }
-        if (connectionPoint.connectionDirection == ConnectionPoint.DIRECTION_BOTTOM) {
+        if (connectionPoint.connectionDirection == ConnectionPoint.ConnectionDirection.DIRECTION_BOTTOM) {
           extremeCorner.setTopPosition(extremeCorner.getTop() + sectionMargin);
         } else {
           extremeCorner.setTopPosition(extremeCorner.getTop() - sectionMargin);
@@ -742,7 +751,7 @@ public class Connector implements Element {
    * @return <code>true</code> if new corner point was created
    */
   public boolean mergeTwoLastSections(Section endSection, List<CornerPoint> cornerPoints) {
-    int connDirection = this.endEndPoint.gluedConnectionPoint.connectionDirection;
+    ConnectionPoint.ConnectionDirection connDirection = this.endEndPoint.gluedConnectionPoint.connectionDirection;
 
     if (!this.endEndPoint.isGluedToConnectionPoint() || endSection.getLength() > lastSectionTolerance
         || this.sections.size() < 2 || cornerPoints.size() < 2) {
@@ -753,30 +762,19 @@ public class Connector implements Element {
     CornerPoint newCorner = null;
 
     switch (connDirection) {
-      case 1:
+      case DIRECTION_TOP:
+      case DIRECTION_BOTTOM:
         if (endSection.isHorizontal()) {
           newCorner = new CornerPoint(endSection.endPoint.getLeft(), beforeLast.getTop());
         }
         break;
 
-      case 2:
+      case DIRECTION_RIGHT:
+      case DIRECTION_LEFT:
         if (endSection.isVertical()) {
           newCorner = new CornerPoint(beforeLast.getLeft(), endSection.endPoint.getTop());
         }
         break;
-
-      case 3:
-        if (endSection.isHorizontal()) {
-          newCorner = new CornerPoint(endSection.endPoint.getLeft(), beforeLast.getTop());
-        }
-        break;
-
-      case 4:
-        if (endSection.isVertical()) {
-          newCorner = new CornerPoint(beforeLast.getLeft(), endSection.endPoint.getTop());
-        }
-        break;
-
     }
     if (newCorner != null) {
       cornerPoints.remove(cornerPoints.size() - 1);
@@ -802,7 +800,7 @@ public class Connector implements Element {
    * @return <code>true</code> if new corner point was created
    */
   public boolean mergeTwoFirstSections(Section startSection, List<CornerPoint> cornerPoints) {
-    int connDirection = this.startEndPoint.gluedConnectionPoint.connectionDirection;
+    ConnectionPoint.ConnectionDirection connDirection = this.startEndPoint.gluedConnectionPoint.connectionDirection;
 
     if (!this.startEndPoint.isGluedToConnectionPoint() || startSection.getLength() > lastSectionTolerance
         || this.sections.size() < 2 || cornerPoints.size() < 2) {
@@ -813,25 +811,25 @@ public class Connector implements Element {
 
     CornerPoint newCorner = null;
     switch (connDirection) {
-      case 1:
+      case DIRECTION_TOP:
         if (startSection.isHorizontal()) {
           newCorner = new CornerPoint(startSection.startPoint.getLeft(), second.getTop());
         }
         break;
 
-      case 2:
+      case DIRECTION_RIGHT:
         if (startSection.isVertical()) {
           newCorner = new CornerPoint(second.getLeft(), startSection.startPoint.getTop());
         }
         break;
 
-      case 3:
+      case DIRECTION_BOTTOM:
         if (startSection.isHorizontal()) {
           newCorner = new CornerPoint(startSection.startPoint.getLeft(), second.getTop());
         }
         break;
 
-      case 4:
+      case DIRECTION_LEFT:
         if (startSection.isVertical()) {
           newCorner = new CornerPoint(second.getLeft(), startSection.startPoint.getTop());
         }
@@ -1390,6 +1388,92 @@ public class Connector implements Element {
     for (ConnectorListener listener : listeners) {
       listener.onConnectorDoubleClick(event);
     }
+  }
+
+
+  public void recreateConnections() {
+    recreateConnections(null);
+  }
+
+  public void recreateConnections(Shape draggedShape) {
+    int horizontalDistance = this.endEndPoint.getLeft() - this.startEndPoint.getLeft();
+    int verticalDistance   = this.endEndPoint.getTop()  - this.startEndPoint.getTop();
+
+    int decorationSize = 60;
+
+    ConnectionPoint.ConnectionPointPosition startCPPosition = ConnectionPoint.ConnectionPointPosition.N;
+    ConnectionPoint.ConnectionPointPosition endCPPosition = ConnectionPoint.ConnectionPointPosition.N;
+
+    if (horizontalDistance > 0 && verticalDistance < 0)  { startCPPosition = ConnectionPoint.ConnectionPointPosition.E;
+      endCPPosition   = ConnectionPoint.ConnectionPointPosition.S; }
+    if (horizontalDistance > 0 && verticalDistance == 0) { startCPPosition = ConnectionPoint.ConnectionPointPosition.E;
+      endCPPosition   = ConnectionPoint.ConnectionPointPosition.W; }
+    if (horizontalDistance > 0 && verticalDistance > 0)  { startCPPosition = ConnectionPoint.ConnectionPointPosition.E;
+      endCPPosition   = ConnectionPoint.ConnectionPointPosition.N; }
+    if (horizontalDistance == 0 && verticalDistance > 0) { startCPPosition = ConnectionPoint.ConnectionPointPosition.S;
+      endCPPosition   = ConnectionPoint.ConnectionPointPosition.N; }
+    if (horizontalDistance < 0 && verticalDistance > 0)  { startCPPosition = ConnectionPoint.ConnectionPointPosition.W;
+      endCPPosition   = ConnectionPoint.ConnectionPointPosition.N; }
+    if (horizontalDistance < 0 && verticalDistance == 0) { startCPPosition = ConnectionPoint.ConnectionPointPosition.W;
+      endCPPosition   = ConnectionPoint.ConnectionPointPosition.E; }
+    if (horizontalDistance < 0 && verticalDistance < 0)  { startCPPosition = ConnectionPoint.ConnectionPointPosition.W;
+      endCPPosition   = ConnectionPoint.ConnectionPointPosition.S; }
+    if (horizontalDistance == 0 && verticalDistance < 0) { startCPPosition = ConnectionPoint.ConnectionPointPosition.N;
+      endCPPosition   = ConnectionPoint.ConnectionPointPosition.S; }
+
+    if (Math.abs(horizontalDistance) <= decorationSize) {
+      if (verticalDistance > 0) {
+        startCPPosition = ConnectionPoint.ConnectionPointPosition.S;
+        endCPPosition = ConnectionPoint.ConnectionPointPosition.N;
+      } else {
+        startCPPosition = ConnectionPoint.ConnectionPointPosition.N;
+        endCPPosition = ConnectionPoint.ConnectionPointPosition.S;
+      }
+      //todo swap horizontally
+
+      //todo move away vertically
+      if (draggedShape != null /*&& draggedShape.isGluedToConnectionPoint()*/) {
+//        Shape shape = draggedShape.gluedConnectionPoint.getParentShape();
+        int topOffset = (decorationSize * (verticalDistance / Math.abs(verticalDistance))) - verticalDistance;
+        WidgetUtils.setWidgetPosition((AbsolutePanel) draggedShape.getParent(), draggedShape,
+                draggedShape.getRelativeShapeLeft(),
+                draggedShape.getRelativeShapeTop() + topOffset);
+      }
+    }
+    if (Math.abs(verticalDistance) <= decorationSize) {
+      if (horizontalDistance > 0) {
+        startCPPosition = ConnectionPoint.ConnectionPointPosition.E;
+        endCPPosition = ConnectionPoint.ConnectionPointPosition.W;
+      } else {
+        startCPPosition = ConnectionPoint.ConnectionPointPosition.W;
+        endCPPosition = ConnectionPoint.ConnectionPointPosition.E;
+      }
+      //todo swap vertically
+
+      //todo move away horizontally
+      if (draggedShape != null /*&& draggedShape.isGluedToConnectionPoint()*/) {
+//        Shape shape = draggedShape.gluedConnectionPoint.getParentShape();
+        int leftOffset = (decorationSize * (horizontalDistance / Math.abs(horizontalDistance))) - horizontalDistance;
+        WidgetUtils.setWidgetPosition((AbsolutePanel) draggedShape.getParent(), draggedShape,
+                draggedShape.getRelativeShapeLeft() + leftOffset,
+                draggedShape.getRelativeShapeTop());
+      }
+    }
+
+    if (this.endEndPoint.isGluedToConnectionPoint()) {
+      ConnectionPoint nearestEndCP = this.endEndPoint.gluedConnectionPoint.getParentShape().getConnectionPointByPosition(endCPPosition);
+      this.endEndPoint.glueToConnectionPoint(nearestEndCP, false);
+      this.endEndPoint.setLeftPosition(nearestEndCP.getConnectionPositionLeft());
+      this.endEndPoint.setTopPosition(nearestEndCP.getConnectionPositionTop());
+    }
+    if (this.startEndPoint.isGluedToConnectionPoint()) {
+      ConnectionPoint nearestStartCP = this.startEndPoint.gluedConnectionPoint.getParentShape().getConnectionPointByPosition(startCPPosition);
+      this.startEndPoint.glueToConnectionPoint(nearestStartCP, false);
+      this.startEndPoint.setLeftPosition(nearestStartCP.getConnectionPositionLeft());
+      this.startEndPoint.setTopPosition(nearestStartCP.getConnectionPositionTop());
+    }
+    this.calculateStandardPointsPositions();
+    this.drawSections();
   }
 
 }

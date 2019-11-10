@@ -99,16 +99,16 @@ public class EndPointDragController extends PickupDragController {
     if (diagram.drawInitializingConnectorsInLine && draggedEP.connector.initalizing) {
       EndPoint connectorStartPoint = draggedEP.connector.startEndPoint;
       switch (connectorStartPoint.gluedConnectionPoint.connectionDirection) {
-        case ConnectionPoint.DIRECTION_LEFT: 
-        case ConnectionPoint.DIRECTION_RIGHT: {
+        case DIRECTION_LEFT:
+        case DIRECTION_RIGHT: {
           if (Math.abs(draggedEP.connector.startEndPoint.getTop() - 
               (context.desiredDraggableY - boundaryOffsetY)) < diagram.initialDragTolerance) {
             desiredTop = connectorStartPoint.getTop();
             context.desiredDraggableY = (int) Math.round(desiredTop + boundaryOffsetY - ConnectionPoint.RADIUS);
           }
         } break;
-        case ConnectionPoint.DIRECTION_TOP:
-        case ConnectionPoint.DIRECTION_BOTTOM: {
+        case DIRECTION_TOP:
+        case DIRECTION_BOTTOM: {
           if (Math.abs(draggedEP.connector.startEndPoint.getLeft() - 
               (context.desiredDraggableX - boundaryOffsetX)) < diagram.initialDragTolerance) {
             desiredLeft = connectorStartPoint.getLeft();
@@ -132,7 +132,6 @@ public class EndPointDragController extends PickupDragController {
           draggedEP.updateOpositeEndPointOfHorizontalSection();
         }
       }
-
     }
     super.dragMove();
   }

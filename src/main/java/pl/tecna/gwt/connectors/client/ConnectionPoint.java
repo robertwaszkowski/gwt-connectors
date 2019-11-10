@@ -31,7 +31,8 @@ public class ConnectionPoint extends FocusPanel {
 	 * Connection point is on left/right/top/bottom edge of shape
 	 */
 	public ConnectionDirection connectionDirection;
-	public int index;
+//todo remove:
+	public ConnectionPointPosition position;
 	public Widget parentWidget;
 	
 	/**
@@ -46,19 +47,41 @@ public class ConnectionPoint extends FocusPanel {
 	
 	public Diagram diagram;
 	private ConnectionPointDropController dropController;
-	
-	public static final int ALL    =  0;
-	public static final int DIRECTION_TOP    =  1;
-	public static final int DIRECTION_RIGHT  =  2;
-	public static final int DIRECTION_BOTTOM =  3;
-	public static final int DIRECTION_LEFT   =  4;
 
 	public enum ConnectionDirection {
-		ALL,
-		DIRECTION_TOP,
-		DIRECTION_RIGHT,
-		DIRECTION_BOTTOM,
-		DIRECTION_LEFT
+		ALL 				{ @Override public boolean isVertical()   { return false; }
+							  @Override public boolean isHorizontal() { return false; } },
+		DIRECTION_TOP 		{ @Override public boolean isVertical()   { return true;  }
+							  @Override public boolean isHorizontal() { return false; } },
+		DIRECTION_RIGHT 	{ @Override public boolean isVertical()   { return false; }
+							  @Override public boolean isHorizontal() { return true;  } },
+		DIRECTION_BOTTOM 	{ @Override public boolean isVertical()   { return true;  }
+							  @Override public boolean isHorizontal() { return false; } },
+		DIRECTION_LEFT 		{ @Override public boolean isVertical()   { return false; }
+							  @Override public boolean isHorizontal() { return true;  } };
+		public abstract boolean isVertical();
+		public abstract boolean isHorizontal();
+	}
+
+	//TODO: RW - nadać właściwą nazwę
+	public enum ConnectionPointPosition {
+		N   { @Override public boolean isMain() {return true; } }, /* 0/360 degrees */
+		NNE { @Override public boolean isMain() {return false;} }, /*  22.5 degrees */
+		NE  { @Override public boolean isMain() {return false;} }, /*  45   degrees */
+		ENE { @Override public boolean isMain() {return false;} }, /*  67.5 degrees */
+		E   { @Override public boolean isMain() {return true; } }, /*  90   degrees */
+		ESE { @Override public boolean isMain() {return false;} }, /* 112.5 degrees */
+		SE  { @Override public boolean isMain() {return false;} }, /* 135   degrees */
+		SSE { @Override public boolean isMain() {return false;} }, /* 157.5 degrees */
+		S   { @Override public boolean isMain() {return true; } }, /* 180   degrees */
+		SSW { @Override public boolean isMain() {return false;} }, /* 202.5 degrees */
+		SW  { @Override public boolean isMain() {return false;} }, /* 225   degrees */
+		WSW { @Override public boolean isMain() {return false;} }, /* 247.5 degrees */
+		W   { @Override public boolean isMain() {return true; } }, /* 270   degrees */
+		WNW { @Override public boolean isMain() {return false;} }, /* 292.5 degrees */
+		NW  { @Override public boolean isMain() {return false;} }, /* 315   degrees */
+		NNW { @Override public boolean isMain() {return false;} }; /* 337.5 degrees */
+		public abstract boolean isMain();
 	}
 	
 	/**
@@ -82,15 +105,18 @@ public class ConnectionPoint extends FocusPanel {
 		gluedEndPoints = new ArrayList<EndPoint>();
 		connectionDirection = ConnectionDirection.ALL;
 		setTransparent();
-		this.index = 1;
+//todo remove:
+		this.position = ConnectionPointPosition.N;
 		this.getElement().getStyle().setZIndex(2);
 		dropController = new ConnectionPointDropController(this);
 	}
-	
-	public ConnectionPoint(Diagram diagram, ConnectionDirection connectionDirection, int position, Widget w) {
+
+	public ConnectionPoint(Diagram diagram, ConnectionDirection connectionDirection, ConnectionPointPosition position, Widget w) {
+//	public ConnectionPoint(Diagram diagram, ConnectionDirection connectionDirection, int position, Widget w) {
 		this(diagram);
 		this.connectionDirection = connectionDirection;
-		this.index = position;
+//todo remove:
+		this.position = position;
 		this.parentWidget = w;
 	}
 

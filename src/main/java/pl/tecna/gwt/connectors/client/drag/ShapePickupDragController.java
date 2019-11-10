@@ -128,12 +128,12 @@ public class ShapePickupDragController extends PickupDragController {
         Shape shape = (Shape) widget;
         shape.setTranslationX(context.desiredDraggableX - startX - diagram.boundaryPanel.getAbsoluteLeft());
         shape.setTranslationY(context.desiredDraggableY - startY - diagram.boundaryPanel.getAbsoluteTop());
-        List<Connector> toRecreate = new LinkedList<Connector>();
         for (ConnectionPoint cp : shape.connectionPoints) {
           for (EndPoint ep : cp.gluedEndPoints) {
 
                 //moveEndPointGluedToCP(ep, cp);
-                recreateConnectios(ep.connector);
+//                ep.connector.recreateConnections(shape);
+                ep.connector.recreateConnections();
               }
             }
           }
@@ -226,45 +226,46 @@ public class ShapePickupDragController extends PickupDragController {
     ep.connector.drawSections();
   }
 
-  private void recreateConnectios(Connector conn) {
-    Position startPosition;
-    Position endPosition;
-    if (conn.startEndPoint.isGluedToConnectionPoint()) {
-      startPosition = new Position(conn.startEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
-          conn.startEndPoint.gluedConnectionPoint.getParentShape().getCenterTop());
-    } else {
-      startPosition = new Position(conn.startEndPoint.getLeft(), conn.startEndPoint.getTop());
-    }
 
-    if (conn.endEndPoint.isGluedToConnectionPoint()) {
-      endPosition = new Position(conn.endEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
-          conn.endEndPoint.gluedConnectionPoint.getParentShape().getCenterTop());
-    } else {
-      endPosition = new Position(conn.endEndPoint.getLeft(), conn.endEndPoint.getTop());
-    }
-
-    if (conn.endEndPoint.isGluedToConnectionPoint()) {
-      ConnectionPoint nearestCP = conn.endEndPoint.gluedConnectionPoint.getParentShape().
-          findNearestConnectionPoint(startPosition.getLeft(), startPosition.getTop());
-      conn.endEndPoint.glueToConnectionPoint(nearestCP, false);
-      conn.endEndPoint.setLeftPosition(nearestCP.getConnectionPositionLeft());
-      conn.endEndPoint.setTopPosition(nearestCP.getConnectionPositionTop());
-      
-      endPosition.setLeft(conn.endEndPoint.getLeft());
-      endPosition.setTop(conn.endEndPoint.getTop());
-    }
-    if (conn.startEndPoint.isGluedToConnectionPoint()) {
-      ConnectionPoint nearestCP = conn.startEndPoint.gluedConnectionPoint.getParentShape().
-          findNearestConnectionPoint(endPosition.getLeft(), endPosition.getTop());
-      conn.startEndPoint.glueToConnectionPoint(nearestCP, false);
-      conn.startEndPoint.setLeftPosition(nearestCP.getConnectionPositionLeft());
-      conn.startEndPoint.setTopPosition(nearestCP.getConnectionPositionTop());
-      
-      startPosition.setLeft(conn.startEndPoint.getLeft());
-      startPosition.setTop(conn.startEndPoint.getTop());
-    }
-    conn.calculateStandardPointsPositions();
-    conn.drawSections();
-  }
+//  private void recreateConnectios(Connector conn) {
+//    Position startPosition;
+//    Position endPosition;
+//    if (conn.startEndPoint.isGluedToConnectionPoint()) {
+//      startPosition = new Position(conn.startEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
+//          conn.startEndPoint.gluedConnectionPoint.getParentShape().getCenterTop());
+//    } else {
+//      startPosition = new Position(conn.startEndPoint.getLeft(), conn.startEndPoint.getTop());
+//    }
+//
+//    if (conn.endEndPoint.isGluedToConnectionPoint()) {
+//      endPosition = new Position(conn.endEndPoint.gluedConnectionPoint.getParentShape().getCenterLeft(),
+//          conn.endEndPoint.gluedConnectionPoint.getParentShape().getCenterTop());
+//    } else {
+//      endPosition = new Position(conn.endEndPoint.getLeft(), conn.endEndPoint.getTop());
+//    }
+//
+//    if (conn.endEndPoint.isGluedToConnectionPoint()) {
+//      ConnectionPoint nearestCP = conn.endEndPoint.gluedConnectionPoint.getParentShape().
+//          findNearestConnectionPoint(startPosition.getLeft(), startPosition.getTop(), conn.startEndPoint.gluedConnectionPoint.connectionDirection ); //todo: !!! dodać atrybut kierunku (vertical, horizontal)
+//      conn.endEndPoint.glueToConnectionPoint(nearestCP, false);
+//      conn.endEndPoint.setLeftPosition(nearestCP.getConnectionPositionLeft());
+//      conn.endEndPoint.setTopPosition(nearestCP.getConnectionPositionTop());
+//
+//      endPosition.setLeft(conn.endEndPoint.getLeft());
+//      endPosition.setTop(conn.endEndPoint.getTop());
+//    }
+//    if (conn.startEndPoint.isGluedToConnectionPoint()) {
+//      ConnectionPoint nearestCP = conn.startEndPoint.gluedConnectionPoint.getParentShape().
+//          findNearestConnectionPoint(endPosition.getLeft(), endPosition.getTop(), conn.endEndPoint.gluedConnectionPoint.connectionDirection );
+//      conn.startEndPoint.glueToConnectionPoint(nearestCP, false);
+//      conn.startEndPoint.setLeftPosition(nearestCP.getConnectionPositionLeft());
+//      conn.startEndPoint.setTopPosition(nearestCP.getConnectionPositionTop());
+//
+//      startPosition.setLeft(conn.startEndPoint.getLeft());
+//      startPosition.setTop(conn.startEndPoint.getTop());
+//    }
+//    conn.calculateStandardPointsPositions();
+//    conn.drawSections();
+//  }
   
 }
